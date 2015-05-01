@@ -4,8 +4,12 @@ import string
 
 TEXT_CHARACTERS = "".join(map(chr, range(32, 127)) + list("\n\r\t\b"))
 NULL_TRANS = string.maketrans("", "")
+KNOWN_BINARY_FILE_EXT = ['.pdf']
+ALLOWED_NON_PRINTABLE_THRESHOLD = 0.15
 
 def is_textfile(filename, blocksize=512):
+    if any(filename.endswith(ext) for ext in KNOWN_BINARY_FILE_EXT):
+        return False
     return is_text(open(filename).read(blocksize))
 
 def is_text(string):
@@ -15,7 +19,5 @@ def is_text(string):
         return True
     # Get the non-text characters (maps a character to itself then
     # use the 'remove' option to get rid of the text characters.)
-    text_chars = string.translate(NULL_TRANS, TEXT_CHARACTERS)
-    # If more than 30% non-text characters, then
-    # this is considered a binary file
-    return len(text_chars) / len(string) < 0.30
+    non_printable_chars = string.translate(NULL_TRANS, TEXT_CHARACTERS)
+    return len(non_printable_chars) / len(string) < ALLOWED_NON_PRINTABLE_THRESHOLD
