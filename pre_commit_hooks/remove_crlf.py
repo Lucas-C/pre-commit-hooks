@@ -9,6 +9,10 @@ def contains_crlf(filename):
             return True
     return False
 
+def removes_crlf(filename):
+    for line in fileinput.input([filename], inplace=True):
+        print(re.sub('\r$', '', line), end='')
+
 def main(argv=None):
     parser = argparse.ArgumentParser()
     parser.add_argument('filenames', nargs='*', help='filenames to check')
@@ -16,7 +20,8 @@ def main(argv=None):
     text_files = filter(is_textfile, args.filenames)
     files_with_crlf = filter(contains_crlf, text_files)
     for file_with_crlf in files_with_crlf:
-        print('CRLF end-lines detected in file: {0}'.format(file_with_crlf))
+        print('Removing CRLF end-lines in: {0}'.format(file_with_crlf))
+        removes_crlf(file_with_crlf)
     return 1 if files_with_crlf else 0
 
 if __name__ == '__main__':
