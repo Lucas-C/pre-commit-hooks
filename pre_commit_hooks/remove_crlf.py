@@ -22,6 +22,10 @@ def main(argv=None):
     for file_with_crlf in files_with_crlf:
         print('Removing CRLF end-lines in: {0}'.format(file_with_crlf))
         removes_crlf(file_with_crlf)
+    if files_with_crlf:
+        print('')
+        print('CRLF end-lines have been successfully removed. Now aborting the commit.')
+        print('You can check the changes made. Then simply "git add --update ." and re-commit')
     return 1 if files_with_crlf else 0
 
 if __name__ == '__main__':
