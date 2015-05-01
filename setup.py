@@ -22,6 +22,7 @@ setup(
         'Programming Language :: Python :: Implementation :: PyPy',
     ],
 
+    packages=find_packages('.'),
     entry_points={
         'console_scripts': [
             'forbid_crlf = pre_commit_hooks.forbid_crlf:main',
