@@ -24,7 +24,7 @@ setup(
 
     entry_points={
         'console_scripts': [
-            'forbid_crlf = forbid_crlf:main',
+            'forbid_crlf = pre_commit_hooks.forbid_crlf:main',
         ],
     },
 )
