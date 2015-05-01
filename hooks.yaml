@@ -1,0 +1,6 @@
+-   id: forbid-crlf
+    name: CRLF lines termination checker
+    description: "Forbid files containing CRLF to be committed"
+    entry: forbid_crlf
+    language: python
+    files: ''
