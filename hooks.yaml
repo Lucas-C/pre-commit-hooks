@@ -1,6 +1,12 @@
 -   id: forbid-crlf
-    name: CRLF lines termination checker
-    description: "Forbid files containing CRLF to be committed"
+    name: CRLF end-lines checker
+    description: "Forbid files containing CRLF end-lines to be committed"
     entry: forbid_crlf
+    language: python
+    files: ''
+-   id: remove-crlf
+    name: CRLF end-lines remover
+    description: "Replace CRLF end-lines by LF ones before committing"
+    entry: remove_crlf
     language: python
     files: ''
