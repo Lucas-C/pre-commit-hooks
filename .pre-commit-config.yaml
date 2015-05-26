@@ -1,5 +1,7 @@
-- repo: /opt/pre-commit-hooks
-  sha: 01c711d
+- repo: git://github.com/Lucas-C/pre-commit-hooks
+  sha: 961d4c3
   hooks:
   - id: forbid-crlf
   - id: remove-crlf
+  - id: forbid-tabs
+  - id: remove-tabs
