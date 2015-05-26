@@ -28,6 +28,8 @@ setup(
         'console_scripts': [
             'forbid_crlf = pre_commit_hooks.forbid_crlf:main',
             'remove_crlf = pre_commit_hooks.remove_crlf:main',
+            'forbid_tabs = pre_commit_hooks.forbid_tabs:main',
+            'remove_tabs = pre_commit_hooks.remove_tabs:main',
         ],
     },
 )

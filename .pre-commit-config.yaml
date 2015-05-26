@@ -1,0 +1,5 @@
+- repo: /opt/pre-commit-hooks
+  sha: 01c711d
+  hooks:
+  - id: forbid-crlf
+  - id: remove-crlf

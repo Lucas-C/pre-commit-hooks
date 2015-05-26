@@ -1,16 +1,9 @@
 A few useful git hooks to integrate with [pre-commit](http://pre-commit.com).
 
-##Usage
+## Usage
 
-Put either of the following snippets into your `.pre-commit-config.yaml`:
+Check `.pre-commit-config.yaml` in this repo for an example.
 
-    - repo: git://github.com/Lucas-C/pre-commit-hooks
-      sha: <latest commit sha>
-      hooks:
-      - id: forbid-crlf
+For the _remove-tabs_ hook, the number of whitespaces to substitute tabs with can be configured (it defaults to 4):
 
-    - repo: git://github.com/Lucas-C/pre-commit-hooks
-      sha: <latest commit sha>
-      hooks:
-      - id: remove-crlf
-
+        args: [ --whitespaces-count, 2 ]
