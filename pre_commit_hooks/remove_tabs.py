@@ -15,7 +15,7 @@ def removes_tabs(filename, whitespaces_count):
 
 def main(argv=None):
     parser = argparse.ArgumentParser()
-    parser.add_argument('--whitespaces-count', required=True, help='number of whitespaces to substitute tabs with')
+    parser.add_argument('--whitespaces-count', type=int, required=True, help='number of whitespaces to substitute tabs with')
     parser.add_argument('filenames', nargs='*', help='filenames to check')
     args = parser.parse_args(argv)
     text_files = filter(is_textfile, args.filenames)
