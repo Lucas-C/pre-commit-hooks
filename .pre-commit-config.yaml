@@ -1,5 +1,5 @@
 - repo: git://github.com/Lucas-C/pre-commit-hooks
-  sha: 961d4c3
+  sha: 7f0ecdc
   hooks:
   - id: forbid-crlf
   - id: remove-crlf

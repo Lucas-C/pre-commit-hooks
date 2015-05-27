@@ -11,7 +11,7 @@ def contains_tabs(filename):
 
 def removes_tabs(filename, whitespaces_count):
     for line in fileinput.input([filename], inplace=True):
-        print(re.sub('\t$', ' ' * whitespaces_count, line), end='')
+        print(re.sub('\t', ' ' * whitespaces_count, line), end='')
 
 def main(argv=None):
     parser = argparse.ArgumentParser()
