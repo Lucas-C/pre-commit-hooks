@@ -1,7 +1,14 @@
 - repo: git://github.com/Lucas-C/pre-commit-hooks
-  sha: 7f0ecdc
+  sha: 36289c7
   hooks:
   - id: forbid-crlf
   - id: remove-crlf
   - id: forbid-tabs
   - id: remove-tabs
+- repo: local
+  hooks:
+  - id: forbid-angular-ngmodel-with-no-dot
+    name: "Whenever you have ng-model there’s gotta be a dot in there somewhere"
+    language: pcre
+    entry: ng-model="?[^.]+[" ]
+    files: \.html$
