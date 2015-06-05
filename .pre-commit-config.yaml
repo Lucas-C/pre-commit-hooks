@@ -12,6 +12,11 @@
     language: pcre
     entry: $apply
     files: \.js$
+  - id: angular-forbid-ngrepeat-without-trackby
+    name: In AngularJS, ALWAYS use 'track by' with ng-repeat
+    language: pcre
+    entry: ng-repeat(?!.*track by)
+    files: \.html$
   - id: angular-forbid-ngmodel-with-no-dot
     name: In AngularJS, "Whenever you have ng-model there’s gotta be a dot in there somewhere"
     language: pcre
