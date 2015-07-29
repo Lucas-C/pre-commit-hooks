@@ -1,24 +1,25 @@
-- repo: git://github.com/Lucas-C/pre-commit-hooks
-  sha: 36289c7
-  hooks:
-  - id: forbid-crlf
-  - id: remove-crlf
-  - id: forbid-tabs
-  - id: remove-tabs
-- repo: local
-  hooks:
-  - id: angular-forbid-apply
-    name: In AngularJS, use $digest over $apply
-    language: pcre
-    entry: $apply
-    files: \.js$
-  - id: angular-forbid-ngrepeat-without-trackby
-    name: In AngularJS, ALWAYS use 'track by' with ng-repeat
-    language: pcre
-    entry: ng-repeat(?!.*track by)
-    files: \.html$
-  - id: angular-forbid-ngmodel-with-no-dot
-    name: In AngularJS, "Whenever you have ng-model there’s gotta be a dot in there somewhere"
-    language: pcre
-    entry: ng-model="?[^.]+[" ]
-    files: \.html$
+-   repo: git://github.com/Lucas-C/pre-commit-hooks
+    sha: 1320d84cf315728e6ac6cca83bd80e3c732f53df
+    hooks:
+    -   id: forbid-crlf
+    -   id: remove-crlf
+    -   id: forbid-tabs
+    -   id: remove-tabs
+-   repo: local
+    hooks:
+    -   id: angular-forbid-apply
+        name: In AngularJS, use $digest over $apply
+        language: pcre
+        entry: $apply
+        files: \.js$
+    -   id: angular-forbid-ngrepeat-without-trackby
+        name: In AngularJS, ALWAYS use 'track by' with ng-repeat
+        language: pcre
+        entry: ng-repeat(?!.*track by)
+        files: \.html$
+    -   id: angular-forbid-ngmodel-with-no-dot
+        name: "In AngularJS, \"Whenever you have ng-model there\u2019s gotta be a\
+            \ dot in there somewhere\""
+        language: pcre
+        entry: ng-model="?[^.]+[" ]
+        files: \.html$

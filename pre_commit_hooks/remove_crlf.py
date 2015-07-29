@@ -4,7 +4,7 @@ from .utils import is_textfile
 
 def contains_crlf(filename):
     for line in fileinput.input([filename]):
-        if '\r' in line:
+        if line.endswith('\r'):
             fileinput.close()
             return True
     return False
