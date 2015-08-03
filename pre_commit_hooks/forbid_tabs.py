@@ -13,11 +13,12 @@ def main(argv=None):
     parser = argparse.ArgumentParser()
     parser.add_argument('filenames', nargs='*', help='filenames to check')
     args = parser.parse_args(argv)
-    text_files = filter(is_textfile, args.filenames)
-    files_with_tabs = filter(contains_tabs, text_files)
+    text_files = [f for f in args.filenames if is_textfile(f)]
+    files_with_tabs = [f for f in text_files if contains_tabs(f)]
     for file_with_tabs in files_with_tabs:
         print('Tabs detected in file: {0}'.format(file_with_tabs))
-    return 1 if files_with_tabs else 0
+        return 1
+    return 0
 
 if __name__ == '__main__':
     sys.exit(main(sys.argv))
