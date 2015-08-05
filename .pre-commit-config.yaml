@@ -5,6 +5,13 @@
     -   id: remove-crlf
     -   id: forbid-tabs
     -   id: remove-tabs
+-   repo: git://github.com/pre-commit/mirrors-pylint
+    sha: 4972270a188e28f100cd0db472e05f59d9621e54
+    hooks:
+    -   id: pylint
+        args:
+        - --rcfile=.pylintrc
+        - --reports=no
 -   repo: local
     hooks:
     -   id: angular-forbid-apply
@@ -18,8 +25,15 @@
         entry: ng-repeat(?!.*track by)
         files: \.html$
     -   id: angular-forbid-ngmodel-with-no-dot
-        name: "In AngularJS, \"Whenever you have ng-model there\u2019s gotta be a\
+        name: "In AngularJS, \"Whenever you have ng-model there's gotta be a\
             \ dot in there somewhere\""
         language: pcre
         entry: ng-model="?[^.]+[" ]
         files: \.html$
+-   repo: local
+    hooks:
+    -   id: css-forbid-px
+        name: In CSS files, use rem or % over px
+        language: pcre
+        entry: px
+        files: \.css$

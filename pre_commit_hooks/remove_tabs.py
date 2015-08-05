@@ -15,13 +15,15 @@ def removes_tabs(filename, whitespaces_count):
 
 def main(argv=None):
     parser = argparse.ArgumentParser()
-    parser.add_argument('--whitespaces-count', type=int, required=True, help='number of whitespaces to substitute tabs with')
+    parser.add_argument('--whitespaces-count', type=int, required=True,
+                        help='number of whitespaces to substitute tabs with')
     parser.add_argument('filenames', nargs='*', help='filenames to check')
     args = parser.parse_args(argv)
     text_files = [f for f in args.filenames if is_textfile(f)]
     files_with_tabs = [f for f in text_files if contains_tabs(f)]
     for file_with_tabs in files_with_tabs:
-        print('Substituting tabs in: {0} by {1} whitespaces'.format(file_with_tabs, args.whitespaces_count))
+        print('Substituting tabs in: {0} by {1} whitespaces'.format(
+                file_with_tabs, args.whitespaces_count))
         removes_tabs(file_with_tabs, args.whitespaces_count)
     if files_with_tabs:
         print('')

@@ -1,5 +1,5 @@
 from __future__ import print_function
-import argparse, fileinput, re, sys
+import argparse, fileinput, sys
 from .utils import is_textfile
 
 def contains_tabs(filename):
