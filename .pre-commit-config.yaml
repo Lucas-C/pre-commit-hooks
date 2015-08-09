@@ -37,3 +37,10 @@
         language: pcre
         entry: px
         files: \.css$
+-   repo: local
+    hooks:
+    -   id: check-bash-syntax
+        name: Check Shell scripts syntax corectness
+        language: system
+        entry: bash -n
+        files: \.sh$
