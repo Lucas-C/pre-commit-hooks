@@ -44,3 +44,13 @@
         language: system
         entry: bash -n
         files: \.sh$
+    -   id: forbid-unicode-non-breaking-spaces
+        name: Detect unicode non-breaking space characters M-BM-
+        language: system
+        entry: perl -ne 'print if $m = /\xc2\xa0/; $t ||= $m; END{{exit $t}}'
+        files: ''
+    -   id: remove-unicode-non-breaking-spaces
+        name: Remove unicode non-breaking space characters M-BM-
+        language: system
+        entry: perl -pi* -e '$t ||= s/\xc2\xa0/ /g; END{{exit $t}}'
+        files: ''
