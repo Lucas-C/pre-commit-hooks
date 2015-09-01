@@ -1,3 +1,4 @@
+# A list of common hooks I use
 -   repo: git://github.com/Lucas-C/pre-commit-hooks
     sha: 49a972bb3d187649cdeff22b5edc5ac0b12afda0
     hooks:
@@ -45,12 +46,22 @@
         entry: bash -n
         files: \.sh$
     -   id: forbid-unicode-non-breaking-spaces
-        name: Detect unicode non-breaking space characters M-BM-
+        name: Detect unicode non-breaking space character U+00A0 aka M-BM-
         language: system
         entry: perl -ne 'print if $m = /\xc2\xa0/; $t ||= $m; END{{exit $t}}'
         files: ''
     -   id: remove-unicode-non-breaking-spaces
-        name: Remove unicode non-breaking space characters M-BM-
+        name: Remove unicode non-breaking space character U+00A0 aka M-BM-
         language: system
-        entry: perl -pi* -e '$t ||= s/\xc2\xa0/ /g; END{{exit $t}}'
+        entry: perl -pi* -e 's/\xc2\xa0/ /g && ($t = 1); END{{exit $t}}'
+        files: ''
+    -   id: forbid-en-dashes
+        name: Detect the EXTREMELY confusing unicode character U+2013
+        language: system
+        entry: perl -ne 'print if $m = /\xe2\x80\x93/; $t ||= $m; END{{exit $t}}'
+        files: ''
+    -   id: remove-en-dashes
+        name: Remove the EXTREMELY confusing unicode character U+2013
+        language: system
+        entry: perl -pi* -e 's/\xe2\x80\x93/-/g && ($t = 1); END{{exit $t}}'
         files: ''
