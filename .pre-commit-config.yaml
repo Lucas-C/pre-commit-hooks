@@ -6,6 +6,15 @@
     -   id: remove-crlf
     -   id: forbid-tabs
     -   id: remove-tabs
+-   repo: git://github.com/pre-commit/pre-commit-hooks
+    sha: 5dd2605fbe26937c721a8ecc0e53949d3eea4f12
+    hooks:
+    -   id: trailing-whitespace
+        files: ''  # Default value: https://github.com/pre-commit/pre-commit-hooks/blob/master/hooks.yaml#L124
+        args:
+        - --no-markdown-linebreak-ext
+    -   id: check-json
+    -   id: check-yaml
 -   repo: git://github.com/pre-commit/mirrors-pylint
     sha: 4972270a188e28f100cd0db472e05f59d9621e54
     hooks:
