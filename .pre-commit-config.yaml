@@ -27,7 +27,7 @@
     -   id: angular-forbid-apply
         name: In AngularJS, use $digest over $apply
         language: pcre
-        entry: $apply
+        entry: \$apply
         files: \.js$
     -   id: angular-forbid-ngrepeat-without-trackby
         name: In AngularJS, ALWAYS use 'track by' with ng-repeat
