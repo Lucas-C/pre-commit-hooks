@@ -33,5 +33,5 @@
     args:
     - --extra-known-attributes
     - content,http-equiv,placeholder,role, style
-    files: .*html$
+    files: .*\.html$
 
