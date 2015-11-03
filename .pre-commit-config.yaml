@@ -6,6 +6,7 @@
     -   id: remove-crlf
     -   id: forbid-tabs
     -   id: remove-tabs
+    -   id: forbid-non-std-html-attributes
 -   repo: git://github.com/pre-commit/pre-commit-hooks
     sha: 5dd2605fbe26937c721a8ecc0e53949d3eea4f12
     hooks:
