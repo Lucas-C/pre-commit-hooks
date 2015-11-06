@@ -1,11 +1,12 @@
 # A list of common hooks I use
 -   repo: git://github.com/Lucas-C/pre-commit-hooks
-    sha: 49a972bb3d187649cdeff22b5edc5ac0b12afda0
+    sha: c6401ec
     hooks:
     -   id: forbid-crlf
     -   id: remove-crlf
     -   id: forbid-tabs
     -   id: remove-tabs
+    -   id: forbid-html-img-without-alt-text
     -   id: forbid-non-std-html-attributes
 -   repo: git://github.com/pre-commit/pre-commit-hooks
     sha: 5dd2605fbe26937c721a8ecc0e53949d3eea4f12

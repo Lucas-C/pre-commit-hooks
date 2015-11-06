@@ -33,6 +33,7 @@ setup(
             'remove_crlf = pre_commit_hooks.remove_crlf:main',
             'forbid_tabs = pre_commit_hooks.forbid_tabs:main',
             'remove_tabs = pre_commit_hooks.remove_tabs:main',
+            'forbid_html_img_without_alt_text = pre_commit_hooks.forbid_html_img_without_alt_text:main',
             'forbid_non_std_html_attributes = pre_commit_hooks.forbid_non_std_html_attributes:main',
         ],
     },

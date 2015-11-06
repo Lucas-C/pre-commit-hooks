@@ -1,2 +1,5 @@
 [MESSAGES CONTROL]
-disable = bad-continuation, duplicate-code, missing-docstring
+disable = bad-continuation, duplicate-code, import-error, missing-docstring
+
+[FORMAT]
+max-line-length = 110
