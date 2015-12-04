@@ -1,6 +1,6 @@
 # A list of common hooks I use
 -   repo: git://github.com/Lucas-C/pre-commit-hooks
-    sha: 588b9f4b732aeca595b1e7220e9bf1c46fa13b14
+    sha: b600798f8dacfcc29862e3d58367b89d3090c6a7
     hooks:
     -   id: forbid-crlf
     -   id: remove-crlf
@@ -12,13 +12,9 @@
         files: \.(css|html)$
         args:
         - --css-files-dir
-        - src/css
+        - .
         - --html-files-dir
-        - src/html
-        - --ignored-missing-class-defs-pattern
-        - ^swiper
-        - --ignored-unused-class-defs-pattern
-        - ^rte
+        - .
 -   repo: git://github.com/pre-commit/pre-commit-hooks
     sha: e306ff3b7d0d9a6fc7d128ef9ca2e0b6e6e76e8f
     hooks:
