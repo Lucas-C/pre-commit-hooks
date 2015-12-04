@@ -40,4 +40,9 @@
     - --extra-known-attributes
     - content,http-equiv,placeholder,role,style
     files: .*\.html$
-
+-   id: detect-unused-css-classes
+    name: Missing CSS classes checker
+    name: Detect unused or missing CSS classes definitions, and abort if any of the later ones is found
+    entry: detect_unused_or_missing_css_classes
+    language: python
+    files: .*\.(css|html)$

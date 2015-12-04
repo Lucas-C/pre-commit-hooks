@@ -1,6 +1,6 @@
 # A list of common hooks I use
 -   repo: git://github.com/Lucas-C/pre-commit-hooks
-    sha: c6401ec
+    sha: 588b9f4b732aeca595b1e7220e9bf1c46fa13b14
     hooks:
     -   id: forbid-crlf
     -   id: remove-crlf
@@ -8,11 +8,22 @@
     -   id: remove-tabs
     -   id: forbid-html-img-without-alt-text
     -   id: forbid-non-std-html-attributes
+    -   id: detect-missing-css-classes
+        files: \.(css|html)$
+        args:
+        - --css-files-dir
+        - src/css
+        - --html-files-dir
+        - src/html
+        - --ignored-missing-class-defs-pattern
+        - ^swiper
+        - --ignored-unused-class-defs-pattern
+        - ^rte
 -   repo: git://github.com/pre-commit/pre-commit-hooks
-    sha: 5dd2605fbe26937c721a8ecc0e53949d3eea4f12
+    sha: e306ff3b7d0d9a6fc7d128ef9ca2e0b6e6e76e8f
     hooks:
     -   id: trailing-whitespace
-        files: ''  # Default value: https://github.com/pre-commit/pre-commit-hooks/blob/master/hooks.yaml#L124
+        files: ''
         args:
         - --no-markdown-linebreak-ext
     -   id: check-json
@@ -37,8 +48,8 @@
         entry: ng-repeat(?!.*track by)
         files: \.html$
     -   id: angular-forbid-ngmodel-with-no-dot
-        name: "In AngularJS, \"Whenever you have ng-model there's gotta be a\
-            \ dot in there somewhere\""
+        name: In AngularJS, "Whenever you have ng-model there's gotta be a dot in
+            there somewhere"
         language: pcre
         entry: ng-model="?[^.]+[" ]
         files: \.html$
@@ -64,7 +75,8 @@
     -   id: remove-unicode-non-breaking-spaces
         name: Remove unicode non-breaking space character U+00A0 aka M-BM-
         language: system
-        entry: perl -pi* -e 's/\xc2\xa0/ /g && ($t = 1) && print STDERR $_; END{{exit $t}}'
+        entry: perl -pi* -e 's/\xc2\xa0/ /g && ($t = 1) && print STDERR $_; END{{exit
+            $t}}'
         files: ''
     -   id: forbid-en-dashes
         name: Detect the EXTREMELY confusing unicode character U+2013
@@ -74,5 +86,6 @@
     -   id: remove-en-dashes
         name: Remove the EXTREMELY confusing unicode character U+2013
         language: system
-        entry: perl -pi* -e 's/\xe2\x80\x93/-/g && ($t = 1) && print STDERR $_; END{{exit $t}}'
+        entry: perl -pi* -e 's/\xe2\x80\x93/-/g && ($t = 1) && print STDERR $_; END{{exit
+            $t}}'
         files: ''
