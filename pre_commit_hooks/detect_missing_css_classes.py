@@ -65,6 +65,7 @@ def extract_css_classes_definitions(css_file):
         next_is_class_name = (rule.type == 'literal' and rule.value == '.')
 
 def extract_css_classes_usages(html_file):
+    # TODO: extract (data-)ng-class & (data-)ng-style
     for _, elem in iterparse(html_file, html=True, remove_comments=True):
         if 'class' not in elem.attrib.keys():
             continue
