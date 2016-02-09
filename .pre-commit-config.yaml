@@ -85,3 +85,9 @@
         entry: perl -pi* -e 's/\xe2\x80\x93/-/g && ($t = 1) && print STDERR $_; END{{exit
             $t}}'
         files: ''
+    -   id: python-unit-tests
+        name: Execute py.test on modified files only
+        language: system
+        entry: py.test
+        #entry: sh -c 'cd subdir/ && py.test $(echo "$@" | sed "s~subdir/~~")' _
+        files: ^src/unittest/python/
