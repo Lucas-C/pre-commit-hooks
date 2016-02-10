@@ -89,5 +89,6 @@
         name: Execute py.test on modified files only
         language: system
         entry: py.test
-        #entry: sh -c 'cd subdir/ && py.test $(echo "$@" | sed "s~subdir/~~")' _
-        files: ^src/unittest/python/
+        #entry: sh -c 'cd subdir/ && py.test $(git ls-files src/unittest/python)'
+        #entry: sh -c 'echo "$@"' _
+        files: ^subdir/src/
