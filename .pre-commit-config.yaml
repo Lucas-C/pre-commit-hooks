@@ -90,5 +90,9 @@
         language: system
         entry: py.test
         #entry: sh -c 'cd subdir/ && py.test $(git ls-files src/unittest/python)'
-        #entry: sh -c 'echo "$@"' _
         files: ^subdir/src/
+    -   id: ot-sanitize-fonts
+        name: Calling ot-sanitise on otf/ttf/woff/woff2 font files
+        language: system
+        entry: sh -c 'type ot-sanitise >/dev/null && for font in "$@"; do echo "$font"; ot-sanitise "$font"; done || echo "WARNING Command ot-sanitise not found - skipping check"'
+        files: \.(otf|ttf|woff|woff2)$
