@@ -1,6 +1,6 @@
 # A list of common hooks I use
 -   repo: git://github.com/Lucas-C/pre-commit-hooks
-    sha: b600798f8dacfcc29862e3d58367b89d3090c6a7
+    sha: 0f5055d31f39ea3ac1f5335a0cca320200cd0c51
     hooks:
     -   id: forbid-crlf
     -   id: remove-crlf
@@ -16,7 +16,7 @@
         - --html-files-dir
         - .
 -   repo: git://github.com/pre-commit/pre-commit-hooks
-    sha: e306ff3b7d0d9a6fc7d128ef9ca2e0b6e6e76e8f
+    sha: 3fa02652357ff0dbb42b5bc78c673b7bc105fcf3
     hooks:
     -   id: trailing-whitespace
         files: ''
@@ -25,7 +25,7 @@
     -   id: check-json
     -   id: check-yaml
 -   repo: git://github.com/pre-commit/mirrors-pylint
-    sha: 4972270a188e28f100cd0db472e05f59d9621e54
+    sha: 4de6c8dfadef1a271a814561ce05b8bc1c446d22
     hooks:
     -   id: pylint
         args:

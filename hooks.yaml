@@ -25,12 +25,17 @@
     args: [ --whitespaces-count, '4' ]
     files: ''
     exclude: (Makefile|debian/rules)(\.in)?$
+-   id: validate-html
+    name: HTML validator using v.Nu through svenkreiss/html5validator
+    entry: validate_html
+    language: python
+    files: .*\.(html|hbs)$
 -   id: forbid-html-img-without-alt-text
     name: HTML img tag alt text checker
     description: "List every <img> tag without a alt= or data-ng-attr-alt= attribute"
     entry: forbid_html_img_without_alt_text
     language: python
-    files: .*\.html$
+    files: .*\.(html|hbs)$
 -   id: forbid-non-std-html-attributes
     name: Non-standard HTML attributes checker
     description: "Detect any non-standard attribute that is not prefixed with data-"
@@ -39,7 +44,7 @@
     args:
     - --extra-known-attributes
     - content,http-equiv,placeholder,role,style
-    files: .*\.html$
+    files: .*\.(html|hbs)$
 -   id: detect-missing-css-classes
     name: Missing CSS classes checker
     name: Detect unused or missing CSS classes definitions, and abort if any of the later ones is found
