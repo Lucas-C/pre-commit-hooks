@@ -5,7 +5,7 @@ from html5validator.validator import Validator
 def main(argv=None):
     parser = argparse.ArgumentParser()
     parser.add_argument('filenames', nargs='*', help='filenames to check')
-    parser.add_argument('--error_only', dest='error_only',
+    parser.add_argument('--show-warnings', dest='error_only',
                         action='store_false', default=True)
     parser.add_argument('--ignore', nargs='*', default=None,
                         type=lambda s: (s.decode('utf-8')
