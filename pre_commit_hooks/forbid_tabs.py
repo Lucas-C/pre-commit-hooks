@@ -1,13 +1,10 @@
 from __future__ import print_function
-import argparse, fileinput, sys
+import argparse, sys
 from .utils import is_textfile
 
 def contains_tabs(filename):
-    for line in fileinput.input([filename]):
-        if '\t' in line:
-            fileinput.close()
-            return True
-    return False
+    with open(filename, mode='rb') as file_checked:
+        return b'\t' in file_checked.read()
 
 def main(argv=None):
     parser = argparse.ArgumentParser()

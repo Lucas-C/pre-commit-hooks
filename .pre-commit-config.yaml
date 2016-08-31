@@ -56,6 +56,11 @@
         language: pcre
         entry: px
         files: \.css$
+    -   id: ot-sanitize-fonts
+        name: Calling ot-sanitise on otf/ttf/woff/woff2 font files
+        language: system
+        entry: sh -c 'type ot-sanitise >/dev/null && for font in "$@"; do echo "$font"; ot-sanitise "$font"; done || echo "WARNING Command ot-sanitise not found - skipping check"'
+        files: \.(otf|ttf|woff|woff2)$
 -   repo: local
     hooks:
     -   id: check-bash-syntax
@@ -63,6 +68,15 @@
         language: system
         entry: bash -n
         files: \.sh$
+-   repo: local
+    hooks:
+    -   id: python-unit-tests
+        name: py.test
+        language: system
+        entry: sh -c py.test
+        files: ''
+-   repo: local
+    hooks:
     -   id: forbid-unicode-non-breaking-spaces
         name: Detect unicode non-breaking space character U+00A0 aka M-BM-
         language: system
@@ -85,14 +99,3 @@
         entry: perl -pi* -e 's/\xe2\x80\x93/-/g && ($t = 1) && print STDERR $_; END{{exit
             $t}}'
         files: ''
-    -   id: python-unit-tests
-        name: Execute py.test on modified files only
-        language: system
-        entry: py.test
-        #entry: sh -c 'cd subdir/ && py.test $(git ls-files src/unittest/python)'
-        files: ^subdir/src/
-    -   id: ot-sanitize-fonts
-        name: Calling ot-sanitise on otf/ttf/woff/woff2 font files
-        language: system
-        entry: sh -c 'type ot-sanitise >/dev/null && for font in "$@"; do echo "$font"; ot-sanitise "$font"; done || echo "WARNING Command ot-sanitise not found - skipping check"'
-        files: \.(otf|ttf|woff|woff2)$

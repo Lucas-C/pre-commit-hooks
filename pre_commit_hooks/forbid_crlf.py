@@ -1,12 +1,12 @@
 from __future__ import print_function
-import argparse, fileinput, sys
+import argparse, sys
 from .utils import is_textfile
 
 def contains_crlf(filename):
-    for line in fileinput.input([filename]):
-        if line.endswith('\r\n'):
-            fileinput.close()
-            return True
+    with open(filename, mode='rb') as file_checked:
+        for line in file_checked.readlines():
+            if line.endswith(b'\r\n'):
+                return True
     return False
 
 def main(argv=None):

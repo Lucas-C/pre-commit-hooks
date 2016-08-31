@@ -1,10 +1,9 @@
 # Taken from: http://code.activestate.com/recipes/173220-test-if-a-file-or-string-is-text-or-binary/
 
-KNOWN_BINARY_FILE_EXT = ['.pdf']
-ALLOWED_NON_PRINTABLE_THRESHOLD = 0.15
+KNOWN_BINARY_FILE_EXTS = ('.pdf',)
 
 def is_textfile(filename, blocksize=512):
-    if any(filename.endswith(ext) for ext in KNOWN_BINARY_FILE_EXT):
+    if any(filename.endswith(ext) for ext in KNOWN_BINARY_FILE_EXTS):
         return False
     return is_text(open(filename, 'rb').read(blocksize))
 
