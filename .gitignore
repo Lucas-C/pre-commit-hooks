@@ -1,2 +1,4 @@
 *.pyc
 /pre_commit_hooks.egg-info
+/.cache/
+/.coverage

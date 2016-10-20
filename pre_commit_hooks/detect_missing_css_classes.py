@@ -16,9 +16,9 @@ def main(argv=None):
                         help='Regular expression matching CSS class names')
     args = parser.parse_args(argv)
 
-    html_files = list(scandir(args.html_files_dir, '.html'))
+    html_files = list(scandir(args.html_files_dir, ('.hbs', '.html')))
     print('{} HTML files found in directory {}'.format(len(html_files), args.html_files_dir))
-    css_files = list(scandir(args.css_files_dir, '.css'))
+    css_files = list(scandir(args.css_files_dir, ('.css')))
     print('{} CSS files found in directory {}'.format(len(css_files), args.css_files_dir))
 
     css_classes_used = sum([list(extract_css_classes_usages(html_file)) for html_file in html_files], [])
@@ -45,9 +45,9 @@ def main(argv=None):
         return_error_code = 1
     return return_error_code
 
-def scandir(dirname, file_extension):
+def scandir(dirname, file_extensions):
     for dirpath, _, fnames in os.walk(dirname):
-        for file_path in [os.path.join(dirpath, fname) for fname in fnames if fname.endswith(file_extension)]:
+        for file_path in [os.path.join(dirpath, fname) for fname in fnames if any(fname.endswith(ext) for ext in file_extensions)]:
             yield file_path
 
 def extract_css_classes_definitions(css_file):
