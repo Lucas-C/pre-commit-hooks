@@ -6,15 +6,6 @@
     -   id: remove-crlf
     -   id: forbid-tabs
     -   id: remove-tabs
-    -   id: forbid-html-img-without-alt-text
-    -   id: forbid-non-std-html-attributes
-    -   id: detect-missing-css-classes
-        files: \.(css|html)$
-        args:
-        - --css-files-dir
-        - .
-        - --html-files-dir
-        - .
 -   repo: git://github.com/pre-commit/pre-commit-hooks
     sha: 3fa02652357ff0dbb42b5bc78c673b7bc105fcf3
     hooks:
@@ -33,36 +24,6 @@
         - --reports=no
 -   repo: local
     hooks:
-    -   id: angular-forbid-apply
-        name: In AngularJS, use $digest over $apply
-        language: pcre
-        entry: \$apply
-        files: \.js$
-    -   id: angular-forbid-ngrepeat-without-trackby
-        name: In AngularJS, ALWAYS use 'track by' with ng-repeat
-        language: pcre
-        entry: ng-repeat(?!.*track by)
-        files: \.html$
-    -   id: angular-forbid-ngmodel-with-no-dot
-        name: In AngularJS, "Whenever you have ng-model there's gotta be a dot in
-            there somewhere"
-        language: pcre
-        entry: ng-model="?[^.]+[" ]
-        files: \.html$
--   repo: local
-    hooks:
-    -   id: css-forbid-px
-        name: In CSS files, use rem or % over px
-        language: pcre
-        entry: px
-        files: \.css$
-    -   id: ot-sanitize-fonts
-        name: Calling ot-sanitise on otf/ttf/woff/woff2 font files
-        language: system
-        entry: sh -c 'type ot-sanitise >/dev/null && for font in "$@"; do echo "$font"; ot-sanitise "$font"; done || echo "WARNING Command ot-sanitise not found - skipping check"'
-        files: \.(otf|ttf|woff|woff2)$
--   repo: local
-    hooks:
     -   id: check-bash-syntax
         name: Check Shell scripts syntax corectness
         language: system
@@ -70,7 +31,7 @@
         files: \.sh$
 -   repo: local
     hooks:
-    -   id: python-unit-tests
+    -   id: py.test
         name: py.test
         language: system
         entry: sh -c py.test

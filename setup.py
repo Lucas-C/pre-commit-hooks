@@ -5,7 +5,7 @@ setup(
     name='pre-commit-hooks',
     description='Some out-of-the-box hooks for pre-commit',
     url='https://github.com/Lucas-C/pre-commit-hooks',
-    version='0.0.1',
+    version='1.0.0',
 
     author='Lucas Cimon',
     author_email='lucas.cimon@gmail.com',
@@ -24,18 +24,9 @@ setup(
     ],
 
     packages=find_packages('.'),
-    install_requires=[
-        'html5validator',
-        'lxml',
-        'tinycss2',
-    ],
     entry_points={
         'console_scripts': [
-            'detect_missing_css_classes = pre_commit_hooks.detect_missing_css_classes:main',
             'forbid_crlf = pre_commit_hooks.forbid_crlf:main',
-            'validate_html = pre_commit_hooks.validate_html:main',
-            'forbid_html_img_without_alt_text = pre_commit_hooks.forbid_html_img_without_alt_text:main',
-            'forbid_non_std_html_attributes = pre_commit_hooks.forbid_non_std_html_attributes:main',
             'forbid_tabs = pre_commit_hooks.forbid_tabs:main',
             'remove_crlf = pre_commit_hooks.remove_crlf:main',
             'remove_tabs = pre_commit_hooks.remove_tabs:main',
