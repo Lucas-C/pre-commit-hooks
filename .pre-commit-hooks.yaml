@@ -1,0 +1,27 @@
+-   id: forbid-crlf
+    name: CRLF end-lines checker
+    description: "Forbid files containing CRLF end-lines to be committed"
+    entry: forbid_crlf
+    language: python
+    files: ''
+-   id: remove-crlf
+    name: CRLF end-lines remover
+    description: "Replace CRLF end-lines by LF ones before committing"
+    entry: remove_crlf
+    language: python
+    files: ''
+-   id: forbid-tabs
+    name: No-tabs checker
+    description: "Forbid files containing tabs to be committed"
+    entry: forbid_tabs
+    language: python
+    files: ''
+    exclude: (Makefile|debian/rules)(\.in)?$
+-   id: remove-tabs
+    name: Tabs remover
+    description: "Replace tabs by whitespaces before committing"
+    entry: remove_tabs
+    language: python
+    args: [ --whitespaces-count, '4' ]
+    files: ''
+    exclude: (Makefile|debian/rules)(\.in)?$
