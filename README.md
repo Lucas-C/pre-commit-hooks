@@ -23,7 +23,7 @@ For the _remove-tabs_ hook, the number of whitespaces to substitute tabs with ca
         name: Check Jenkinsfile following the scripted-pipeline syntax using Jenkins API
         files: Jenkinsfile
         language: system
-        entry: sh -c '! curl --silent --insecure $JENKINS_URL/job/MyPipelineName/job/master/1/replay/checkScriptCompile --user $JENKINS_USER:$JENKINS_TOKEN --data-urlencode value@Jenkinsfile | grep -F "\"status\":\"fail\""'
+        entry: sh -c '! curl --silent $JENKINS_URL/job/MyPipelineName/job/master/1/replay/checkScriptCompile --user $JENKINS_USER:$JENKINS_TOKEN --data-urlencode value@Jenkinsfile | grep -F "\"status\":\"fail\""'
 ```
 Note: the `$JENKINS_TOKEN` can be retrieved from `$JENKINS_URL/user/$USER_NAME/configure`
 
