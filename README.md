@@ -27,4 +27,6 @@ For the _remove-tabs_ hook, the number of whitespaces to substitute tabs with ca
 ```
 Note: the `$JENKINS_TOKEN` can be retrieved from `$JENKINS_URL/user/$USER_NAME/configure`
 
+Beware, there may be a bug: https://issues.jenkins-ci.org/browse/JENKINS-42730
+
 Also, there is also a linter for the declarative syntax: https://jenkins.io/doc/book/pipeline/development/#linter
