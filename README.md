@@ -20,9 +20,11 @@ For the _remove-tabs_ hook, the number of whitespaces to substitute tabs with ca
 ## Other useful local hooks
 ```
     -   id: Jenkinsfile-linter
-        name: Check Jenkinsfile using Jenkins API
+        name: Check Jenkinsfile following the scripted-pipeline syntax using Jenkins API
         files: Jenkinsfile
         language: system
         entry: sh -c '! curl --silent --insecure $JENKINS_URL/job/MyPipelineName/job/master/1/replay/checkScriptCompile --user $JENKINS_USER:$JENKINS_TOKEN --data-urlencode value@Jenkinsfile | grep -F "\"status\":\"fail\""'
 ```
 Note: the `$JENKINS_TOKEN` can be retrieved from `$JENKINS_URL/user/$USER_NAME/configure`
+
+Also, there is also a linter for the declarative syntax: https://jenkins.io/doc/book/pipeline/development/#linter
