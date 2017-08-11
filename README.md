@@ -1,6 +1,6 @@
 A few useful git hooks to integrate with [pre-commit](http://pre-commit.com).
 
-Hooks that require Python dependencies have been extracted into separate repos:
+Hooks that require Python dependencies, or specific to a language, have been extracted into separate repos:
 
 - https://github.com/Lucas-C/pre-commit-hooks-bandit
 - https://github.com/Lucas-C/pre-commit-hooks-go
