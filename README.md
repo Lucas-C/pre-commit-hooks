@@ -13,7 +13,7 @@ Hooks that require Python dependencies, or specific to a language, have been ext
 ## Usage
 
     -   repo: git://github.com/Lucas-C/pre-commit-hooks
-        sha: v1.1.0
+        sha: v1.1.1
         hooks:
         -   id: forbid-crlf
         -   id: remove-crlf

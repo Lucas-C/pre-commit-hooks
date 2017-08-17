@@ -30,4 +30,4 @@
     description: "Insert a short license disclaimer as a header comment in source files"
     entry: insert_license
     language: python
-    files: '*/*'
+    files: '.*/.*'
