@@ -9,15 +9,64 @@ Hooks that require Python dependencies, or specific to a language, have been ext
 - https://github.com/Lucas-C/pre-commit-hooks-nodejs
 - https://github.com/Lucas-C/pre-commit-hooks-safety
 
+
 ## Usage
 
-Check `.pre-commit-config.yaml` in this repo for usage examples and useful local hooks.
+    -   repo: git://github.com/Lucas-C/pre-commit-hooks
+        sha: v1.1.0
+        hooks:
+        -   id: forbid-crlf
+        -   id: remove-crlf
+        -   id: forbid-tabs
+        -   id: remove-tabs
+            args: [ --whitespaces-count, 2 ]  # defaults to: 4
+        -   id: insert-license
+            files: \.py$
+            args:
+            - --license-filepath
+            - src/license_header.txt          # defaults to: LICENSE.txt
+            - --comment-prefix
+            - //                              # defaults to: #
 
-For the _remove-tabs_ hook, the number of whitespaces to substitute tabs with can be configured (it defaults to 4):
-
-        args: [ --whitespaces-count, 2 ]
 
 ## Other useful local hooks
+
+### Forbid / remove some unicode characters
+
+-   repo: local
+    hooks:
+    -   id: forbid-unicode-non-breaking-spaces
+        name: Detect unicode non-breaking space character U+00A0 aka M-BM-
+        language: system
+        entry: perl -ne 'print if $m = /\xc2\xa0/; $t ||= $m; END{{exit $t}}'
+        files: ''
+    -   id: remove-unicode-non-breaking-spaces
+        name: Remove unicode non-breaking space character U+00A0 aka M-BM-
+        language: system
+        entry: perl -pi* -e 's/\xc2\xa0/ /g && ($t = 1) && print STDERR $_; END{{exit
+            $t}}'
+        files: ''
+    -   id: forbid-en-dashes
+        name: Detect the EXTREMELY confusing unicode character U+2013
+        language: system
+        entry: perl -ne 'print if $m = /\xe2\x80\x93/; $t ||= $m; END{{exit $t}}'
+        files: ''
+    -   id: remove-en-dashes
+        name: Remove the EXTREMELY confusing unicode character U+2013
+        language: system
+        entry: perl -pi* -e 's/\xe2\x80\x93/-/g && ($t = 1) && print STDERR $_; END{{exit
+            $t}}'
+        files: ''
+
+### Bash syntax validation
+
+-   repo: local
+    hooks:
+    -   id: check-bash-syntax
+        name: Check Shell scripts syntax corectness
+        language: system
+        entry: bash -n
+        files: \.sh$
 
 ### For Groovy-like Jenkins pipelines
 
@@ -57,3 +106,39 @@ Note: the `$JENKINS_TOKEN` can be retrieved from `$JENKINS_URL/user/$USER_NAME/c
 Beware, in 1 case on 6 I faced this unsolved bug with explictely-loaded libraries: https://issues.jenkins-ci.org/browse/JENKINS-42730
 
 Also, there is also a linter for the declarative syntax: https://jenkins.io/doc/book/pipeline/development/#linter
+
+### Forbid some Javascript keywords for browser retrocompatibility issues
+
+-   repo: local
+    hooks:
+    -   id: js-forbid-const
+        name: The const keyword is not supported by IE10
+        language: pcre
+        entry: "const "
+        files: \.js$
+    -   id: js-forbid-let
+        name: The let keyword is not supported by IE10
+        language: pcre
+        entry: "let "
+        files: \.js$
+
+### Some Angular 1.5 checks
+
+-   repo: local
+    hooks:
+    -   id: angular-forbid-apply
+        name: In AngularJS, use $digest over $apply
+        language: pcre
+        entry: \$apply
+        files: \.js$
+    -   id: angular-forbid-ngrepeat-without-trackby
+        name: In AngularJS, ALWAYS use 'track by' with ng-repeat
+        language: pcre
+        entry: ng-repeat(?!.*track by)
+        files: \.html$
+    -   id: angular-forbid-ngmodel-with-no-dot
+        name: In AngularJS, "Whenever you have ng-model there's gotta be a dot in
+            there somewhere"
+        language: pcre
+        entry: ng-model="?[^.]+[" ]
+        files: \.html$

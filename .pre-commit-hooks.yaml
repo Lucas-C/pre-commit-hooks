@@ -25,3 +25,9 @@
     args: [ --whitespaces-count, '4' ]
     files: ''
     exclude: (Makefile|debian/rules)(\.in)?$
+-   id: insert-license
+    name: Insert license in comments
+    description: "Insert a short license disclaimer as a header comment in source files"
+    entry: insert_license
+    language: python
+    files: '*/*'

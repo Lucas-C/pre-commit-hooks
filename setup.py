@@ -5,7 +5,7 @@ setup(
     name='pre-commit-hooks',
     description='Some out-of-the-box hooks for pre-commit',
     url='https://github.com/Lucas-C/pre-commit-hooks',
-    version='1.0.1',
+    version='1.1.0',
 
     author='Lucas Cimon',
     author_email='lucas.cimon@gmail.com',
@@ -30,6 +30,7 @@ setup(
             'forbid_tabs = pre_commit_hooks.forbid_tabs:main',
             'remove_crlf = pre_commit_hooks.remove_crlf:main',
             'remove_tabs = pre_commit_hooks.remove_tabs:main',
+            'insert_license = pre_commit_hooks.insert_license:main',
         ],
     },
 )
