@@ -33,40 +33,40 @@ Hooks that require Python dependencies, or specific to a language, have been ext
 
 ### Forbid / remove some unicode characters
 
--   repo: local
-    hooks:
-    -   id: forbid-unicode-non-breaking-spaces
-        name: Detect unicode non-breaking space character U+00A0 aka M-BM-
-        language: system
-        entry: perl -ne 'print if $m = /\xc2\xa0/; $t ||= $m; END{{exit $t}}'
-        files: ''
-    -   id: remove-unicode-non-breaking-spaces
-        name: Remove unicode non-breaking space character U+00A0 aka M-BM-
-        language: system
-        entry: perl -pi* -e 's/\xc2\xa0/ /g && ($t = 1) && print STDERR $_; END{{exit
-            $t}}'
-        files: ''
-    -   id: forbid-en-dashes
-        name: Detect the EXTREMELY confusing unicode character U+2013
-        language: system
-        entry: perl -ne 'print if $m = /\xe2\x80\x93/; $t ||= $m; END{{exit $t}}'
-        files: ''
-    -   id: remove-en-dashes
-        name: Remove the EXTREMELY confusing unicode character U+2013
-        language: system
-        entry: perl -pi* -e 's/\xe2\x80\x93/-/g && ($t = 1) && print STDERR $_; END{{exit
-            $t}}'
-        files: ''
+    -   repo: local
+        hooks:
+        -   id: forbid-unicode-non-breaking-spaces
+            name: Detect unicode non-breaking space character U+00A0 aka M-BM-
+            language: system
+            entry: perl -ne 'print if $m = /\xc2\xa0/; $t ||= $m; END{{exit $t}}'
+            files: ''
+        -   id: remove-unicode-non-breaking-spaces
+            name: Remove unicode non-breaking space character U+00A0 aka M-BM-
+            language: system
+            entry: perl -pi* -e 's/\xc2\xa0/ /g && ($t = 1) && print STDERR $_; END{{exit
+                $t}}'
+            files: ''
+        -   id: forbid-en-dashes
+            name: Detect the EXTREMELY confusing unicode character U+2013
+            language: system
+            entry: perl -ne 'print if $m = /\xe2\x80\x93/; $t ||= $m; END{{exit $t}}'
+            files: ''
+        -   id: remove-en-dashes
+            name: Remove the EXTREMELY confusing unicode character U+2013
+            language: system
+            entry: perl -pi* -e 's/\xe2\x80\x93/-/g && ($t = 1) && print STDERR $_; END{{exit
+                $t}}'
+            files: ''
 
 ### Bash syntax validation
 
--   repo: local
-    hooks:
-    -   id: check-bash-syntax
-        name: Check Shell scripts syntax corectness
-        language: system
-        entry: bash -n
-        files: \.sh$
+    -   repo: local
+        hooks:
+        -   id: check-bash-syntax
+            name: Check Shell scripts syntax corectness
+            language: system
+            entry: bash -n
+            files: \.sh$
 
 ### For Groovy-like Jenkins pipelines
 
@@ -109,36 +109,36 @@ Also, there is also a linter for the declarative syntax: https://jenkins.io/doc/
 
 ### Forbid some Javascript keywords for browser retrocompatibility issues
 
--   repo: local
-    hooks:
-    -   id: js-forbid-const
-        name: The const keyword is not supported by IE10
-        language: pcre
-        entry: "const "
-        files: \.js$
-    -   id: js-forbid-let
-        name: The let keyword is not supported by IE10
-        language: pcre
-        entry: "let "
-        files: \.js$
+    -   repo: local
+        hooks:
+        -   id: js-forbid-const
+            name: The const keyword is not supported by IE10
+            language: pcre
+            entry: "const "
+            files: \.js$
+        -   id: js-forbid-let
+            name: The let keyword is not supported by IE10
+            language: pcre
+            entry: "let "
+            files: \.js$
 
 ### Some Angular 1.5 checks
 
--   repo: local
-    hooks:
-    -   id: angular-forbid-apply
-        name: In AngularJS, use $digest over $apply
-        language: pcre
-        entry: \$apply
-        files: \.js$
-    -   id: angular-forbid-ngrepeat-without-trackby
-        name: In AngularJS, ALWAYS use 'track by' with ng-repeat
-        language: pcre
-        entry: ng-repeat(?!.*track by)
-        files: \.html$
-    -   id: angular-forbid-ngmodel-with-no-dot
-        name: In AngularJS, "Whenever you have ng-model there's gotta be a dot in
-            there somewhere"
-        language: pcre
-        entry: ng-model="?[^.]+[" ]
-        files: \.html$
+    -   repo: local
+        hooks:
+        -   id: angular-forbid-apply
+            name: In AngularJS, use $digest over $apply
+            language: pcre
+            entry: \$apply
+            files: \.js$
+        -   id: angular-forbid-ngrepeat-without-trackby
+            name: In AngularJS, ALWAYS use 'track by' with ng-repeat
+            language: pcre
+            entry: ng-repeat(?!.*track by)
+            files: \.html$
+        -   id: angular-forbid-ngmodel-with-no-dot
+            name: In AngularJS, "Whenever you have ng-model there's gotta be a dot in
+                there somewhere"
+            language: pcre
+            entry: ng-model="?[^.]+[" ]
+            files: \.html$
