@@ -122,6 +122,21 @@ Also, there is also a linter for the declarative syntax: https://jenkins.io/doc/
             entry: "let "
             files: \.js$
 
+### CSS
+
+    -   repo: local
+        hooks:
+        -   id: css-forbid-px
+            name: In CSS files, use rem or % over px
+            language: pcre
+            entry: px
+            files: \.css$
+        -   id: ot-sanitize-fonts
+            name: Calling ot-sanitise on otf/ttf/woff/woff2 font files
+            language: system
+            entry: sh -c 'type ot-sanitise >/dev/null && for font in "$@"; do echo "$font"; ot-sanitise "$font"; done || echo "WARNING Command ot-sanitise not found - skipping check"'
+            files: \.(otf|ttf|woff|woff2)$
+
 ### Some Angular 1.5 checks
 
     -   repo: local
