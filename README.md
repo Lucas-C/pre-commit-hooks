@@ -21,12 +21,24 @@ Hooks that require Python dependencies, or specific to a language, have been ext
         -   id: remove-tabs
             args: [ --whitespaces-count, 2 ]  # defaults to: 4
         -   id: insert-license
-            files: \.py$
+            files: \.groovy$
             args:
             - --license-filepath
             - src/license_header.txt          # defaults to: LICENSE.txt
-            - --comment-prefix
+            - --comment-style
             - //                              # defaults to: #
+
+### insert-license
+
+For Java / Javascript / CSS, set `--comment-style /*| *| */`.
+
+In case you want to remove the comment headers introduced by the `insert-license` hook,
+e.g. because you want to change the wording of your `LICENSE.txt` and update the comments in your source files:
+
+1. temporarily add the `--remove-header` arg in your `.pre-commit-config.yaml`
+2. run the hook on all your files: `pre-commit run insert-license --all-files`
+3. remove the `--remove-header` arg and update your `LICENSE.txt`
+4. re-run the hook on all your files
 
 
 ## Other useful local hooks

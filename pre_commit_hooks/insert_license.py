@@ -6,21 +6,26 @@ def main(argv=None):
     parser = argparse.ArgumentParser()
     parser.add_argument('filenames', nargs='*', help='filenames to check')
     parser.add_argument('--license-filepath', default='LICENSE.txt')
-    parser.add_argument('--comment-start', default='/*\n')
-    parser.add_argument('--comment-prefix', default=' *')
-    parser.add_argument('--comment-end', default='\n */')
+    parser.add_argument('--comment-style', default='#',
+                        help='Can be a single prefix or a triplet: <comment-sart>|<comment-prefix>|<comment-end>'
+                             'E.g.: /*| *| */')
     parser.add_argument('--detect-license-in-X-top-lines', type=int, default=5)
     parser.add_argument('--remove-header', action='store_true')
     args = parser.parse_args(argv)
 
+    if '|' in args.comment_style:
+        comment_start, comment_prefix, comment_end = args.comment_style.split('|')
+    else:
+        comment_start, comment_prefix, comment_end = None, args.comment_style, None
+
     with open(args.license_filepath) as license_file:
-        prefixed_license = ['{}{}{}'.format(args.comment_prefix, ' ' if line.strip() else '', line)
+        prefixed_license = ['{}{}{}'.format(comment_prefix, ' ' if line.strip() else '', line)
                             for line in license_file.readlines()]
     eol = '\r\n' if prefixed_license[0][-2:] == '\r\n' else '\n'
-    if args.comment_start:
-        prefixed_license = [args.comment_start] + prefixed_license
-    if args.comment_end:
-        prefixed_license = prefixed_license + [args.comment_end]
+    if comment_start:
+        prefixed_license = [comment_start+'\n'] + prefixed_license
+    if comment_end:
+        prefixed_license = prefixed_license + ['\n'+comment_end]
 
     changes_made = False
     for src_filepath in args.filenames:

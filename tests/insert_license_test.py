@@ -18,11 +18,10 @@ from pre_commit_hooks.insert_license import find_license_header_index
     ),
 )
 def test_insert_license(src_file_path, comment_prefix, new_src_file_expected, tmpdir):
-    default_args = ['--comment-start', '', '--comment-end', '', '--comment-prefix']
     with chdir_to_test_resources():
         path = tmpdir.join('src_file_path')
         shutil.copy(src_file_path, path.strpath)
-        assert insert_license(default_args + [comment_prefix, path.strpath]) == (1 if new_src_file_expected else 0)
+        assert insert_license(['--comment-style', comment_prefix, path.strpath]) == (1 if new_src_file_expected else 0)
         if new_src_file_expected:
             with open(new_src_file_expected) as expected_content_file:
                 expected_content = expected_content_file.read()
@@ -56,7 +55,9 @@ def test_remove_license(src_file_path, is_python, new_src_file_expected, tmpdir)
         shutil.copy(src_file_path, path.strpath)
         argv = ['--remove-header', path.strpath]
         if is_python:
-            argv = ['--comment-start', '', '--comment-end', '', '--comment-prefix', '#'] + argv
+            argv = ['--comment-style', '#'] + argv
+        else:
+            argv = ['--comment-style', '/*| *| */'] + argv
         assert insert_license(argv) == (1 if new_src_file_expected else 0)
         if new_src_file_expected:
             with open(new_src_file_expected) as expected_content_file:
