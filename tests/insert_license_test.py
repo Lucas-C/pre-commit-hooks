@@ -18,10 +18,11 @@ from pre_commit_hooks.insert_license import is_license_present
     ),
 )
 def test_insert_license(src_file_path, comment_prefix, new_src_file_expected, tmpdir):
+    default_args = ['--comment-start', '', '--comment-end', '', '--comment-prefix']
     with chdir_to_test_resources():
         path = tmpdir.join('src_file_path')
         shutil.copy(src_file_path, path.strpath)
-        assert insert_license(['--comment-prefix', comment_prefix, path.strpath]) == (1 if new_src_file_expected else 0)
+        assert insert_license(default_args + [comment_prefix, path.strpath]) == (1 if new_src_file_expected else 0)
         if new_src_file_expected:
             with open(new_src_file_expected) as expected_content_file:
                 expected_content = expected_content_file.read()

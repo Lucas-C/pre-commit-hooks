@@ -6,13 +6,19 @@ def main(argv=None):
     parser = argparse.ArgumentParser()
     parser.add_argument('filenames', nargs='*', help='filenames to check')
     parser.add_argument('--license-filepath', default='LICENSE.txt')
-    parser.add_argument('--comment-prefix', default='//')
+    parser.add_argument('--comment-start', default='/*')
+    parser.add_argument('--comment-prefix', default=' *')
+    parser.add_argument('--comment-end', default=' */')
     parser.add_argument('--detect-license-in-X-top-lines', type=int, default=5)
     args = parser.parse_args(argv)
 
     with open(args.license_filepath) as license_file:
         prefixed_license = ['{}{}{}'.format(args.comment_prefix, ' ' if line.strip() else '', line)
                             for line in license_file.readlines()]
+    if args.comment_start:
+        prefixed_license = [args.comment_start] + prefixed_license
+    if args.comment_end:
+        prefixed_license = prefixed_license + [args.comment_end]
 
     changes_made = False
     for src_filepath in args.filenames:
