@@ -6,9 +6,9 @@ def main(argv=None):
     parser = argparse.ArgumentParser()
     parser.add_argument('filenames', nargs='*', help='filenames to check')
     parser.add_argument('--license-filepath', default='LICENSE.txt')
-    parser.add_argument('--comment-start', default='/*')
+    parser.add_argument('--comment-start', default='/*\n')
     parser.add_argument('--comment-prefix', default=' *')
-    parser.add_argument('--comment-end', default=' */')
+    parser.add_argument('--comment-end', default='\n */')
     parser.add_argument('--detect-license-in-X-top-lines', type=int, default=5)
     args = parser.parse_args(argv)
 
