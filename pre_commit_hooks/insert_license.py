@@ -23,9 +23,9 @@ def main(argv=None):
                             for line in license_file.readlines()]
     eol = '\r\n' if prefixed_license[0][-2:] == '\r\n' else '\n'
     if comment_start:
-        prefixed_license = [comment_start+'\n'] + prefixed_license
+        prefixed_license = [comment_start + eol] + prefixed_license
     if comment_end:
-        prefixed_license = prefixed_license + ['\n'+comment_end]
+        prefixed_license = prefixed_license + [eol + comment_end]
 
     changes_made = False
     for src_filepath in args.filenames:
