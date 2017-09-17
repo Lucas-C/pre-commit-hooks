@@ -1,5 +1,7 @@
 A few useful git hooks to integrate with [pre-commit](http://pre-commit.com).
 
+<!-- toc -->
+
 Hooks that require Python dependencies, or specific to a language, have been extracted into separate repos:
 
 - https://github.com/Lucas-C/pre-commit-hooks-bandit
@@ -8,7 +10,6 @@ Hooks that require Python dependencies, or specific to a language, have been ext
 - https://github.com/Lucas-C/pre-commit-hooks-lxml
 - https://github.com/Lucas-C/pre-commit-hooks-nodejs
 - https://github.com/Lucas-C/pre-commit-hooks-safety
-
 
 ## Usage
 
@@ -41,7 +42,35 @@ e.g. because you want to change the wording of your `LICENSE.txt` and update the
 4. re-run the hook on all your files
 
 
-## Other useful local hooks
+## Handy shell functions
+```
+pre_commit_all_cache_repos () {  # Requires sqlite3
+    sqlite3 -column ~/.cache/pre-commit/db.db "SELECT repo, ref, path FROM repos GROUP BY repo ORDER BY ref;"
+}
+
+pre_commit_local_cache_repos () {  # Requires PyYaml & sqlite3
+    < $(git rev-parse --show-toplevel)/.pre-commit-config.yaml \
+        python -c "from __future__ import print_function; import sys, yaml; print('\n'.join(h['repo']+' '+h['sha'] for h in yaml.load(sys.stdin) if h['repo'] != 'local'))" \
+        | while read repo sha; do
+            echo $repo
+            sqlite3 ~/.cache/pre-commit/db.db "SELECT ref, path FROM repos WHERE repo = '$repo' AND ref = '$sha';"
+            echo
+        done
+}
+
+pre_commit_db_rm_repo () {  # Requires sqlite3
+    local repo=${1?'Missing parameter'}
+    local repo_path=$(sqlite3 ~/.cache/pre-commit/db.db "SELECT path FROM repos WHERE repo = '$repo';")
+    if [ -z "$repo_path" ]; then
+        echo "No repository known for repo $repo"
+        return 1
+    fi
+    rm -rf "$repo_path"
+    sqlite3 ~/.cache/pre-commit/db.db "DELETE FROM repos WHERE repo = '$repo';";
+}
+```
+
+## Useful local hooks
 
 ### Forbid / remove some unicode characters
 
