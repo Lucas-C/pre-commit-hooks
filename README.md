@@ -45,6 +45,7 @@ Hooks that require Python dependencies, or specific to a language, have been ext
 ### insert-license
 
 For Java / Javascript / CSS, set `--comment-style /*| *| */`.
+For HTML files: `--comment-style <!--|  ~|  -->`.
 
 In case you want to remove the comment headers introduced by the `insert-license` hook,
 e.g. because you want to change the wording of your `LICENSE.txt` and update the comments in your source files:
