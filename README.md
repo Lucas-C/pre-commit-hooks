@@ -2,6 +2,19 @@ A few useful git hooks to integrate with [pre-commit](http://pre-commit.com).
 
 <!-- toc -->
 
+- [Usage](#usage)
+  * [insert-license](#insert-license)
+- [Handy shell functions](#handy-shell-functions)
+- [Useful local hooks](#useful-local-hooks)
+  * [Forbid / remove some unicode characters](#forbid--remove-some-unicode-characters)
+  * [Bash syntax validation](#bash-syntax-validation)
+  * [For Groovy-like Jenkins pipelines](#for-groovy-like-jenkins-pipelines)
+  * [Forbid some Javascript keywords for browser retrocompatibility issues](#forbid-some-javascript-keywords-for-browser-retrocompatibility-issues)
+  * [CSS](#css)
+  * [Some Angular 1.5 checks](#some-angular-15-checks)
+
+<!-- tocstop -->
+
 Hooks that require Python dependencies, or specific to a language, have been extracted into separate repos:
 
 - https://github.com/Lucas-C/pre-commit-hooks-bandit
