@@ -21,6 +21,7 @@ Hooks that require Python dependencies, or specific to a language, have been ext
 - https://github.com/Lucas-C/pre-commit-hooks-go
 - https://github.com/Lucas-C/pre-commit-hooks-java
 - https://github.com/Lucas-C/pre-commit-hooks-lxml
+- https://github.com/Lucas-C/pre-commit-hooks-markup
 - https://github.com/Lucas-C/pre-commit-hooks-nodejs
 - https://github.com/Lucas-C/pre-commit-hooks-safety
 
