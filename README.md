@@ -1,3 +1,5 @@
+[![](https://travis-ci.org/Lucas-C/pre-commit-hooks.svg?branch=master)](https://travis-ci.org/Lucas-C/pre-commit-hooks)
+
 A few useful git hooks to integrate with [pre-commit](http://pre-commit.com).
 
 <!-- toc -->

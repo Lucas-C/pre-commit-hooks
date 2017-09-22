@@ -1,4 +1,4 @@
 language: python
 python: "3.6"
-install: pip install pre-commit
+install: pip install -r dev-requirements.txt
 script: pre-commit run --all-files
