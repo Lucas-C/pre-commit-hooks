@@ -133,7 +133,7 @@ pre_commit_db_rm_repo () {  # Requires sqlite3
     hooks:
     -   id: forbid-abstract-classes-and-traits
         name: Ensure neither abstract classes nor traits are used
-        language: pcre
+        language: pygrep
         entry: "^(abstract|trait) "
         files: ^src/.*\.groovy$
 ```
@@ -144,7 +144,7 @@ pre_commit_db_rm_repo () {  # Requires sqlite3
     hooks:
     -   id: force-JsonSlurperClassic
         name: Ensure JsonSlurperClassic is used instead of non-serializable JsonSlurper
-        language: pcre
+        language: pygrep
         entry: JsonSlurper[^C]
         files: \.groovy$
 ```
@@ -171,12 +171,12 @@ Also, there is also a linter for the declarative syntax: https://jenkins.io/doc/
         hooks:
         -   id: js-forbid-const
             name: The const keyword is not supported by IE10
-            language: pcre
+            language: pygrep
             entry: "const "
             files: \.js$
         -   id: js-forbid-let
             name: The let keyword is not supported by IE10
-            language: pcre
+            language: pygrep
             entry: "let "
             files: \.js$
 
@@ -186,7 +186,7 @@ Also, there is also a linter for the declarative syntax: https://jenkins.io/doc/
         hooks:
         -   id: css-forbid-px
             name: In CSS files, use rem or % over px
-            language: pcre
+            language: pygrep
             entry: px
             files: \.css$
         -   id: ot-sanitize-fonts
@@ -201,17 +201,17 @@ Also, there is also a linter for the declarative syntax: https://jenkins.io/doc/
         hooks:
         -   id: angular-forbid-apply
             name: In AngularJS, use $digest over $apply
-            language: pcre
+            language: pygrep
             entry: \$apply
             files: \.js$
         -   id: angular-forbid-ngrepeat-without-trackby
             name: In AngularJS, ALWAYS use 'track by' with ng-repeat
-            language: pcre
+            language: pygrep
             entry: ng-repeat(?!.*track by)
             files: \.html$
         -   id: angular-forbid-ngmodel-with-no-dot
             name: In AngularJS, "Whenever you have ng-model there's gotta be a dot in
                 there somewhere"
-            language: pcre
+            language: pygrep
             entry: ng-model="?[^.]+[" ]
             files: \.html$
