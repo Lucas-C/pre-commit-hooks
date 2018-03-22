@@ -29,7 +29,7 @@ Hooks that require Python dependencies, or specific to a language, have been ext
 
 ## Usage
 
-    -   repo: git://github.com/Lucas-C/pre-commit-hooks
+    -   repo: https://github.com/Lucas-C/pre-commit-hooks
         sha: v1.1.4
         hooks:
         -   id: forbid-crlf
