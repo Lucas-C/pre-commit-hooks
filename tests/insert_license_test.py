@@ -21,7 +21,7 @@ from pre_commit_hooks.insert_license import find_license_header_index
             ('module_without_license.css', '/*| *| */', 'module_with_license.css'),
             ('module_with_license.css', '/*| *| */', False),
         ),
-    ))
+    )),
 )
 def test_insert_license(license_file_path, src_file_path, comment_prefix, new_src_file_expected, tmpdir):
     with chdir_to_test_resources():
@@ -49,19 +49,21 @@ def test_is_license_present(src_file_content, expected_index):
 
 
 @pytest.mark.parametrize(
-    ('src_file_path', 'is_python', 'new_src_file_expected'),
-    (
-        ('module_with_license.css', False, 'module_without_license.css'),
-        ('module_without_license.css', False, False),
-        ('module_with_license_and_shebang.py', True, 'module_without_license_and_shebang.py'),
-    ),
+    ('license_file_path', 'src_file_path', 'is_python', 'new_src_file_expected'),
+    map(lambda a: a[:1] + a[1], product(  # combine license files with other args
+        ('LICENSE_with_trailing_newline.txt', 'LICENSE_without_trailing_newline.txt'),
+        (
+            ('module_with_license.css', False, 'module_without_license.css'),
+            ('module_without_license.css', False, False),
+            ('module_with_license_and_shebang.py', True, 'module_without_license_and_shebang.py'),
+        ),
+    )),
 )
-def test_remove_license(src_file_path, is_python, new_src_file_expected, tmpdir):
+def test_remove_license(license_file_path, src_file_path, is_python, new_src_file_expected, tmpdir):
     with chdir_to_test_resources():
         path = tmpdir.join('src_file_path')
         shutil.copy(src_file_path, path.strpath)
-        argv = ['--license-filepath', 'LICENSE_with_trailing_newline.txt',
-                '--remove-header', path.strpath]
+        argv = ['--license-filepath', license_file_path, '--remove-header', path.strpath]
         if is_python:
             argv = ['--comment-style', '#'] + argv
         else:
