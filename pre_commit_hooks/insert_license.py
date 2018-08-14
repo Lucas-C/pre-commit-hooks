@@ -22,10 +22,12 @@ def main(argv=None):
         prefixed_license = ['{}{}{}'.format(comment_prefix, ' ' if line.strip() else '', line)
                             for line in license_file.readlines()]
     eol = '\r\n' if prefixed_license[0][-2:] == '\r\n' else '\n'
+    if not prefixed_license[-1].endswith(eol):
+        prefixed_license[-1] += eol
     if comment_start:
         prefixed_license = [comment_start + eol] + prefixed_license
     if comment_end:
-        prefixed_license = prefixed_license + [eol + comment_end]
+        prefixed_license = prefixed_license + [comment_end + eol]
 
     changes_made = False
     for src_filepath in args.filenames:
@@ -42,7 +44,7 @@ def main(argv=None):
                     src_file.write(''.join(src_file_content))
                 changes_made = True
         elif not args.remove_header:
-            src_file_content = prefixed_license + [eol + eol] + src_file_content
+            src_file_content = prefixed_license + [eol] + src_file_content
             with open(src_filepath, 'w') as src_file:
                 src_file.write(''.join(src_file_content))
             changes_made = True
