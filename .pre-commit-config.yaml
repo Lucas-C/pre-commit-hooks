@@ -1,6 +1,6 @@
 repos:
--   repo: git://github.com/Lucas-C/pre-commit-hooks
-    sha: v1.1.6
+-   repo: git://github.com/potiuk/pre-commit-hooks
+    sha: v1.1.7
     hooks:
     -   id: forbid-crlf
     -   id: remove-crlf
@@ -22,10 +22,11 @@ repos:
         args:
         - --rcfile=.pylintrc
         - --reports=no
+        exclude: ^tests/resources/.*_todo.*$
 -   repo: local
     hooks:
     -   id: py.test
         name: py.test
         language: system
-        entry: sh -c py.test
+        entry: sh -c 'pip install -e .[testing] && python -m pytest'
         files: ''
