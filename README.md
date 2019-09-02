@@ -17,7 +17,7 @@ A few useful git hooks to integrate with [pre-commit](http://pre-commit.com).
 
 <!-- tocstop -->
 
-Hooks that require Python dependencies, or specific to a language, have been extracted into separate repos:
+Hooks specific to a language, or with more dependencies have been extracted into separate repos:
 
 - https://github.com/Lucas-C/pre-commit-hooks-bandit
 - https://github.com/Lucas-C/pre-commit-hooks-go
@@ -56,7 +56,7 @@ The following styles can be used for example:
 * For Python: `#`
 * For Jinja templates: `'{#||#}'`
 
-#### Changing the number of top line where license is sarched
+#### How to specify in how many lines to search for the license header in each file
 
 You can add `--detect-license-in-X-top-lines=<X>` to search for license in top X lines (default 5)
 
@@ -74,7 +74,7 @@ e.g. because you want to change the wording of your `LICENSE.txt` and update the
 In some cases your license files can contain several slightly different variants of the license - either
 containing slight modifications or differently broken lines of the license text. By
 default the plugin does exact matching when searching for the license and in such case it will add second
-licence on top - leaving the non-perfectly matched in the source code. You can prevent that and add
+licence on top - leaving the non-perfectly matched one in the source code. You can prevent that and add
 `--fuzzy-match-generates-todo` flag in which case fuzzy matching is performed based on Levenshtein distance
 of set of tokens in expected and actual license text (partial match in two sets is used).
 The license is detected if the ratio is > than `--fuzzy-ratio-cut-off` parameter (default 85) - ration
@@ -86,12 +86,12 @@ If a fuzzy match is found (and no exact match), a TODO comment
 is inserted at the beginning of the match found. The comment inserted can be overridden by
 `--fuzzy-match-todo-comment=<COMMENT>` flag. By default it is
 `TODO: This license is not consistent with license used in the project`
-Additionally instructions what to do are inserted in this case. By default instructions are:
-`Delete the inconsistent license and above line and rerun pre-commit to insert good license.`.
+Additionally instructions on what to do are inserted in this case. By default instructions are:
+`Delete the inconsistent license and above line and rerun pre-commit to insert a good license.`.
 You can change it via `--fuzzy-match-todo-instructions` argument of the hook.
 
 When the TODO comment is committed, pre-commit will fail with appropriate message. The check will fails
-no matter if the `--fuzzy-match-generates-todo` flag is set or not. You will need to remove the TODO comment
+systematically if the `--fuzzy-match-generates-todo` flag is set or not. You will need to remove the TODO comment
 and licence so that it gets re-added in order to get rid of the error.
 
 License insertion can be skipped altogether if the file contains the

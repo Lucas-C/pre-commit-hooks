@@ -28,11 +28,6 @@ setup(
         'fuzzywuzzy',
         'python-Levenshtein'
     ],
-    extras_require={
-        'testing': [
-            'pytest'
-        ]
-    },
     entry_points={
         'console_scripts': [
             'forbid_crlf = pre_commit_hooks.forbid_crlf:main',

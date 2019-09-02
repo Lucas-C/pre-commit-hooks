@@ -1,13 +1,13 @@
 repos:
--   repo: git://github.com/potiuk/pre-commit-hooks
-    sha: v1.1.7
+-   repo: git://github.com/Lucas-C/pre-commit-hooks
+    rev: v1.1.6
     hooks:
     -   id: forbid-crlf
     -   id: remove-crlf
     -   id: forbid-tabs
     -   id: remove-tabs
 -   repo: git://github.com/pre-commit/pre-commit-hooks
-    sha: v2.2.1
+    rev: v2.2.1
     hooks:
     -   id: trailing-whitespace
         files: ''
@@ -16,7 +16,7 @@ repos:
     -   id: check-json
     -   id: check-yaml
 -   repo: git://github.com/pre-commit/mirrors-pylint
-    sha: v2.3.1
+    rev: v2.3.1
     hooks:
     -   id: pylint
         args:
@@ -27,6 +27,9 @@ repos:
     hooks:
     -   id: py.test
         name: py.test
-        language: system
-        entry: sh -c 'pip install -e .[testing] && python -m pytest'
-        files: ''
+        language: python
+        additional_dependencies: ['pytest', 'pytest-cov', 'coverage', 'fuzzywuzzy', 'python-Levenshtein']
+        entry: sh
+        require_serial: true
+        pass_filenames: false
+        files: '\.py$'

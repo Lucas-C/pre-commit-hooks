@@ -7,7 +7,7 @@ from fuzzywuzzy import fuzz
 
 FUZZY_MATCH_TODO_COMMENT = " TODO: This license is not consistent with license used in the project."
 FUZZY_MATCH_TODO_INSTRUCTIONS = \
-    "       Delete the inconsistent license and above line and rerun pre-commit to insert good license."
+    "       Delete the inconsistent license and above line and rerun pre-commit to insert a good license."
 FUZZY_MATCH_EXTRA_LINES_TO_CHECK = 3
 
 SKIP_LICENSE_INSERTION_COMMENT = "SKIP LICENSE INSERTION"
