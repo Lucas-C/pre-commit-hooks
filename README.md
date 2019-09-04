@@ -255,3 +255,11 @@ Also, there is also a linter for the declarative syntax: https://jenkins.io/doc/
             language: pygrep
             entry: ng-model="?[^.]+[" ]
             files: \.html$
+
+
+## Development
+
+### Releasing a new version
+
+1. edit version in `setup.py`, `README.md` & `.pre-commit-config.yaml`
+2. `git commit -nam "Version bump to $version" && git tag $version && git push && git push --tags`
