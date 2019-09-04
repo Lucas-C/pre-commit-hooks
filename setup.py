@@ -5,7 +5,7 @@ setup(
     name='pre-commit-hooks',
     description='Some out-of-the-box hooks for pre-commit',
     url='https://github.com/Lucas-C/pre-commit-hooks',
-    version='1.1.6',
+    version='1.1.7',
 
     author='Lucas Cimon',
     author_email='lucas.cimon@gmail.com',
@@ -24,6 +24,10 @@ setup(
     ],
 
     packages=find_packages('.'),
+    install_requires=[
+        'fuzzywuzzy',
+        'python-Levenshtein'
+    ],
     entry_points={
         'console_scripts': [
             'forbid_crlf = pre_commit_hooks.forbid_crlf:main',
