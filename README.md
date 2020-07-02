@@ -36,7 +36,7 @@ Hooks specific to a language, or with more dependencies have been extracted into
         -   id: remove-crlf
         -   id: forbid-tabs
         -   id: remove-tabs
-            args: [ --whitespaces-count, 2 ]  # defaults to: 4
+            args: [ '--whitespaces-count', '2' ]  # defaults to: 4
         -   id: insert-license
             files: \.groovy$
             args:
