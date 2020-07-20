@@ -16,7 +16,7 @@
     entry: forbid_tabs
     language: python
     files: ''
-    exclude: (Makefile|debian/rules)(\.in)?$
+    exclude: (Makefile|debian/rules|.gitmodules)(\.in)?$
 -   id: remove-tabs
     name: Tabs remover
     description: "Replace tabs by whitespaces before committing"
@@ -24,4 +24,4 @@
     language: python
     args: [ --whitespaces-count, '4' ]
     files: ''
-    exclude: (Makefile|debian/rules)(\.in)?$
+    exclude: (Makefile|debian/rules|.gitmodules)(\.in)?$
