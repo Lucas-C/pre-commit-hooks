@@ -30,7 +30,7 @@ Hooks specific to a language, or with more dependencies have been extracted into
 ## Usage
 
     -   repo: https://github.com/Lucas-C/pre-commit-hooks
-        sha: v1.1.7
+        rev: v1.1.8
         hooks:
         -   id: forbid-crlf
         -   id: remove-crlf
