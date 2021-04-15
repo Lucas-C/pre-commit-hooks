@@ -69,7 +69,7 @@ def get_license_info(args):
         comment_start, comment_prefix, comment_end = args.comment_style.split('|')
     else:
         comment_start, comment_prefix, comment_end = None, args.comment_style, None
-    with open(args.license_filepath) as license_file:
+    with open(args.license_filepath, encoding='utf8') as license_file:
         plain_license = license_file.readlines()
     prefixed_license = ['{}{}{}'.format(comment_prefix, ' ' if line.strip() else '', line)
                         for line in plain_license]
@@ -108,7 +108,7 @@ def process_files(args, changed_files, todo_files, license_info):
     :return: True if some files were changed or t.o.d.o is detected
     """
     for src_filepath in args.filenames:
-        with open(src_filepath) as src_file:
+        with open(src_filepath, encoding='utf8') as src_file:
             src_file_content = src_file.readlines()
         if skip_license_insert_found(
                 src_file_content=src_file_content,
@@ -183,7 +183,7 @@ def license_not_found(remove_header, license_info, src_file_content, src_filepat
                 break
         src_file_content = src_file_content[:index] + license_info.prefixed_license + \
             [license_info.eol] + src_file_content[index:]
-        with open(src_filepath, 'w') as src_file:
+        with open(src_filepath, 'w', encoding='utf8') as src_file:
             src_file.write(''.join(src_file_content))
         return True
     return False
@@ -208,7 +208,7 @@ def license_found(remove_header, license_header_index, license_info, src_file_co
             src_file_content = src_file_content[:license_header_index] + \
                                src_file_content[license_header_index +
                                                 len(license_info.prefixed_license) + 1:]
-        with open(src_filepath, 'w') as src_file:
+        with open(src_filepath, 'w', encoding='utf8') as src_file:
             src_file.write(''.join(src_file_content))
         return True
     return False
@@ -236,7 +236,7 @@ def fuzzy_license_found(license_info,  # pylint: disable=too-many-arguments
         [license_info.comment_prefix + fuzzy_match_todo_comment + license_info.eol] + \
         [license_info.comment_prefix + fuzzy_match_todo_instructions + license_info.eol] + \
         src_file_content[fuzzy_match_header_index:]
-    with open(src_filepath, 'w') as src_file:
+    with open(src_filepath, 'w', encoding='utf8') as src_file:
         src_file.write(''.join(src_file_content))
     return True
 
