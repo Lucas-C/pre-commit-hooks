@@ -7,7 +7,7 @@ repos:
     -   id: forbid-tabs
     -   id: remove-tabs
 -   repo: git://github.com/pre-commit/pre-commit-hooks
-    rev: v3.1.0
+    rev: v3.4.0
     hooks:
     -   id: trailing-whitespace
         files: ''
@@ -15,7 +15,7 @@ repos:
         - --no-markdown-linebreak-ext
     -   id: check-yaml
 -   repo: git://github.com/pre-commit/mirrors-pylint
-    rev: v2.5.3
+    rev: v3.0.0a1
     hooks:
     -   id: pylint
         args:
