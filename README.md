@@ -1,4 +1,4 @@
-[![](https://travis-ci.org/Lucas-C/pre-commit-hooks.svg?branch=master)](https://travis-ci.org/Lucas-C/pre-commit-hooks)
+[![build status](https://github.com/Lucas-C/pre-commit-hooks/workflows/CI/badge.svg)](https://github.com/Lucas-C/pre-commit-hooks/actions?query=branch%3Amaster)
 
 A few useful git hooks to integrate with [pre-commit](http://pre-commit.com).
 
