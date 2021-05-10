@@ -27,7 +27,7 @@ repos:
     -   id: py.test
         name: py.test
         language: python
-        additional_dependencies: ['pytest', 'pytest-cov', 'coverage', 'fuzzywuzzy', 'python-Levenshtein']
+        additional_dependencies: ['pytest', 'pytest-cov', 'coverage', 'fuzzywuzzy', 'python-Levenshtein-wheels']
         entry: sh
         require_serial: true
         pass_filenames: false
