@@ -5,7 +5,8 @@ KNOWN_BINARY_FILE_EXTS = ('.pdf',)
 def is_textfile(filename, blocksize=512):
     if any(filename.endswith(ext) for ext in KNOWN_BINARY_FILE_EXTS):
         return False
-    return is_text(open(filename, 'rb').read(blocksize))
+    with open(filename, 'rb') as text_file:
+        return is_text(text_file.read(blocksize))
 
 def is_text(stuff):
     if b"\0" in stuff:
