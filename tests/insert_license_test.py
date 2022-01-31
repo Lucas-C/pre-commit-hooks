@@ -43,6 +43,8 @@ from pre_commit_hooks.insert_license import find_license_header_index
             ('module_without_license_skip.css', '/*| *| */', None, False),
             ('module_with_license.css', '/*| *| */', None, False),
             ('module_with_license_todo.css', '/*| *| */', None, True),
+
+            ('main_without_license.cpp', '/*|\t| */', 'main_with_license.cpp', True),
         ),
     )),
 )

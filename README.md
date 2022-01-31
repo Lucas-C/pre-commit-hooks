@@ -259,7 +259,10 @@ Also, there is also a linter for the declarative syntax: https://jenkins.io/doc/
 
 ## Development
 
+The [GitHub releases](https://github.com/Lucas-C/pre-commit-hooks/releases) form the historical ChangeLog.
+
 ### Releasing a new version
 
 1. edit version in `setup.py`, `README.md` & `.pre-commit-config.yaml`
 2. `git commit -nam "Version bump to $version" && git tag $version && git push && git push --tags`
+3. publish a GitHub release

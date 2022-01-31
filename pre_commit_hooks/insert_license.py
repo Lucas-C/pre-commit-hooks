@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 from __future__ import print_function
 import argparse
 import collections
@@ -65,10 +67,10 @@ def main(argv=None):
 
 
 def get_license_info(args):
-    if '|' in args.comment_style:
-        comment_start, comment_prefix, comment_end = args.comment_style.split('|')
-    else:
-        comment_start, comment_prefix, comment_end = None, args.comment_style, None
+    comment_start, comment_end = None, None
+    comment_prefix = args.comment_style.replace('\\t', '\t')
+    if '|' in comment_prefix:
+        comment_start, comment_prefix, comment_end = comment_prefix.split('|')
     with open(args.license_filepath, encoding='utf8') as license_file:
         plain_license = license_file.readlines()
     prefixed_license = ['{}{}{}'.format(comment_prefix, ' ' if line.strip() else '', line)
