@@ -156,7 +156,10 @@ def test_is_license_present(src_file_content, expected_index):
             ('module_with_fuzzy_matched_license.css', '/*| *| */', False, None, False),
             ('module_without_license.css', '/*| *| */', False, None, False),
 
+            ('module_with_license.py', '#', False, 'module_without_license.py', True),
             ('module_with_license_and_shebang.py', '#', False, 'module_without_license_and_shebang.py', True),
+            ('init_with_license.py', '#', False, 'init_without_license.py', True),
+            ('init_with_license_and_newline.py', '#', False, 'init_without_license.py', True),
             # Fuzzy match
             ('module_with_license.css', '/*| *| */', True, 'module_without_license.css', True),
             ('module_with_license_todo.css', '/*| *| */', True, None, True),

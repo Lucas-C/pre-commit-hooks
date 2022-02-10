@@ -203,7 +203,8 @@ def license_found(remove_header, license_header_index, license_info, src_file_co
     :return: True if change was made, False otherwise
     """
     if remove_header:
-        if src_file_content[license_header_index + len(license_info.prefixed_license)].strip():
+        last_license_line_index = license_header_index + len(license_info.prefixed_license)
+        if last_license_line_index < len(src_file_content) and src_file_content[last_license_line_index].strip():
             src_file_content = src_file_content[:license_header_index] + \
                                src_file_content[license_header_index + len(license_info.prefixed_license):]
         else:
