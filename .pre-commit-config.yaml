@@ -1,6 +1,6 @@
 repos:
 -   repo: git://github.com/Lucas-C/pre-commit-hooks
-    rev: v1.1.11
+    rev: v1.1.12
     hooks:
     -   id: forbid-crlf
     -   id: remove-crlf
