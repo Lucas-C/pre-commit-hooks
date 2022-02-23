@@ -45,6 +45,7 @@ from pre_commit_hooks.insert_license import find_license_header_index
             ('module_with_license_todo.css', '/*| *| */', None, True),
 
             ('main_without_license.cpp', '/*|\t| */', 'main_with_license.cpp', True),
+            ('main_iso8859_without_license.cpp', '/*|\t| */', 'main_iso8859_with_license.cpp', True),
         ),
     )),
 )

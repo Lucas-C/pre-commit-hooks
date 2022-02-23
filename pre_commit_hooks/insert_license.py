@@ -110,8 +110,7 @@ def process_files(args, changed_files, todo_files, license_info):
     :return: True if some files were changed or t.o.d.o is detected
     """
     for src_filepath in args.filenames:
-        with open(src_filepath, encoding='utf8') as src_file:
-            src_file_content = src_file.readlines()
+        src_file_content = _read_file_content(src_filepath)
         if skip_license_insert_found(
                 src_file_content=src_file_content,
                 skip_license_insertion_comment=args.skip_license_insertion_comment,
@@ -159,6 +158,18 @@ def process_files(args, changed_files, todo_files, license_info):
                                      src_filepath=src_filepath):
                     changed_files.append(src_filepath)
     return changed_files or todo_files
+
+
+def _read_file_content(src_filepath):
+    last_error = None
+    for encoding in ('utf8', 'ISO-8859-1'):  # we could use the chardet library to support more encodings
+        try:
+            with open(src_filepath, encoding=encoding) as src_file:
+                return src_file.readlines()
+        except UnicodeDecodeError as error:
+            last_error = error
+    print("Error while processing: {} - file encoding is probably not supported".format(src_filepath))
+    raise last_error
 
 
 def license_not_found(remove_header, license_info, src_file_content, src_filepath):

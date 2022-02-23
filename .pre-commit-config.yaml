@@ -5,15 +5,15 @@ repos:
     -   id: forbid-crlf
     -   id: remove-crlf
     -   id: forbid-tabs
-        exclude: tests/resources/main_with_license.cpp
+        exclude: tests/resources/main.*_with_license.cpp
     -   id: remove-tabs
-        exclude: tests/resources/main_with_license.cpp
+        exclude: tests/resources/main.*_with_license.cpp
 -   repo: git://github.com/pre-commit/pre-commit-hooks
     rev: v4.1.0
     hooks:
     -   id: trailing-whitespace
         files: ''
-        exclude: tests/resources/main_with_license.cpp
+        exclude: tests/resources/main.*_with_license.cpp
     -   id: check-yaml
 -   repo: git://github.com/pre-commit/mirrors-pylint
     rev: v3.0.0a4
