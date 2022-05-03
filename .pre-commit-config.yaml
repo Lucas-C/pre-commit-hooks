@@ -1,35 +1,48 @@
+---
 repos:
--   repo: git://github.com/Lucas-C/pre-commit-hooks
+  - repo: https://github.com/executablebooks/mdformat
+    # Do this before other tools "fixing" the line endings
+    rev: 0.7.14
+    hooks:
+      - id: mdformat
+        name: Format Markdown
+        entry: mdformat  # Executable to run, with fixed options
+        language: python
+        types: [markdown]
+        args: [--wrap, '75', --number]
+        additional_dependencies:
+          - mdformat-toc
+  - repo: https://github.com/Lucas-C/pre-commit-hooks
     rev: v1.1.13
     hooks:
-    -   id: forbid-crlf
-    -   id: remove-crlf
-    -   id: forbid-tabs
+      - id: forbid-crlf
+      - id: remove-crlf
+      - id: forbid-tabs
         exclude: tests/resources/main.*_with_license.cpp
-    -   id: remove-tabs
+      - id: remove-tabs
         exclude: tests/resources/main.*_with_license.cpp
--   repo: git://github.com/pre-commit/pre-commit-hooks
+  - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.1.0
     hooks:
-    -   id: trailing-whitespace
+      - id: trailing-whitespace
         files: ''
         exclude: tests/resources/main.*_with_license.cpp
-    -   id: check-yaml
--   repo: git://github.com/pre-commit/mirrors-pylint
+      - id: check-yaml
+  - repo: https://github.com/pre-commit/mirrors-pylint
     rev: v3.0.0a4
     hooks:
-    -   id: pylint
+      - id: pylint
         args:
-        - --rcfile=.pylintrc
-        - --reports=no
+          - --rcfile=.pylintrc
+          - --reports=no
         exclude: ^tests/resources/.*(init_with_license\.py|todo).*$
--   repo: local
+  - repo: local
     hooks:
-    -   id: py.test
+      - id: py.test
         name: py.test
         language: python
-        additional_dependencies: ['pytest', 'pytest-cov', 'coverage', 'fuzzywuzzy', 'python-Levenshtein-wheels']
+        additional_dependencies: [pytest, pytest-cov, coverage, fuzzywuzzy, python-Levenshtein-wheels]
         entry: sh
         require_serial: true
         pass_filenames: false
-        files: '\.py$'
+        files: \.py$
