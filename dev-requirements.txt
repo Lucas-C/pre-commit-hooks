@@ -2,3 +2,5 @@ pre-commit
 pytest
 pytest-cov
 coverage
+fuzzywuzzy
+python-Levenshtein-wheels
