@@ -3,7 +3,7 @@
 A few useful git hooks to integrate with
 [pre-commit](http://pre-commit.com).
 
-<!-- toc -->
+<!-- mdformat-toc start --slug=github --no-anchors --maxlevel=3 --minlevel=1 -->
 
 - [Usage](#usage)
   - [insert-license](#insert-license)
@@ -15,10 +15,10 @@ A few useful git hooks to integrate with
   - [Forbid some Javascript keywords for browser retrocompatibility issues](#forbid-some-javascript-keywords-for-browser-retrocompatibility-issues)
   - [CSS](#css)
   - [Some Angular 1.5 checks](#some-angular-15-checks)
+- [Development](#development)
+  - [Releasing a new version](#releasing-a-new-version)
 
-<!-- tocstop -->
-
-# Introduction
+<!-- mdformat-toc end -->
 
 Hooks specific to a language, or with more dependencies have been extracted
 into separate repos:
