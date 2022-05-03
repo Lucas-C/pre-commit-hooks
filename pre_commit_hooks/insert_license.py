@@ -8,9 +8,11 @@ import sys
 
 from fuzzywuzzy import fuzz
 
-FUZZY_MATCH_TODO_COMMENT = " TODO: This license is not consistent with license used in the project."
-FUZZY_MATCH_TODO_INSTRUCTIONS = \
-    "       Delete the inconsistent license and above line and rerun pre-commit to insert a good license."
+FUZZY_MATCH_TODO_COMMENT = (" TODO: This license is not consistent with"
+                            " license used in the project.")
+FUZZY_MATCH_TODO_INSTRUCTIONS = (
+    "       Delete the inconsistent license and above line"
+    " and rerun pre-commit to insert a good license." )
 FUZZY_MATCH_EXTRA_LINES_TO_CHECK = 3
 
 SKIP_LICENSE_INSERTION_COMMENT = "SKIP LICENSE INSERTION"
@@ -36,6 +38,8 @@ def main(argv=None):
                         help='Can be a single prefix or a triplet: '
                              '<comment-start>|<comment-prefix>|<comment-end>'
                              'E.g.: /*| *| */')
+    parser.add_argument('--no-space', action='store_true',
+                        help='Do not add extra space beyond the comment-style spec')
     parser.add_argument('--detect-license-in-X-top-lines', type=int, default=5)
     parser.add_argument('--fuzzy-match-generates-todo', action='store_true')
     parser.add_argument('--fuzzy-ratio-cut-off', type=int, default=85)
@@ -70,11 +74,12 @@ def main(argv=None):
 def get_license_info(args):
     comment_start, comment_end = None, None
     comment_prefix = args.comment_style.replace('\\t', '\t')
+    extra_space = ' ' if not args.no_space and comment_prefix != '' else ''
     if '|' in comment_prefix:
         comment_start, comment_prefix, comment_end = comment_prefix.split('|')
     with open(args.license_filepath, encoding='utf8') as license_file:
         plain_license = license_file.readlines()
-    prefixed_license = ['{}{}{}'.format(comment_prefix, ' ' if line.strip() else '', line)
+    prefixed_license = ['{}{}{}'.format(comment_prefix, extra_space if line.strip() else '', line)
                         for line in plain_license]
     eol = '\r\n' if prefixed_license[0][-2:] == '\r\n' else '\n'
 
