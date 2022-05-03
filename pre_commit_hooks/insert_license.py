@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
-from __future__ import print_function
+from __future__ import print_function, annotations
+from typing import List
 import argparse
 import collections
 import sys
@@ -48,8 +49,8 @@ def main(argv=None):
 
     license_info = get_license_info(args)
 
-    changed_files = []
-    todo_files = []
+    changed_files: List[str] = []
+    todo_files: List[str] = []
 
     check_failed = process_files(args, changed_files, todo_files, license_info)
 
@@ -169,7 +170,9 @@ def _read_file_content(src_filepath):
         except UnicodeDecodeError as error:
             last_error = error
     print("Error while processing: {} - file encoding is probably not supported".format(src_filepath))
-    raise last_error
+    if last_error is not None:   # Avoid mypy message
+        raise last_error
+    raise RuntimeError("Unexpected branch taken (_read_file_content)")
 
 
 def license_not_found(remove_header, license_info, src_file_content, src_filepath):
