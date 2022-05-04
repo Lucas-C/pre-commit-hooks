@@ -2,5 +2,5 @@
 /pre_commit_hooks.egg-info
 /.cache/
 /.idea/
-/.coverage
+**/.coverage
 /venv/
