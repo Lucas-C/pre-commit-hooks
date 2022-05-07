@@ -1,5 +1,5 @@
 ---
-exclude: ^(\.[^/]*cache(__)?/.*)$
+exclude: ^(\.[^/]*cache(__)?/.*|\.coverage)$
 repos:
   - repo: https://github.com/executablebooks/mdformat
     # Do this before other tools "fixing" the line endings
@@ -71,7 +71,7 @@ repos:
         name: py.test
         language: python
         additional_dependencies: [pytest, pytest-cov, coverage, fuzzywuzzy, python-Levenshtein-wheels]
-        entry: sh
+        entry: pytest -sv
         require_serial: true
         pass_filenames: false
         files: \.py$
