@@ -47,7 +47,7 @@ from pre_commit_hooks.insert_license import find_license_header_index
             ('main_without_license.cpp', '/*|\t| */', 'main_with_license.cpp', True, None),
             ('main_iso8859_without_license.cpp', '/*|\t| */', 'main_iso8859_with_license.cpp', True, None),
             ('module_without_license.txt', '', 'module_with_license_noprefix.txt', True, None),
-            ('module_without_license.py', '#', 'module_with_license_nospace.py', True, ['--no-space']),
+            ('module_without_license.py', '#', 'module_with_license_nospace.py', True, ['--no-space-in-comment-prefix']),
         ),
     )),
 )
