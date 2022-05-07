@@ -22,7 +22,7 @@ def test_remove_crlf(input_s, expected, tmpdir):
 
 @pytest.mark.parametrize(('arg'), ('', 'a.b', 'a/b'))
 def test_badopt(arg):
-    with pytest.raises(FileNotFoundError):
+    with pytest.raises((FileNotFoundError, NotADirectoryError,)):
         remove_crlf([arg])
 
 
