@@ -38,7 +38,7 @@ def main(argv=None):
                         help='Can be a single prefix or a triplet: '
                              '<comment-start>|<comment-prefix>|<comment-end>'
                              'E.g.: /*| *| */')
-    parser.add_argument('--no-space', action='store_true',
+    parser.add_argument('--no-space-in-comment-prefix', action='store_true',
                         help='Do not add extra space beyond the comment-style spec')
     parser.add_argument('--detect-license-in-X-top-lines', type=int, default=5)
     parser.add_argument('--fuzzy-match-generates-todo', action='store_true')
@@ -74,7 +74,7 @@ def main(argv=None):
 def get_license_info(args):
     comment_start, comment_end = None, None
     comment_prefix = args.comment_style.replace('\\t', '\t')
-    extra_space = ' ' if not args.no_space and comment_prefix != '' else ''
+    extra_space = ' ' if not args.no_space_in_comment_prefix and comment_prefix != '' else ''
     if '|' in comment_prefix:
         comment_start, comment_prefix, comment_end = comment_prefix.split('|')
     with open(args.license_filepath, encoding='utf8') as license_file:
