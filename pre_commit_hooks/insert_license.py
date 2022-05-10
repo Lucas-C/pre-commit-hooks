@@ -1,15 +1,18 @@
 #!/usr/bin/env python
 
-from __future__ import print_function
+from __future__ import print_function, annotations
+from typing import List
 import argparse
 import collections
 import sys
 
 from fuzzywuzzy import fuzz
 
-FUZZY_MATCH_TODO_COMMENT = " TODO: This license is not consistent with license used in the project."
-FUZZY_MATCH_TODO_INSTRUCTIONS = \
-    "       Delete the inconsistent license and above line and rerun pre-commit to insert a good license."
+FUZZY_MATCH_TODO_COMMENT = (" TODO: This license is not consistent with"
+                            " license used in the project.")
+FUZZY_MATCH_TODO_INSTRUCTIONS = (
+    "       Delete the inconsistent license and above line"
+    " and rerun pre-commit to insert a good license." )
 FUZZY_MATCH_EXTRA_LINES_TO_CHECK = 3
 
 SKIP_LICENSE_INSERTION_COMMENT = "SKIP LICENSE INSERTION"
@@ -35,6 +38,8 @@ def main(argv=None):
                         help='Can be a single prefix or a triplet: '
                              '<comment-start>|<comment-prefix>|<comment-end>'
                              'E.g.: /*| *| */')
+    parser.add_argument('--no-space-in-comment-prefix', action='store_true',
+                        help='Do not add extra space beyond the comment-style spec')
     parser.add_argument('--detect-license-in-X-top-lines', type=int, default=5)
     parser.add_argument('--fuzzy-match-generates-todo', action='store_true')
     parser.add_argument('--fuzzy-ratio-cut-off', type=int, default=85)
@@ -48,8 +53,8 @@ def main(argv=None):
 
     license_info = get_license_info(args)
 
-    changed_files = []
-    todo_files = []
+    changed_files: List[str] = []
+    todo_files: List[str] = []
 
     check_failed = process_files(args, changed_files, todo_files, license_info)
 
@@ -69,11 +74,12 @@ def main(argv=None):
 def get_license_info(args):
     comment_start, comment_end = None, None
     comment_prefix = args.comment_style.replace('\\t', '\t')
+    extra_space = ' ' if not args.no_space_in_comment_prefix and comment_prefix != '' else ''
     if '|' in comment_prefix:
         comment_start, comment_prefix, comment_end = comment_prefix.split('|')
     with open(args.license_filepath, encoding='utf8') as license_file:
         plain_license = license_file.readlines()
-    prefixed_license = ['{}{}{}'.format(comment_prefix, ' ' if line.strip() else '', line)
+    prefixed_license = ['{}{}{}'.format(comment_prefix, extra_space if line.strip() else '', line)
                         for line in plain_license]
     eol = '\r\n' if prefixed_license[0][-2:] == '\r\n' else '\n'
 
@@ -169,7 +175,9 @@ def _read_file_content(src_filepath):
         except UnicodeDecodeError as error:
             last_error = error
     print("Error while processing: {} - file encoding is probably not supported".format(src_filepath))
-    raise last_error
+    if last_error is not None:   # Avoid mypy message
+        raise last_error
+    raise RuntimeError("Unexpected branch taken (_read_file_content)")
 
 
 def license_not_found(remove_header, license_info, src_file_content, src_filepath):

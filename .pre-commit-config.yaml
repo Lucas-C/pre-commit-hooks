@@ -1,35 +1,65 @@
+---
+exclude: ^(\.[^/]*cache(__)?/.*|\.coverage)$
 repos:
--   repo: git://github.com/Lucas-C/pre-commit-hooks
+  - repo: https://github.com/Lucas-C/pre-commit-hooks
     rev: v1.1.13
     hooks:
-    -   id: forbid-crlf
-    -   id: remove-crlf
-    -   id: forbid-tabs
+      - id: forbid-crlf
+      - id: remove-crlf
+      - id: forbid-tabs
         exclude: tests/resources/main.*_with_license.cpp
-    -   id: remove-tabs
+      - id: remove-tabs
         exclude: tests/resources/main.*_with_license.cpp
--   repo: git://github.com/pre-commit/pre-commit-hooks
-    rev: v4.1.0
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.2.0
     hooks:
-    -   id: trailing-whitespace
+      - id: trailing-whitespace
         files: ''
         exclude: tests/resources/main.*_with_license.cpp
-    -   id: check-yaml
--   repo: git://github.com/pre-commit/mirrors-pylint
+      - id: check-yaml
+      - id: check-merge-conflict
+      - id: check-executables-have-shebangs
+      - id: check-shebang-scripts-are-executable
+  - repo: https://github.com/pre-commit/mirrors-pylint
     rev: v3.0.0a4
     hooks:
-    -   id: pylint
+      - id: pylint
         args:
-        - --rcfile=.pylintrc
-        - --reports=no
+          - --rcfile=.pylintrc
+          - --reports=no
         exclude: ^tests/resources/.*(init_with_license\.py|todo).*$
--   repo: local
+  - repo: https://github.com/psf/black
+    rev: 22.3.0
     hooks:
-    -   id: py.test
+      - id: black
+        stages: [manual]   # Skip in automated run for now
+        args:
+          - --safe
+          - --quiet
+        exclude: ^tests/resources/.*(init_with_license\.py|todo).*$
+  - repo: https://github.com/Lucas-C/pre-commit-hooks-bandit
+    rev: v1.0.6
+    hooks:
+      - id: python-bandit-vulnerability-check
+        args: [--skip, 'B101', --recursive, .]   # Example for skipping rule
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v0.942
+    hooks:
+      - id: mypy
+        args:
+          - --ignore-missing-imports
+          - --install-types
+          - --non-interactive
+          - --check-untyped-defs
+          - --show-error-codes
+          - --show-error-context
+  - repo: local
+    hooks:
+      - id: py.test
         name: py.test
         language: python
-        additional_dependencies: ['pytest', 'pytest-cov', 'coverage', 'fuzzywuzzy', 'python-Levenshtein-wheels']
-        entry: sh
+        additional_dependencies: [pytest, pytest-cov, coverage, fuzzywuzzy, python-Levenshtein-wheels]
+        entry: pytest -sv
         require_serial: true
         pass_filenames: false
-        files: '\.py$'
+        files: \.py$
