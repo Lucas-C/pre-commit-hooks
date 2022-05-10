@@ -1,6 +1,7 @@
+# Install dependencies from setup.py
+-e .
+# Install development specific dependencies
 pre-commit
 pytest
 pytest-cov
 coverage
-fuzzywuzzy
-python-Levenshtein-wheels
