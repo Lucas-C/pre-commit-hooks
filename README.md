@@ -279,9 +279,11 @@ https://jenkins.io/doc/book/pipeline/development/#linter .
     - id: ot-sanitize-fonts
       name: Calling ot-sanitise on otf/ttf/woff/woff2 font files
       language: system
-      entry: sh -c 'type ot-sanitise >/dev/null && for font in "$@"; do echo "$font";
-        ot-sanitise "$font"; done || echo "WARNING Command ot-sanitise not found
-        - skipping check"'
+      entry: sh -c 'type ot-sanitise >/dev/null
+        && for font in "$@";
+        do echo "$font";
+        ot-sanitise "$font"; done
+        || echo "WARNING Command ot-sanitise not found - skipping check"'
       files: \.(otf|ttf|woff|woff2)$
 ```
 
@@ -301,8 +303,8 @@ https://jenkins.io/doc/book/pipeline/development/#linter .
       entry: ng-repeat(?!.*track by)
       files: \.html$
     - id: angular-forbid-ngmodel-with-no-dot
-      name: In AngularJS, "Whenever you have ng-model there's gotta be a dot in
-        there somewhere"
+      name: In AngularJS, whenever you have ng-model there's gotta be a dot in
+        there somewhere
       language: pygrep
       entry: ng-model="?[^.]+[" ]
       files: \.html$
