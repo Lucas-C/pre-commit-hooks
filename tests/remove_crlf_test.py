@@ -1,5 +1,10 @@
 from __future__ import absolute_import
 from __future__ import unicode_literals
+try:
+    FileNotFoundError
+except NameError:  # Python 2:
+    FileNotFoundError = IOError
+    FileNotFoundError = IOError
 
 import pytest
 
@@ -22,7 +27,7 @@ def test_remove_crlf(input_s, expected, tmpdir):
 
 @pytest.mark.parametrize(('arg'), ('', 'a.b', 'a/b'))
 def test_badopt(arg):
-    with pytest.raises((FileNotFoundError, NotADirectoryError,)):
+    with pytest.raises((FileNotFoundError,)):
         remove_crlf([arg])
 
 
