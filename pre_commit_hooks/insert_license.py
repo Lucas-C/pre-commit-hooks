@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 
-from __future__ import print_function
+from __future__ import print_function, annotations
+from typing import List
 import argparse
 import collections
-import io
 import sys
 
 from fuzzywuzzy import fuzz
@@ -53,8 +53,8 @@ def main(argv=None):
 
     license_info = get_license_info(args)
 
-    changed_files = []
-    todo_files = []
+    changed_files: List[str] = []
+    todo_files: List[str] = []
 
     check_failed = process_files(args, changed_files, todo_files, license_info)
 
@@ -77,7 +77,7 @@ def get_license_info(args):
     extra_space = ' ' if not args.no_space_in_comment_prefix and comment_prefix != '' else ''
     if '|' in comment_prefix:
         comment_start, comment_prefix, comment_end = comment_prefix.split('|')
-    with io.open(args.license_filepath, encoding='utf8') as license_file:
+    with open(args.license_filepath, encoding='utf8') as license_file:
         plain_license = license_file.readlines()
     prefixed_license = ['{}{}{}'.format(comment_prefix, extra_space if line.strip() else '', line)
                         for line in plain_license]
@@ -170,7 +170,7 @@ def _read_file_content(src_filepath):
     last_error = None
     for encoding in ('utf8', 'ISO-8859-1'):  # we could use the chardet library to support more encodings
         try:
-            with io.open(src_filepath, encoding=encoding) as src_file:
+            with open(src_filepath, encoding=encoding) as src_file:
                 return src_file.readlines()
         except UnicodeDecodeError as error:
             last_error = error
@@ -204,7 +204,7 @@ def license_not_found(remove_header, license_info, src_file_content, src_filepat
                 break
         src_file_content = src_file_content[:index] + license_info.prefixed_license + \
             [license_info.eol] + src_file_content[index:]
-        with io.open(src_filepath, 'w', encoding='utf8') as src_file:
+        with open(src_filepath, 'w', encoding='utf8') as src_file:
             src_file.write(''.join(src_file_content))
         return True
     return False
@@ -230,7 +230,7 @@ def license_found(remove_header, license_header_index, license_info, src_file_co
             src_file_content = src_file_content[:license_header_index] + \
                                src_file_content[license_header_index +
                                                 len(license_info.prefixed_license) + 1:]
-        with io.open(src_filepath, 'w', encoding='utf8') as src_file:
+        with open(src_filepath, 'w', encoding='utf8') as src_file:
             src_file.write(''.join(src_file_content))
         return True
     return False
@@ -258,7 +258,7 @@ def fuzzy_license_found(license_info,  # pylint: disable=too-many-arguments
         [license_info.comment_prefix + fuzzy_match_todo_comment + license_info.eol] + \
         [license_info.comment_prefix + fuzzy_match_todo_instructions + license_info.eol] + \
         src_file_content[fuzzy_match_header_index:]
-    with io.open(src_filepath, 'w', encoding='utf8') as src_file:
+    with open(src_filepath, 'w', encoding='utf8') as src_file:
         src_file.write(''.join(src_file_content))
     return True
 

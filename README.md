@@ -3,6 +3,8 @@
 A few useful git hooks to integrate with
 [pre-commit](http://pre-commit.com).
 
+**The last version of this hook to support Python 2.7 & 3.6 is v1.1.15**
+
 <!-- mdformat-toc start --slug=github --no-anchors --maxlevel=3 --minlevel=1 -->
 
 - [Usage](#usage)
