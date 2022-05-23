@@ -4,6 +4,7 @@ from __future__ import print_function, annotations
 from typing import List
 import argparse
 import collections
+import re
 import sys
 
 from fuzzywuzzy import fuzz
@@ -48,6 +49,8 @@ def main(argv=None):
     parser.add_argument('--fuzzy-match-extra-lines-to-check', type=int,
                         default=FUZZY_MATCH_EXTRA_LINES_TO_CHECK)
     parser.add_argument('--skip-license-insertion-comment', default=SKIP_LICENSE_INSERTION_COMMENT)
+    parser.add_argument('--insert-license-after-regex', default="",
+                        help="Insert license after line matching regex (ex: '^<\\?php$'")
     parser.add_argument('--remove-header', action='store_true')
     args = parser.parse_args(argv)
 
@@ -71,7 +74,7 @@ def main(argv=None):
     return 0
 
 
-def get_license_info(args):
+def get_license_info(args) -> LicenseInfo:
     comment_start, comment_end = None, None
     comment_prefix = args.comment_style.replace('\\t', '\t')
     extra_space = ' ' if not args.no_space_in_comment_prefix and comment_prefix != '' else ''
@@ -106,7 +109,7 @@ def get_license_info(args):
     return license_info
 
 
-def process_files(args, changed_files, todo_files, license_info):
+def process_files(args, changed_files, todo_files, license_info: LicenseInfo):
     """
     Processes all license files
     :param args: arguments of the hook
@@ -115,6 +118,7 @@ def process_files(args, changed_files, todo_files, license_info):
     :param license_info: license info named tuple
     :return: True if some files were changed or t.o.d.o is detected
     """
+    after_regex = args.insert_license_after_regex
     for src_filepath in args.filenames:
         src_file_content = _read_file_content(src_filepath)
         if skip_license_insert_found(
@@ -161,7 +165,8 @@ def process_files(args, changed_files, todo_files, license_info):
                 if license_not_found(remove_header=args.remove_header,
                                      license_info=license_info,
                                      src_file_content=src_file_content,
-                                     src_filepath=src_filepath):
+                                     src_filepath=src_filepath,
+                                     after_regex=after_regex):
                     changed_files.append(src_filepath)
     return changed_files or todo_files
 
@@ -180,9 +185,10 @@ def _read_file_content(src_filepath):
     raise RuntimeError("Unexpected branch taken (_read_file_content)")
 
 
-def license_not_found(remove_header, license_info, src_file_content, src_filepath):
+def license_not_found(remove_header: bool, license_info: LicenseInfo, src_file_content: List[str], src_filepath: str, after_regex: str) -> bool:
     """
-    Executed when license is not found. It either adds license if remove_header is False,
+    Executed when license is not found.
+    It either adds license if remove_header is False,
         does nothing if remove_header is True.
     :param remove_header: whether header should be removed if found
     :param license_info: license info named tuple
@@ -194,9 +200,15 @@ def license_not_found(remove_header, license_info, src_file_content, src_filepat
         index = 0
         for line in src_file_content:
             stripped_line = line.strip()
-            # Special treatment for shebang, encoding and empty lines when at the beginning of the file
+            # Special treatment for user provided regex,
+            # or shebang, file encoding directive,
+            # and empty lines when at the beginning of the file.
             # (adds license only after those)
-            if stripped_line.startswith("#!") \
+            if after_regex is not None and after_regex != "":
+                if re.match(after_regex, stripped_line):
+                    index += 1  # Skip matched line
+                    break       # And insert after that line.
+            elif stripped_line.startswith("#!") \
                     or stripped_line.startswith("# -*- coding") \
                     or stripped_line == "":
                 index += 1
