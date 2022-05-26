@@ -91,7 +91,7 @@ variants of the license - either containing slight modifications or
 differently broken lines of the license text.\
 By default the plugin does
 exact matching when searching for the license and in such case it will add
-second licence on top - leaving the non-perfectly matched one in the source
+second license on top - leaving the non-perfectly matched one in the source
 code.\
 You can prevent that and add `--fuzzy-match-generates-todo` flag in
 which case fuzzy matching is performed based on Levenshtein distance of set
@@ -101,7 +101,7 @@ The license is detected if the ratio is > than
 `--fuzzy-ratio-cut-off` parameter (default 85) - ration corresponds roughly
 to how well the expected and actual license match (scale 0 - 100).
 Additionally `--fuzzy-match-extra-lines-to-check` lines in this case are
-checked for the licence in case it has lines broken differently and takes
+checked for the license in case it has lines broken differently and takes
 more lines (default 3).
 
 If a fuzzy match is found (and no exact match), a TODO comment is inserted
@@ -122,7 +122,7 @@ When the TODO comment is committed, pre-commit will fail with appropriate
 message. The check will fails systematically if the
 `--fuzzy-match-generates-todo` flag is set or not.\
 You will need to remove
-the TODO comment and licence so that it gets re-added in order to get rid
+the TODO comment and license so that it gets re-added in order to get rid
 of the error.
 
 License insertion can be skipped altogether if the file contains the
