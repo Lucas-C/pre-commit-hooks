@@ -167,17 +167,21 @@ def process_files(args, changed_files, todo_files, license_info):
 
 
 def _read_file_content(src_filepath):
-    last_error = None
-    for encoding in ('utf8', 'ISO-8859-1'):  # we could use the chardet library to support more encodings
+    contents: List[str] = []
+
+    # In ISO-8859-1 all characters are valid, so the above always
+    # returns except for errors that are not a "UnicodeDecodeError".
+    # Note: The chardet library could be used to support more encodings
+
+    for encoding in ('utf8', 'ISO-8859-1'):
         try:
             with open(src_filepath, encoding=encoding) as src_file:
-                return src_file.readlines()
-        except UnicodeDecodeError as error:
-            last_error = error
-    print("Error while processing: {} - file encoding is probably not supported".format(src_filepath))
-    if last_error is not None:   # Avoid mypy message
-        raise last_error
-    raise RuntimeError("Unexpected branch taken (_read_file_content)")
+                contents = src_file.readlines()
+                break
+        except UnicodeDecodeError:
+            pass
+
+    return contents
 
 
 def license_not_found(remove_header, license_info, src_file_content, src_filepath):
