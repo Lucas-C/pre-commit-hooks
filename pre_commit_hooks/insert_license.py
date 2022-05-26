@@ -50,7 +50,7 @@ def main(argv=None):
                         default=FUZZY_MATCH_EXTRA_LINES_TO_CHECK)
     parser.add_argument('--skip-license-insertion-comment', default=SKIP_LICENSE_INSERTION_COMMENT)
     parser.add_argument('--insert-license-after-regex', default="",
-                        help="Insert license after line matching regex (ex: '^<\\?php$'")
+                        help="Insert license after line matching regex (ex: '^<\\?php$')")
     parser.add_argument('--remove-header', action='store_true')
     args = parser.parse_args(argv)
 
