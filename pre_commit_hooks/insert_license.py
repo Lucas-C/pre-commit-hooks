@@ -307,12 +307,6 @@ def fail_license_todo_found(
     return False
 
 
-def remove_prefix(text, prefix):
-    if text.startswith(prefix):
-        return text[len(prefix):]
-    return text
-
-
 def fuzzy_find_license_header_index(src_file_content,  # pylint: disable=too-many-locals
                                     license_info,
                                     top_lines_count,
@@ -336,7 +330,7 @@ def fuzzy_find_license_header_index(src_file_content,  # pylint: disable=too-man
         ratio = fuzz.token_set_ratio(license_string, license_string_candidate)
         num_tokens = len(license_string_candidate.split(" "))
         num_tokens_diff = abs(num_tokens - expected_num_tokens)
-        if DEBUG_LEVENSHTEIN_DISTANCE_CALCULATION:
+        if DEBUG_LEVENSHTEIN_DISTANCE_CALCULATION:  # pragma: no cover
             print("License_string:{}".format(license_string))
             print("License_string_candidate:{}".format(license_string_candidate))
             print("Candidate offset:{}".format(candidate_offset))
@@ -349,10 +343,10 @@ def fuzzy_find_license_header_index(src_file_content,  # pylint: disable=too-man
                 best_ratio = ratio
                 best_line_number_match = i + candidate_offset
                 best_num_token_diff = num_tokens_diff
-                if DEBUG_LEVENSHTEIN_DISTANCE_CALCULATION:
+                if DEBUG_LEVENSHTEIN_DISTANCE_CALCULATION:  # pragma: no cover
                     print("Setting best line number match: {}, ratio {}, num tokens diff {}".format(
                         best_line_number_match, best_ratio, best_num_token_diff))
-        if DEBUG_LEVENSHTEIN_DISTANCE_CALCULATION:
+        if DEBUG_LEVENSHTEIN_DISTANCE_CALCULATION:  # pragma: no cover
             print("Best offset match {}".format(best_line_number_match))
     return best_line_number_match
 
@@ -398,4 +392,4 @@ def get_license_candidate_string(candidate_array, license_info):
 
 
 if __name__ == '__main__':
-    sys.exit(main(sys.argv[1:]))
+    sys.exit(main(sys.argv[1:]))  # pragma: no cover
