@@ -359,10 +359,10 @@ def fuzzy_find_license_header_index(src_file_content,  # pylint: disable=too-man
 
 def get_license_candidate_string(candidate_array, license_info):
     """
-    Return licence candidate string from the array of strings retrieved
+    Return license candidate string from the array of strings retrieved
     :param candidate_array: array of lines of the candidate strings
-    :param license_info: LicenseInfo named tuple containing information about the licence
-    :return: Tuple of string version of the licence candidate and offset in lines where it starts.
+    :param license_info: LicenseInfo named tuple containing information about the license
+    :return: Tuple of string version of the license candidate and offset in lines where it starts.
     """
     license_string_candidate = ""
     stripped_comment_start = license_info.comment_start.strip() if license_info.comment_start else ""
@@ -370,23 +370,23 @@ def get_license_candidate_string(candidate_array, license_info):
     stripped_comment_end = license_info.comment_end.strip() if license_info.comment_end else ""
     in_license = False
     current_offset = 0
-    found_licence_offset = 0
+    found_license_offset = 0
     for license_line in candidate_array:
         stripped_line = license_line.strip()
         if not in_license:
             if stripped_comment_start:
                 if stripped_line.startswith(stripped_comment_start):
                     in_license = True
-                    found_licence_offset = current_offset + 1  # License starts in the next line
+                    found_license_offset = current_offset + 1  # License starts in the next line
                     continue
             else:
                 if stripped_comment_prefix:
                     if stripped_line.startswith(stripped_comment_prefix):
                         in_license = True
-                        found_licence_offset = current_offset  # License starts in this line
+                        found_license_offset = current_offset  # License starts in this line
                 else:
                     in_license = True
-                    found_licence_offset = current_offset  # We have no data :(. We start licence immediately
+                    found_license_offset = current_offset  # We have no data :(. We start license immediately
         else:
             if stripped_comment_end and stripped_line.startswith(stripped_comment_end):
                 break
@@ -394,7 +394,7 @@ def get_license_candidate_string(candidate_array, license_info):
                            stripped_line.startswith(stripped_comment_prefix)):
             license_string_candidate += stripped_line[len(stripped_comment_prefix):] + " "
         current_offset += 1
-    return license_string_candidate.strip(), found_licence_offset
+    return license_string_candidate.strip(), found_license_offset
 
 
 if __name__ == '__main__':
