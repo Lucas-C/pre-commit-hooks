@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 from __future__ import print_function, annotations
-from typing import List
+from typing import List, Tuple
 import argparse
 import collections
 import sys
@@ -169,7 +169,7 @@ def process_files(args, changed_files, todo_files, license_info):
     return changed_files or todo_files
 
 
-def _read_file_content(src_filepath) -> str, List[str]:
+def _read_file_content(src_filepath) -> Tuple[List[str], str]:
     contents: List[str] = []
     encoding: str
 
