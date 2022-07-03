@@ -24,7 +24,7 @@ def main(argv=None):
     text_files = [f for f in args.filenames if is_textfile(f)]
     files_with_crlf = [f for f in text_files if contains_crlf(f)]
     for file_with_crlf in files_with_crlf:
-        print('Removing CRLF end-lines in: {0}'.format(file_with_crlf))
+        print(f'Removing CRLF end-lines in: {file_with_crlf}')
         removes_crlf_in_file(file_with_crlf)
     if files_with_crlf:
         print('')

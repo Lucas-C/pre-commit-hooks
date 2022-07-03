@@ -23,8 +23,7 @@ def main(argv=None):
     text_files = [f for f in args.filenames if is_textfile(f)]
     files_with_tabs = [f for f in text_files if contains_tabs(f)]
     for file_with_tabs in files_with_tabs:
-        print('Substituting tabs in: {0} by {1} whitespaces'.format(
-                file_with_tabs, args.whitespaces_count))
+        print(f'Substituting tabs in: {file_with_tabs} by {args.whitespaces_count} whitespaces')
         removes_tabs_in_file(file_with_tabs, args.whitespaces_count)
     if files_with_tabs:
         print('')
