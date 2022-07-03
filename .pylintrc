@@ -1,5 +1,5 @@
 [MESSAGES CONTROL]
-disable = duplicate-code, import-error, missing-docstring, multiple-imports
+disable = duplicate-code, missing-docstring, multiple-imports
 
 [FORMAT]
 max-line-length = 150
