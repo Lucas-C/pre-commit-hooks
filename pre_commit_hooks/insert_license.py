@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 
-from __future__ import print_function, annotations
-from typing import List
+from __future__ import annotations
 import argparse
 import collections
 import sys
@@ -53,8 +52,8 @@ def main(argv=None):
 
     license_info = get_license_info(args)
 
-    changed_files: List[str] = []
-    todo_files: List[str] = []
+    changed_files: list[str] = []
+    todo_files: list[str] = []
 
     check_failed = process_files(args, changed_files, todo_files, license_info)
 
