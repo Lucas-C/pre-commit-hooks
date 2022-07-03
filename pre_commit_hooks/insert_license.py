@@ -168,8 +168,8 @@ def process_files(args, changed_files, todo_files, license_info):
     return changed_files or todo_files
 
 
-def _read_file_content(src_filepath) -> str, List[str]:
-    contents: List[str] = []
+def _read_file_content(src_filepath) -> tuple[list[str], str]:
+    contents: list[str] = []
     encoding: str
 
     # In ISO-8859-1 all characters are valid, so the above always
