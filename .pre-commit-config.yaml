@@ -39,6 +39,7 @@ repos:
         args:
           - --rcfile=.pylintrc
           - --reports=no
+        additional_dependencies: [pytest, fuzzywuzzy]
         exclude: ^tests/resources/.*(init_with_license\.py|todo).*$
   - repo: https://github.com/psf/black
     rev: 22.6.0
