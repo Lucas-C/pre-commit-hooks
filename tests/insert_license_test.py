@@ -58,6 +58,7 @@ def test_insert_license(license_file_path,
                         fail_check,
                         extra_args,
                         tmpdir):
+    encoding = 'ISO-8859-1' if 'iso8859' in src_file_path else 'utf-8'
     with chdir_to_test_resources():
         path = tmpdir.join('src_file_path')
         shutil.copy(src_file_path, path.strpath)
@@ -66,9 +67,9 @@ def test_insert_license(license_file_path,
             args.extend(extra_args)
         assert insert_license(args) == (1 if fail_check else 0)
         if new_src_file_expected:
-            with open(new_src_file_expected) as expected_content_file:
+            with open(new_src_file_expected, encoding=encoding) as expected_content_file:
                 expected_content = expected_content_file.read()
-            new_file_content = path.open().read()
+            new_file_content = path.open(encoding=encoding).read()
             assert new_file_content == expected_content
 
 
@@ -119,9 +120,9 @@ def test_fuzzy_match_license(license_file_path,
                 path.strpath]
         assert insert_license(args) == (1 if fail_check else 0)
         if new_src_file_expected:
-            with open(new_src_file_expected) as expected_content_file:
+            with open(new_src_file_expected, encoding='utf-8') as expected_content_file:
                 expected_content = expected_content_file.read()
-            new_file_content = path.open().read()
+            new_file_content = path.open(encoding='utf-8').read()
             assert new_file_content == expected_content
 
 
@@ -192,9 +193,9 @@ def test_remove_license(license_file_path,
             argv = ['--fuzzy-match-generates-todo'] + argv
         assert insert_license(argv) == (1 if fail_check else 0)
         if new_src_file_expected:
-            with open(new_src_file_expected) as expected_content_file:
+            with open(new_src_file_expected, encoding='utf-8') as expected_content_file:
                 expected_content = expected_content_file.read()
-            new_file_content = path.open().read()
+            new_file_content = path.open(encoding='utf-8').read()
             assert new_file_content == expected_content
 
 

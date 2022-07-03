@@ -61,9 +61,9 @@ def main(argv=None):
     if check_failed:
         print('')
         if changed_files:
-            print('Some sources were modified by the hook {} '.format(changed_files))
+            print(f'Some sources were modified by the hook {changed_files}')
         if todo_files:
-            print('Some sources {} contain TODO about inconsistent licenses'.format(todo_files))
+            print(f'Some sources {todo_files} contain TODO about inconsistent licenses')
         print('Now aborting the commit.')
         print('You should check the changes made. Then simply "git add --update ." and re-commit')
         print('')
@@ -79,7 +79,7 @@ def get_license_info(args):
         comment_start, comment_prefix, comment_end = comment_prefix.split('|')
     with open(args.license_filepath, encoding='utf8') as license_file:
         plain_license = license_file.readlines()
-    prefixed_license = ['{}{}{}'.format(comment_prefix, extra_space if line.strip() else '', line)
+    prefixed_license = [f'{comment_prefix}{extra_space if line.strip() else ""}{line}'
                         for line in plain_license]
     eol = '\r\n' if prefixed_license[0][-2:] == '\r\n' else '\n'
 
@@ -116,7 +116,7 @@ def process_files(args, changed_files, todo_files, license_info):
     :return: True if some files were changed or t.o.d.o is detected
     """
     for src_filepath in args.filenames:
-        src_file_content = _read_file_content(src_filepath)
+        src_file_content, encoding = _read_file_content(src_filepath)
         if skip_license_insert_found(
                 src_file_content=src_file_content,
                 skip_license_insertion_comment=args.skip_license_insertion_comment,
@@ -146,7 +146,8 @@ def process_files(args, changed_files, todo_files, license_info):
                              license_header_index=license_header_index,
                              license_info=license_info,
                              src_file_content=src_file_content,
-                             src_filepath=src_filepath):
+                             src_filepath=src_filepath,
+                             encoding=encoding):
                 changed_files.append(src_filepath)
         else:
             if fuzzy_match_header_index is not None:
@@ -155,13 +156,15 @@ def process_files(args, changed_files, todo_files, license_info):
                                        fuzzy_match_todo_comment=args.fuzzy_match_todo_comment,
                                        fuzzy_match_todo_instructions=args.fuzzy_match_todo_instructions,
                                        src_file_content=src_file_content,
-                                       src_filepath=src_filepath):
+                                       src_filepath=src_filepath,
+                                       encoding=encoding):
                     todo_files.append(src_filepath)
             else:
                 if license_not_found(remove_header=args.remove_header,
                                      license_info=license_info,
                                      src_file_content=src_file_content,
-                                     src_filepath=src_filepath):
+                                     src_filepath=src_filepath,
+                                     encoding=encoding):
                     changed_files.append(src_filepath)
     return changed_files or todo_files
 
@@ -171,16 +174,16 @@ def _read_file_content(src_filepath):
     for encoding in ('utf8', 'ISO-8859-1'):  # we could use the chardet library to support more encodings
         try:
             with open(src_filepath, encoding=encoding) as src_file:
-                return src_file.readlines()
+                return src_file.readlines(), encoding
         except UnicodeDecodeError as error:
             last_error = error
-    print("Error while processing: {} - file encoding is probably not supported".format(src_filepath))
+    print(f"Error while processing: {src_filepath} - file encoding is probably not supported")
     if last_error is not None:   # Avoid mypy message
         raise last_error
     raise RuntimeError("Unexpected branch taken (_read_file_content)")
 
 
-def license_not_found(remove_header, license_info, src_file_content, src_filepath):
+def license_not_found(remove_header, license_info, src_file_content, src_filepath, encoding):
     """
     Executed when license is not found. It either adds license if remove_header is False,
         does nothing if remove_header is True.
@@ -204,13 +207,13 @@ def license_not_found(remove_header, license_info, src_file_content, src_filepat
                 break
         src_file_content = src_file_content[:index] + license_info.prefixed_license + \
             [license_info.eol] + src_file_content[index:]
-        with open(src_filepath, 'w', encoding='utf8') as src_file:
+        with open(src_filepath, 'w', encoding=encoding) as src_file:
             src_file.write(''.join(src_file_content))
         return True
     return False
 
 
-def license_found(remove_header, license_header_index, license_info, src_file_content, src_filepath):
+def license_found(remove_header, license_header_index, license_info, src_file_content, src_filepath, encoding):  # pylint: disable=too-many-arguments
     """
     Executed when license is found. It does nothing if remove_header is False,
         removes the license if remove_header is True.
@@ -230,7 +233,7 @@ def license_found(remove_header, license_header_index, license_info, src_file_co
             src_file_content = src_file_content[:license_header_index] + \
                                src_file_content[license_header_index +
                                                 len(license_info.prefixed_license) + 1:]
-        with open(src_filepath, 'w', encoding='utf8') as src_file:
+        with open(src_filepath, 'w', encoding=encoding) as src_file:
             src_file.write(''.join(src_file_content))
         return True
     return False
@@ -241,7 +244,8 @@ def fuzzy_license_found(license_info,  # pylint: disable=too-many-arguments
                         fuzzy_match_todo_comment,
                         fuzzy_match_todo_instructions,
                         src_file_content,
-                        src_filepath):
+                        src_filepath,
+                        encoding):
     """
     Executed when fuzzy license is found. It inserts comment indicating that the license should be
         corrected.
@@ -258,7 +262,7 @@ def fuzzy_license_found(license_info,  # pylint: disable=too-many-arguments
         [license_info.comment_prefix + fuzzy_match_todo_comment + license_info.eol] + \
         [license_info.comment_prefix + fuzzy_match_todo_instructions + license_info.eol] + \
         src_file_content[fuzzy_match_header_index:]
-    with open(src_filepath, 'w', encoding='utf8') as src_file:
+    with open(src_filepath, 'w', encoding=encoding) as src_file:
         src_file.write(''.join(src_file_content))
     return True
 
@@ -331,23 +335,22 @@ def fuzzy_find_license_header_index(src_file_content,  # pylint: disable=too-man
         num_tokens = len(license_string_candidate.split(" "))
         num_tokens_diff = abs(num_tokens - expected_num_tokens)
         if DEBUG_LEVENSHTEIN_DISTANCE_CALCULATION:  # pragma: no cover
-            print("License_string:{}".format(license_string))
-            print("License_string_candidate:{}".format(license_string_candidate))
-            print("Candidate offset:{}".format(candidate_offset))
-            print("Ratio:{}".format(ratio))
-            print("Number of tokens:{}".format(num_tokens))
-            print("Expected number of tokens:{}".format(expected_num_tokens))
-            print("Num tokens diff:{}".format(num_tokens_diff))
+            print(f"License_string: {license_string}")
+            print(f"License_string_candidate: {license_string_candidate}")
+            print(f"Candidate offset: {candidate_offset}")
+            print(f"Ratio: {ratio}")
+            print(f"Number of tokens: {num_tokens}")
+            print(f"Expected number of tokens: {expected_num_tokens}")
+            print(f"Num tokens diff: {num_tokens_diff}")
         if ratio >= fuzzy_ratio_cut_off:
             if ratio > best_ratio or (ratio == best_ratio and num_tokens_diff < best_num_token_diff):
                 best_ratio = ratio
                 best_line_number_match = i + candidate_offset
                 best_num_token_diff = num_tokens_diff
                 if DEBUG_LEVENSHTEIN_DISTANCE_CALCULATION:  # pragma: no cover
-                    print("Setting best line number match: {}, ratio {}, num tokens diff {}".format(
-                        best_line_number_match, best_ratio, best_num_token_diff))
+                    print(f"Setting best line number match: {best_line_number_match}, ratio {best_ratio}, num tokens diff {best_num_token_diff}")
         if DEBUG_LEVENSHTEIN_DISTANCE_CALCULATION:  # pragma: no cover
-            print("Best offset match {}".format(best_line_number_match))
+            print(f"Best offset match {best_line_number_match}")
     return best_line_number_match
 
 

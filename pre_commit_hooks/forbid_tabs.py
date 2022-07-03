@@ -14,7 +14,7 @@ def main(argv=None):
     files_with_tabs = [f for f in text_files if contains_tabs(f)]
     return_code = 0
     for file_with_tabs in files_with_tabs:
-        print('Tabs detected in file: {0}'.format(file_with_tabs))
+        print(f'Tabs detected in file: {file_with_tabs}')
         return_code = 1
     return return_code
 
