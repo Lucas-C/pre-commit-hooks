@@ -46,6 +46,7 @@ from pre_commit_hooks.insert_license import find_license_header_index
             ('main_iso8859_without_license.cpp', '/*|\t| */', 'main_iso8859_with_license.cpp', True, None),
             ('module_without_license.txt', '', 'module_with_license_noprefix.txt', True, None),
             ('module_without_license.py', '#', 'module_with_license_nospace.py', True, ['--no-space-in-comment-prefix']),
+            ('module_without_license.php', '/*| *| */', 'module_with_license.php', True, ['--insert-license-after-regex', '^<\\?php$']),
         ),
     )),
 )
@@ -201,7 +202,8 @@ def test_remove_license(license_file_path,
 def chdir_to_test_resources():
     prev_dir = os.getcwd()
     try:
-        os.chdir('tests/resources')
+        res_dir = os.path.dirname(os.path.realpath(__file__)) +'/resources'
+        os.chdir(res_dir)
         yield
     finally:
         os.chdir(prev_dir)
