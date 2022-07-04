@@ -39,6 +39,11 @@ def main(argv=None):
                              'E.g.: /*| *| */')
     parser.add_argument('--no-space-in-comment-prefix', action='store_true',
                         help='Do not add extra space beyond the comment-style spec')
+    parser.add_argument(
+        '--no-extra-eol',
+        action='store_true',
+        help='Do not add extra End of Line after license comment'
+    )
     parser.add_argument('--detect-license-in-X-top-lines', type=int, default=5)
     parser.add_argument('--fuzzy-match-generates-todo', action='store_true')
     parser.add_argument('--fuzzy-ratio-cut-off', type=int, default=85)
@@ -81,7 +86,6 @@ def get_license_info(args):
     prefixed_license = [f'{comment_prefix}{extra_space if line.strip() else ""}{line}'
                         for line in plain_license]
     eol = '\r\n' if prefixed_license[0][-2:] == '\r\n' else '\n'
-
     num_extra_lines = 0
 
     if not prefixed_license[-1].endswith(eol):
@@ -97,7 +101,7 @@ def get_license_info(args):
     license_info = LicenseInfo(
         prefixed_license=prefixed_license,
         plain_license=plain_license,
-        eol=eol,
+        eol='' if args.no_extra_eol else eol,
         comment_start=comment_start,
         comment_prefix=comment_prefix,
         comment_end=comment_end,
