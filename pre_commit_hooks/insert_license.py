@@ -187,7 +187,14 @@ def _read_file_content(src_filepath):
     raise RuntimeError("Unexpected branch taken (_read_file_content)")
 
 
-def license_not_found(remove_header: bool, license_info: LicenseInfo, src_file_content: List[str], src_filepath: str, encoding: str, after_regex: str) -> bool:
+def license_not_found(  # pylint: disable=too-many-arguments
+    remove_header: bool,
+    license_info: LicenseInfo,
+    src_file_content: list[str],
+    src_filepath: str,
+    encoding: str,
+    after_regex: str,
+) -> bool:
     """
     Executed when license is not found.
     It either adds license if remove_header is False,
