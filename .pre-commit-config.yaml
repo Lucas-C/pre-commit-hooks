@@ -79,7 +79,7 @@ repos:
       - id: py.test
         name: py.test
         language: python
-        additional_dependencies: [pytest, pytest-cov, coverage, fuzzywuzzy, python-Levenshtein]
+        additional_dependencies: [pytest, pytest-cov, coverage, fuzzywuzzy, Levenshtein]
         entry: pytest -sv
         require_serial: true
         pass_filenames: false

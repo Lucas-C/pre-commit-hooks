@@ -24,7 +24,7 @@ setup(
     packages=find_packages('.'),
     install_requires=[
         'fuzzywuzzy',
-        'python-Levenshtein',
+        'Levenshtein',
     ],
     entry_points={
         'console_scripts': [
