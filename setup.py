@@ -23,8 +23,7 @@ setup(
 
     packages=find_packages('.'),
     install_requires=[
-        'fuzzywuzzy',
-        'python-Levenshtein',
+        'rapidfuzz',
     ],
     entry_points={
         'console_scripts': [

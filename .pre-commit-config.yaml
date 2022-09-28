@@ -47,7 +47,7 @@ repos:
           - --rcfile=.pylintrc
           - --reports=no
           - --py-version=3.7
-        additional_dependencies: [pytest, fuzzywuzzy]
+        additional_dependencies: [pytest, rapidfuzz]
         exclude: ^tests/resources/.*(init_with_license\.py|todo).*$
   - repo: https://github.com/psf/black
     rev: 22.6.0
@@ -79,7 +79,7 @@ repos:
       - id: py.test
         name: py.test
         language: python
-        additional_dependencies: [pytest, pytest-cov, coverage, fuzzywuzzy, python-Levenshtein]
+        additional_dependencies: [pytest, pytest-cov, coverage, rapidfuzz]
         entry: pytest -sv
         require_serial: true
         pass_filenames: false

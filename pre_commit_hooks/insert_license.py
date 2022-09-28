@@ -6,7 +6,7 @@ import collections
 import re
 import sys
 
-from fuzzywuzzy import fuzz
+from rapidfuzz import fuzz
 
 FUZZY_MATCH_TODO_COMMENT = (" TODO: This license is not consistent with"
                             " license used in the project.")
