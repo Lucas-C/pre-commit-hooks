@@ -8,10 +8,28 @@ def contains_tabs(filename):
 def removes_tabs_in_file(filename, whitespaces_count):
     with open(filename, mode='rb') as file_processed:
         lines = file_processed.readlines()
-    lines = [line.replace(b'\t', b' ' * whitespaces_count) for line in lines]
+    lines = [subst_tabs_in_line(line, whitespaces_count) for line in lines]
     with open(filename, mode='wb') as file_processed:
         for line in lines:
             file_processed.write(line)
+
+def subst_tabs_in_line(line: bytes, whitespaces_count: int) -> bytes:
+    "Remove tabs and replace them with whitespaces_count spaces maintaining alignment"
+    new_line = b''
+    spaces_count = 0  # = how many consecutive space characters precede this \t
+    for frag_i, frag in enumerate(line.split(b'\t')):
+        if frag_i > 0 and spaces_count == 0: # case of a \t without whitespaces before
+            spaces_count = 4
+        else:  # we increment spaces_count to be a multiple of `whitespaces_count`:
+            spaces_count += (whitespaces_count - spaces_count) % whitespaces_count
+        tail_spaces_count = 0
+        j = len(frag) - 1
+        while j >= 0 and frag[j] == 32:
+            tail_spaces_count += 1
+            j -= 1
+        new_line += spaces_count * (b' ') + frag[:j+1]
+        spaces_count = tail_spaces_count
+    return new_line
 
 def main(argv=None):
     parser = argparse.ArgumentParser()

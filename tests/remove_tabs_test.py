@@ -6,8 +6,11 @@ from pre_commit_hooks.remove_tabs import main as remove_tabs
 @pytest.mark.parametrize(
     ('input_s', 'expected'),
     (
-        ('foo \t\nbar', 'foo     \nbar'),
-        ('bar\n\tbaz\n', 'bar\n    baz\n'),
+        ('\tfoo', '    foo'),
+        ('foo\t', 'foo    '),
+        ('foo \tbar', 'foo    bar'),
+        ('foo\t bar', 'foo     bar'),
+        ('foo \t  \t\t   bar', 'foo               bar'),
     ),
 )
 def test_remove_tabs(input_s, expected, tmpdir):
