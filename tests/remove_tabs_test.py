@@ -8,6 +8,10 @@ from pre_commit_hooks.remove_tabs import main as remove_tabs
     (
         ('foo \t\nbar', 'foo     \nbar'),
         ('bar\n\tbaz\n', 'bar\n    baz\n'),
+        ('No leading\ttab\n\tleading\ttab\n \tSpace then\tTab\n', 'No leading  tab\n    leading tab\n    Space then  Tab\n'),
+        ('Tabs\tbetween\tevery\tword\tin\tthe\tline.\n', 'Tabs    between every   word    in  the line.\n',),
+        ('Space \tthen \ttab \tbetween \tevery \tword \tin \tthe \tline.',
+         'Space   then    tab     between     every   word    in  the     line.'),
     ),
 )
 def test_remove_tabs(input_s, expected, tmpdir):

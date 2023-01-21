@@ -8,7 +8,7 @@ def contains_tabs(filename):
 def removes_tabs_in_file(filename, whitespaces_count):
     with open(filename, mode='rb') as file_processed:
         lines = file_processed.readlines()
-    lines = [line.replace(b'\t', b' ' * whitespaces_count) for line in lines]
+    lines = [line.expandtabs(whitespaces_count) for line in lines]
     with open(filename, mode='wb') as file_processed:
         for line in lines:
             file_processed.write(line)
