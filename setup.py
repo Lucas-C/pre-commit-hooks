@@ -5,7 +5,7 @@ setup(
     name='pre-commit-hooks',
     description='Some out-of-the-box hooks for pre-commit',
     url='https://github.com/Lucas-C/pre-commit-hooks',
-    version='1.3.1',
+    version='1.4.0',
 
     author='Lucas Cimon',
     author_email='lucas.cimon@gmail.com',
@@ -17,6 +17,7 @@ setup(
         'Programming Language :: Python :: 3.8',
         'Programming Language :: Python :: 3.9',
         'Programming Language :: Python :: 3.10',
+        'Programming Language :: Python :: 3.11',
         'Programming Language :: Python :: Implementation :: CPython',
         'Programming Language :: Python :: Implementation :: PyPy',
     ],

@@ -6,8 +6,10 @@ from pre_commit_hooks.remove_tabs import main as remove_tabs
 @pytest.mark.parametrize(
     ('input_s', 'expected'),
     (
-        ('foo \t\nbar', 'foo     \nbar'),
-        ('bar\n\tbaz\n', 'bar\n    baz\n'),
+        ('\tfoo', '    foo'),
+        ('foo\t', 'foo '),
+        ('foo \t', 'foo     '),
+        ('foo \t  \t\t   bar', 'foo                bar'),
         ('No leading\ttab\n\tleading\ttab\n \tSpace then\tTab\n', 'No leading  tab\n    leading tab\n    Space then  Tab\n'),
         ('Tabs\tbetween\tevery\tword\tin\tthe\tline.\n', 'Tabs    between every   word    in  the line.\n',),
         ('Space \tthen \ttab \tbetween \tevery \tword \tin \tthe \tline.',
