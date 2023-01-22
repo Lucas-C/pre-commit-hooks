@@ -51,6 +51,7 @@ into separate repos:
         - src/license_header.txt        # defaults to: LICENSE.txt
         - --comment-style
         - //                            # defaults to:  #
+        - --use-current-year
 ```
 
 ### insert-license
@@ -83,6 +84,20 @@ In case you want to remove the comment headers introduced by
    `pre-commit run insert-license --all-files` ;
 3. Remove the `--remove-header` arg and update your `LICENSE.txt` ;
 4. Re-run the hook on all your files.
+
+#### Handling years flexibly
+
+You can add `--use-current-year` to change how the hook treats years in the
+headers:
+
+- When inserting a header, the current year will always be inserted
+  regardless of the year listed in the license file.
+- When modifying a file that already has a header, the hook will ensure the
+  current year is listed in the header by using a range. For instance,
+  `2015` or `2015-2018` would get updated to `2015-2023` in the year 2023.
+- When removing headers, the licenses will be removed regardless of the
+  years they contain -- as if they used the year currently present in the
+  license file.
 
 #### Fuzzy license matching
 

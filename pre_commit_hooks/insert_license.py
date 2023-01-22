@@ -5,6 +5,8 @@ import argparse
 import collections
 import re
 import sys
+from datetime import datetime
+from typing import Sequence
 
 from fuzzywuzzy import fuzz
 
@@ -12,7 +14,7 @@ FUZZY_MATCH_TODO_COMMENT = (" TODO: This license is not consistent with"
                             " license used in the project.")
 FUZZY_MATCH_TODO_INSTRUCTIONS = (
     "       Delete the inconsistent license and above line"
-    " and rerun pre-commit to insert a good license." )
+    " and rerun pre-commit to insert a good license.")
 FUZZY_MATCH_EXTRA_LINES_TO_CHECK = 3
 
 SKIP_LICENSE_INSERTION_COMMENT = "SKIP LICENSE INSERTION"
@@ -56,6 +58,11 @@ def main(argv=None):
     parser.add_argument('--insert-license-after-regex', default="",
                         help="Insert license after line matching regex (ex: '^<\\?php$')")
     parser.add_argument('--remove-header', action='store_true')
+    parser.add_argument(
+        "--use-current-year",
+        action="store_true",
+        help=("Allow past years and ranges of years in headers. Use the current year in inserted and updated licenses."),
+    )
     args = parser.parse_args(argv)
 
     license_info = get_license_info(args)
@@ -78,6 +85,13 @@ def main(argv=None):
     return 0
 
 
+def _replace_year_in_license_with_current(plain_license: list[str]):
+    current_year = datetime.now().year
+    for i, line in enumerate(plain_license):
+        plain_license[i] = re.sub(r"\b\d{4}\b", str(current_year), line)
+    return plain_license
+
+
 def get_license_info(args) -> LicenseInfo:
     comment_start, comment_end = None, None
     comment_prefix = args.comment_style.replace('\\t', '\t')
@@ -86,6 +100,10 @@ def get_license_info(args) -> LicenseInfo:
         comment_start, comment_prefix, comment_end = comment_prefix.split('|')
     with open(args.license_filepath, encoding='utf8') as license_file:
         plain_license = license_file.readlines()
+
+    if args.use_current_year:
+        plain_license = _replace_year_in_license_with_current(plain_license)
+
     prefixed_license = [f'{comment_prefix}{extra_space if line.strip() else ""}{line}'
                         for line in plain_license]
     eol = '\r\n' if prefixed_license[0][-2:] == '\r\n' else '\n'
@@ -138,7 +156,8 @@ def process_files(args, changed_files, todo_files, license_info: LicenseInfo):
         license_header_index = find_license_header_index(
             src_file_content=src_file_content,
             license_info=license_info,
-            top_lines_count=args.detect_license_in_X_top_lines)
+            top_lines_count=args.detect_license_in_X_top_lines,
+            match_years_strictly=not args.use_current_year)
         fuzzy_match_header_index = None
         if args.fuzzy_match_generates_todo and license_header_index is None:
             fuzzy_match_header_index = fuzzy_find_license_header_index(
@@ -150,6 +169,7 @@ def process_files(args, changed_files, todo_files, license_info: LicenseInfo):
             )
         if license_header_index is not None:
             if license_found(remove_header=args.remove_header,
+                             update_year_range=args.use_current_year,
                              license_header_index=license_header_index,
                              license_info=license_info,
                              src_file_content=src_file_content,
@@ -235,7 +255,53 @@ def license_not_found(  # pylint: disable=too-many-arguments
     return False
 
 
-def license_found(remove_header, license_header_index, license_info, src_file_content, src_filepath, encoding):  # pylint: disable=too-many-arguments
+# a year, then optionally a dash (with optional spaces before and after), and another year, surrounded by word boundaries
+_YEAR_RANGE_PATTERN = re.compile(r"\b\d{4}(?: *- *\d{2,4})?\b")
+
+
+def try_update_year_range(
+    src_file_content: list[str],
+    license_header_index: int,
+) -> tuple[Sequence[str], bool]:
+    """
+    Updates the years in a copyright header in src_file_content by
+        ensuring it contains a range ending in the current year.
+    Does nothing if the current year is already present as the end of
+        the range.
+    The change will affect only the first line containing years.
+    :param src_file_content: the lines in the source file
+    :param license_header_index: line where the license starts
+    :return: source file contents and a flag indicating update
+    """
+    current_year = datetime.now().year
+    for i in range(license_header_index, len(src_file_content)):
+        line = src_file_content[i]
+        matches = _YEAR_RANGE_PATTERN.findall(line)
+        if matches:
+            match = matches[-1]
+            start_year = int(match[:4])
+            end_year = match[5:]
+            if not end_year or int(end_year) < current_year:
+                updated = line.replace(match,
+                                    str(start_year) + '-' + str(current_year))
+                # verify the current list of years ends in the current one
+                if _YEARS_PATTERN.findall(updated)[-1][-4:] != str(current_year):
+                    print(f"Unable to update year range in line: {line.rstrip()}. Got: {updated.rstrip()}")
+                    break
+                src_file_content[i] = updated
+                return src_file_content, True
+    return src_file_content, False
+
+
+def license_found(
+    remove_header,
+    update_year_range,
+    license_header_index,
+    license_info,
+    src_file_content,
+    src_filepath,
+    encoding,
+):  # pylint: disable=too-many-arguments
     """
     Executed when license is found. It does nothing if remove_header is False,
         removes the license if remove_header is True.
@@ -246,6 +312,7 @@ def license_found(remove_header, license_header_index, license_info, src_file_co
     :param src_filepath: path of the src_file
     :return: True if change was made, False otherwise
     """
+    updated = False
     if remove_header:
         last_license_line_index = license_header_index + len(license_info.prefixed_license)
         if last_license_line_index < len(src_file_content) and src_file_content[last_license_line_index].strip():
@@ -255,10 +322,15 @@ def license_found(remove_header, license_header_index, license_info, src_file_co
             src_file_content = src_file_content[:license_header_index] + \
                                src_file_content[license_header_index +
                                                 len(license_info.prefixed_license) + 1:]
+        updated = True
+    elif update_year_range:
+        src_file_content, updated = try_update_year_range(src_file_content, license_header_index)
+
+    if updated:
         with open(src_filepath, 'w', encoding=encoding) as src_file:
             src_file.write(''.join(src_file_content))
-        return True
-    return False
+
+    return updated
 
 
 def fuzzy_license_found(license_info,  # pylint: disable=too-many-arguments
@@ -289,9 +361,28 @@ def fuzzy_license_found(license_info,  # pylint: disable=too-many-arguments
     return True
 
 
+# More flexible than _YEAR_RANGE_PATTERN. For detecting all years in a line, not just a range.
+_YEARS_PATTERN = re.compile(r"\b\d{4}([ ,-]+\d{2,4})*\b")
+
+
+def _strip_years(line):
+    return _YEARS_PATTERN.sub("", line)
+
+
+def _license_line_matches(license_line, src_file_line, match_years_strictly):
+    license_line = license_line.strip()
+    src_file_line = src_file_line.strip()
+
+    if match_years_strictly:
+        return license_line == src_file_line
+
+    return _strip_years(license_line) == _strip_years(src_file_line)
+
+
 def find_license_header_index(src_file_content,
-                              license_info,
-                              top_lines_count):
+                              license_info: LicenseInfo,
+                              top_lines_count,
+                              match_years_strictly):
     """
     Returns the line number, starting from 0 and lower than `top_lines_count`,
     where the license header comment starts in this file, or else None.
@@ -299,7 +390,10 @@ def find_license_header_index(src_file_content,
     for i in range(top_lines_count):
         license_match = True
         for j, license_line in enumerate(license_info.prefixed_license):
-            if i + j >= len(src_file_content) or license_line.strip() != src_file_content[i + j].strip():
+            if (i + j >= len(src_file_content) or
+                not _license_line_matches(license_line,
+                                          src_file_content[i + j],
+                                          match_years_strictly)):
                 license_match = False
                 break
         if license_match:
