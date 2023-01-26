@@ -37,7 +37,7 @@ into separate repos:
 
 ```yaml
 - repo: https://github.com/Lucas-C/pre-commit-hooks
-  rev: v1.4.1
+  rev: v1.4.2
   hooks:
     - id: forbid-crlf
     - id: remove-crlf
