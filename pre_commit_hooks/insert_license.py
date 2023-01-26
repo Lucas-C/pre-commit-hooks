@@ -32,6 +32,12 @@ LicenseInfo = collections.namedtuple('LicenseInfo', [
 ])
 
 
+class LicenseUpdateError(Exception):
+    def __init__(self, message):
+        super().__init__(message)
+        self.message = message
+
+
 def main(argv=None):
     parser = argparse.ArgumentParser()
     parser.add_argument('filenames', nargs='*', help='filenames to check')
@@ -137,8 +143,9 @@ def process_files(args, changed_files, todo_files, license_info: LicenseInfo):
     :param changed_files: list of changed files
     :param todo_files: list of files where t.o.d.o. is detected
     :param license_info: license info named tuple
-    :return: True if some files were changed or t.o.d.o is detected
+    :return: True if some files were changed, t.o.d.o is detected or an error occurred while updating the year
     """
+    license_update_failed = False
     after_regex = args.insert_license_after_regex
     for src_filepath in args.filenames:
         src_file_content, encoding = _read_file_content(src_filepath)
@@ -168,14 +175,18 @@ def process_files(args, changed_files, todo_files, license_info: LicenseInfo):
                 fuzzy_ratio_cut_off=args.fuzzy_ratio_cut_off,
             )
         if license_header_index is not None:
-            if license_found(remove_header=args.remove_header,
-                             update_year_range=args.use_current_year,
-                             license_header_index=license_header_index,
-                             license_info=license_info,
-                             src_file_content=src_file_content,
-                             src_filepath=src_filepath,
-                             encoding=encoding):
-                changed_files.append(src_filepath)
+            try:
+                if license_found(remove_header=args.remove_header,
+                                 update_year_range=args.use_current_year,
+                                 license_header_index=license_header_index,
+                                 license_info=license_info,
+                                 src_file_content=src_file_content,
+                                 src_filepath=src_filepath,
+                                 encoding=encoding):
+                    changed_files.append(src_filepath)
+            except LicenseUpdateError as error:
+                print(error)
+                license_update_failed = True
         else:
             if fuzzy_match_header_index is not None:
                 if fuzzy_license_found(license_info=license_info,
@@ -194,7 +205,7 @@ def process_files(args, changed_files, todo_files, license_info: LicenseInfo):
                                      encoding=encoding,
                                      after_regex=after_regex):
                     changed_files.append(src_filepath)
-    return changed_files or todo_files
+    return changed_files or todo_files or license_update_failed
 
 
 def _read_file_content(src_filepath):
@@ -261,7 +272,9 @@ _YEAR_RANGE_PATTERN = re.compile(r"\b\d{4}(?: *- *\d{2,4})?\b")
 
 def try_update_year_range(
     src_file_content: list[str],
+    src_filepath: str,
     license_header_index: int,
+    license_length: int
 ) -> tuple[Sequence[str], bool]:
     """
     Updates the years in a copyright header in src_file_content by
@@ -274,22 +287,25 @@ def try_update_year_range(
     :return: source file contents and a flag indicating update
     """
     current_year = datetime.now().year
-    for i in range(license_header_index, len(src_file_content)):
+    for i in range(license_header_index, license_header_index + license_length):
         line = src_file_content[i]
         matches = _YEAR_RANGE_PATTERN.findall(line)
         if matches:
             match = matches[-1]
             start_year = int(match[:4])
-            end_year = match[5:]
-            if not end_year or int(end_year) < current_year:
+            end_year = match[5:].lstrip(" -,")
+            if not end_year and start_year < current_year or end_year and int(end_year) < current_year:
                 updated = line.replace(match,
-                                    str(start_year) + '-' + str(current_year))
+                                       str(start_year) + '-' + str(current_year))
                 # verify the current list of years ends in the current one
                 if _YEARS_PATTERN.findall(updated)[-1][-4:] != str(current_year):
-                    print(f"Unable to update year range in line: {line.rstrip()}. Got: {updated.rstrip()}")
-                    break
+                    raise LicenseUpdateError(
+                        f"Year range detected in license header, but we were unable to update it.\n"
+                        f"File: {src_filepath}\nInput line: {line.rstrip()}\nDiscarded result: {updated.rstrip()}"
+                    )
                 src_file_content[i] = updated
                 return src_file_content, True
+            break
     return src_file_content, False
 
 
@@ -324,7 +340,7 @@ def license_found(
                                                 len(license_info.prefixed_license) + 1:]
         updated = True
     elif update_year_range:
-        src_file_content, updated = try_update_year_range(src_file_content, license_header_index)
+        src_file_content, updated = try_update_year_range(src_file_content, src_filepath, license_header_index, len(license_info.prefixed_license))
 
     if updated:
         with open(src_filepath, 'w', encoding=encoding) as src_file:
