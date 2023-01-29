@@ -4,7 +4,7 @@ import collections
 import re
 import sys
 from datetime import datetime
-from typing import Sequence
+from typing import Any, Sequence
 
 from fuzzywuzzy import fuzz
 
@@ -89,10 +89,13 @@ def main(argv=None):
     return 0
 
 
-def _replace_year_in_license_with_current(plain_license: list[str]):
+def _replace_year_in_license_with_current(plain_license: list[str], filepath: str):
     current_year = datetime.now().year
     for i, line in enumerate(plain_license):
-        plain_license[i] = re.sub(r"\b\d{4}\b", str(current_year), line)
+        updated = try_update_year(line, filepath, current_year, introduce_range=False)
+        if updated:
+            plain_license[i] = updated
+            break
     return plain_license
 
 
@@ -106,7 +109,7 @@ def get_license_info(args) -> LicenseInfo:
         plain_license = license_file.readlines()
 
     if args.use_current_year:
-        plain_license = _replace_year_in_license_with_current(plain_license)
+        plain_license = _replace_year_in_license_with_current(plain_license, args.license_filepath)
 
     prefixed_license = [f'{comment_prefix}{extra_space if line.strip() else ""}{line}'
                         for line in plain_license]
@@ -268,6 +271,43 @@ def license_not_found(  # pylint: disable=too-many-arguments
 _YEAR_RANGE_PATTERN = re.compile(r"\b\d{4}(?: *- *\d{2,4})?\b")
 
 
+def try_update_year(line: str, filepath: str, current_year: int, introduce_range: bool) -> str | None:
+    """
+    Update the last match in self.line.
+    :param line: the line to update
+    :param filepath: the file the line is from
+    :param introduce_range:
+        Decides what to do when a single year is found and not a range of years.
+        If True, create a range ending in the current year. If False, just replace the year.
+        If a range is already present, it will be updated regardless of this parameter.
+    :return: The updated line if there was an update. None otherwise.
+    """
+    matches = _YEAR_RANGE_PATTERN.findall(line)
+    if matches:
+        match = matches[-1]
+        start_year = int(match[:4])
+        end_year = match[5:].lstrip(" -,")
+        if end_year and int(end_year) < current_year:  # range detected
+            return _try_update_year_range_in_matched_line(line, match, start_year, current_year, filepath)
+        if not end_year and start_year < current_year:
+            if introduce_range:
+                return _try_update_year_range_in_matched_line(line, match, start_year, current_year, filepath)
+            return line.replace(match, str(current_year))
+    return None
+
+
+def _try_update_year_range_in_matched_line(line: str, match: Any, start_year: int, current_year: int, filepath: str):
+    """match: a match object for the _YEAR_RANGE_PATTERN regex"""
+    updated = line.replace(match, str(start_year) + "-" + str(current_year))
+    # verify the current list of years ends in the current one
+    if _YEARS_PATTERN.findall(updated)[-1][-4:] != str(current_year):
+        raise LicenseUpdateError(
+            f"Year range detected in license header, but we were unable to update it.\n"
+            f"File: {filepath}\nInput line: {line.rstrip()}\nDiscarded result: {updated.rstrip()}"
+        )
+    return updated
+
+
 def try_update_year_range(
     src_file_content: list[str],
     src_filepath: str,
@@ -286,24 +326,10 @@ def try_update_year_range(
     """
     current_year = datetime.now().year
     for i in range(license_header_index, license_header_index + license_length):
-        line = src_file_content[i]
-        matches = _YEAR_RANGE_PATTERN.findall(line)
-        if matches:
-            match = matches[-1]
-            start_year = int(match[:4])
-            end_year = match[5:].lstrip(" -,")
-            if not end_year and start_year < current_year or end_year and int(end_year) < current_year:
-                updated = line.replace(match,
-                                       str(start_year) + '-' + str(current_year))
-                # verify the current list of years ends in the current one
-                if _YEARS_PATTERN.findall(updated)[-1][-4:] != str(current_year):
-                    raise LicenseUpdateError(
-                        f"Year range detected in license header, but we were unable to update it.\n"
-                        f"File: {src_filepath}\nInput line: {line.rstrip()}\nDiscarded result: {updated.rstrip()}"
-                    )
-                src_file_content[i] = updated
-                return src_file_content, True
-            break
+        updated = try_update_year(src_file_content[i], src_filepath, current_year, introduce_range=True)
+        if updated:
+            src_file_content[i] = updated
+            return src_file_content, True
     return src_file_content, False
 
 
