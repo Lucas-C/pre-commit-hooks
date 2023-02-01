@@ -1,6 +1,6 @@
 from contextlib import contextmanager
 from datetime import datetime
-from itertools import product
+from itertools import chain, product
 import io
 import os
 import shutil
@@ -17,54 +17,60 @@ from pre_commit_hooks.insert_license import find_license_header_index
     ("license_file_path", "src_file_path", "comment_prefix", "new_src_file_expected", "message_expected", "fail_check", "extra_args"),
     map(
         lambda a: a[:1] + a[1],
-        product(  # combine license files with other args
-            ("LICENSE_with_trailing_newline.txt", "LICENSE_without_trailing_newline.txt"),
-            (
-                ("module_without_license.py", "#", "module_with_license.py", "", True, None),
-                ("module_without_license_skip.py", "#", None, "", False, None),
-                ("module_with_license.py", "#", None, "", False, None),
-                ("module_with_license_todo.py", "#", None, "", True, None),
-                ("module_without_license.jinja", "{#||#}", "module_with_license.jinja", "", True, None),
-                ("module_without_license_skip.jinja", "{#||#}", None, "", False, None),
-                ("module_with_license.jinja", "{#||#}", None, "", False, None),
-                ("module_with_license_todo.jinja", "{#||#}", None, "", True, None),
-                ("module_without_license_and_shebang.py", "#", "module_with_license_and_shebang.py", "", True, None),
-                ("module_without_license_and_shebang_skip.py", "#", None, "", False, None),
-                ("module_with_license_and_shebang.py", "#", None, "", False, None),
-                ("module_with_license_and_shebang_todo.py", "#", None, "", True, None),
-                ("module_without_license.groovy", "//", "module_with_license.groovy", "", True, None),
-                ("module_without_license_skip.groovy", "//", None, "", False, None),
-                ("module_with_license.groovy", "//", None, "", False, None),
-                ("module_with_license_todo.groovy", "//", None, "", True, None),
-                ("module_without_license.css", "/*| *| */", "module_with_license.css", "", True, None),
+        chain(
+            product(  # combine license files with other args
+                ("LICENSE_with_trailing_newline.txt", "LICENSE_without_trailing_newline.txt"),
                 (
-                    "module_without_license_and_few_words.css",
-                    "/*| *| */",
-                    "module_with_license_and_few_words.css",
-                    "",
-                    True,
-                    None,
-                ),  # Test fuzzy match does not match greedily
-                ("module_without_license_skip.css", "/*| *| */", None, "", False, None),
-                ("module_with_license.css", "/*| *| */", None, "", False, None),
-                ("module_with_license_todo.css", "/*| *| */", None, "", True, None),
-                ("main_without_license.cpp", "/*|\t| */", "main_with_license.cpp", "", True, None),
-                ("main_iso8859_without_license.cpp", "/*|\t| */", "main_iso8859_with_license.cpp", "", True, None),
-                ("module_without_license.txt", "", "module_with_license_noprefix.txt", "", True, None),
-                ("module_without_license.py", "#", "module_with_license_nospace.py", "", True, ["--no-space-in-comment-prefix"]),
-                ("module_without_license.php", "/*| *| */", "module_with_license.php", "", True, ["--insert-license-after-regex", "^<\\?php$"]),
-                ("module_without_license.py", "#", "module_with_license_noeol.py", "", True, ["--no-extra-eol"]),
-                ("module_without_license.groovy", "//", "module_with_license.groovy", "", True, ["--use-current-year"]),
-                ("module_with_stale_year_in_license.py", "#", "module_with_year_range_in_license.py", "", True, ["--use-current-year"]),
-                ("module_with_stale_year_range_in_license.py", "#", "module_with_year_range_in_license.py", "", True, ["--use-current-year"]),
-                (
-                    "module_with_badly_formatted_stale_year_range_in_license.py",
-                    "#",
-                    "module_with_badly_formatted_stale_year_range_in_license.py",
-                    "module_with_badly_formatted_stale_year_range_in_license.py",
-                    True,
-                    ["--use-current-year"],
+                    ("module_without_license.py", "#", "module_with_license.py", "", True, None),
+                    ("module_without_license_skip.py", "#", None, "", False, None),
+                    ("module_with_license.py", "#", None, "", False, None),
+                    ("module_with_license_todo.py", "#", None, "", True, None),
+                    ("module_without_license.jinja", "{#||#}", "module_with_license.jinja", "", True, None),
+                    ("module_without_license_skip.jinja", "{#||#}", None, "", False, None),
+                    ("module_with_license.jinja", "{#||#}", None, "", False, None),
+                    ("module_with_license_todo.jinja", "{#||#}", None, "", True, None),
+                    ("module_without_license_and_shebang.py", "#", "module_with_license_and_shebang.py", "", True, None),
+                    ("module_without_license_and_shebang_skip.py", "#", None, "", False, None),
+                    ("module_with_license_and_shebang.py", "#", None, "", False, None),
+                    ("module_with_license_and_shebang_todo.py", "#", None, "", True, None),
+                    ("module_without_license.groovy", "//", "module_with_license.groovy", "", True, None),
+                    ("module_without_license_skip.groovy", "//", None, "", False, None),
+                    ("module_with_license.groovy", "//", None, "", False, None),
+                    ("module_with_license_todo.groovy", "//", None, "", True, None),
+                    ("module_without_license.css", "/*| *| */", "module_with_license.css", "", True, None),
+                    (
+                        "module_without_license_and_few_words.css",
+                        "/*| *| */",
+                        "module_with_license_and_few_words.css",
+                        "",
+                        True,
+                        None,
+                    ),  # Test fuzzy match does not match greedily
+                    ("module_without_license_skip.css", "/*| *| */", None, "", False, None),
+                    ("module_with_license.css", "/*| *| */", None, "", False, None),
+                    ("module_with_license_todo.css", "/*| *| */", None, "", True, None),
+                    ("main_without_license.cpp", "/*|\t| */", "main_with_license.cpp", "", True, None),
+                    ("main_iso8859_without_license.cpp", "/*|\t| */", "main_iso8859_with_license.cpp", "", True, None),
+                    ("module_without_license.txt", "", "module_with_license_noprefix.txt", "", True, None),
+                    ("module_without_license.py", "#", "module_with_license_nospace.py", "", True, ["--no-space-in-comment-prefix"]),
+                    ("module_without_license.php", "/*| *| */", "module_with_license.php", "", True, ["--insert-license-after-regex", "^<\\?php$"]),
+                    ("module_without_license.py", "#", "module_with_license_noeol.py", "", True, ["--no-extra-eol"]),
+                    ("module_without_license.groovy", "//", "module_with_license.groovy", "", True, ["--use-current-year"]),
+                    ("module_with_stale_year_in_license.py", "#", "module_with_year_range_in_license.py", "", True, ["--use-current-year"]),
+                    ("module_with_stale_year_range_in_license.py", "#", "module_with_year_range_in_license.py", "", True, ["--use-current-year"]),
+                    (
+                        "module_with_badly_formatted_stale_year_range_in_license.py",
+                        "#",
+                        "module_with_badly_formatted_stale_year_range_in_license.py",
+                        "module_with_badly_formatted_stale_year_range_in_license.py",
+                        True,
+                        ["--use-current-year"],
+                    ),
                 ),
+            ),
+            product(
+                ("LICENSE_with_year_range_and_trailing_newline.txt",),
+                (("module_without_license.groovy", "//", "module_with_year_range_license.groovy", "", True, ["--use-current-year"]),),
             ),
         ),
     ),
@@ -99,16 +105,23 @@ def test_insert_license(license_file_path,
 
 
 @pytest.mark.parametrize(
-    ('license_file_path', 'src_file_path', 'comment_prefix'),
-    map(lambda a: a[:1] + a[1], product(  # combine license files with other args
-        ('LICENSE_with_trailing_newline.txt', 'LICENSE_without_trailing_newline.txt'),
-        (
-            ('module_with_license.groovy', '//'),
-            ('module_with_license_and_numbers.py', '#'),
-            ('module_with_year_range_in_license.py', '#'),
-            ('module_with_spaced_year_range_in_license.py', '#'),
+    ("license_file_path", "src_file_path", "comment_prefix"),
+    map(
+        lambda a: a[:1] + a[1],
+        product(  # combine license files with other args
+            (
+                "LICENSE_with_trailing_newline.txt",
+                "LICENSE_without_trailing_newline.txt",
+                "LICENSE_with_year_range_and_trailing_newline.txt",
+            ),
+            (
+                ("module_with_license.groovy", "//"),
+                ("module_with_license_and_numbers.py", "#"),
+                ("module_with_year_range_in_license.py", "#"),
+                ("module_with_spaced_year_range_in_license.py", "#"),
+            ),
         ),
-    )),
+    ),
 )
 def test_insert_license_current_year_already_there(license_file_path,
                                                    src_file_path,
@@ -123,6 +136,10 @@ def test_insert_license_current_year_already_there(license_file_path,
 
         args = ['--license-filepath', license_file_path, '--comment-style', comment_prefix, "--use-current-year", path.strpath]
         assert insert_license(args) == 0
+        # ensure file was not modified
+        with open(path.strpath, encoding="utf-8") as output_file:
+            output_contents = output_file.read()
+            assert output_contents == input_contents
 
 
 @pytest.mark.parametrize(
