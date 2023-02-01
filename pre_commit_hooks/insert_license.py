@@ -346,6 +346,7 @@ def license_found(
     Executed when license is found. It does nothing if remove_header is False,
         removes the license if remove_header is True.
     :param remove_header: whether header should be removed if found
+    :param update_year_range: whether to update license with the current year
     :param license_header_index: index where license found
     :param license_info: license_info tuple
     :param src_file_content: content of the src_file

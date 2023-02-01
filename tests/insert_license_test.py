@@ -136,6 +136,10 @@ def test_insert_license_current_year_already_there(license_file_path,
 
         args = ['--license-filepath', license_file_path, '--comment-style', comment_prefix, "--use-current-year", path.strpath]
         assert insert_license(args) == 0
+        # ensure file was not modified
+        with open(path.strpath, encoding="utf-8") as output_file:
+            output_contents = output_file.read()
+            assert output_contents == input_contents
 
 
 @pytest.mark.parametrize(
