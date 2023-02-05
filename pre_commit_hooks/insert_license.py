@@ -487,7 +487,8 @@ def fuzzy_find_license_header_index(src_file_content,  # pylint: disable=too-man
             src_file_content[i:i + len(license_info.plain_license) + license_info.num_extra_lines +
                              fuzzy_match_extra_lines_to_check]
         license_string_candidate, candidate_offset = get_license_candidate_string(candidate_array,
-                                                                                  license_info)
+                                                                                  license_info,
+                                                                                  fuzzy_ratio_cut_off)
         ratio = fuzz.token_set_ratio(license_string, license_string_candidate)
         num_tokens = len(license_string_candidate.split(" "))
         num_tokens_diff = abs(num_tokens - expected_num_tokens)
@@ -511,7 +512,7 @@ def fuzzy_find_license_header_index(src_file_content,  # pylint: disable=too-man
     return best_line_number_match
 
 
-def get_license_candidate_string(candidate_array, license_info):
+def get_license_candidate_string(candidate_array, license_info, fuzzy_ratio_cut_off):
     """
     Return license candidate string from the array of strings retrieved
     :param candidate_array: array of lines of the candidate strings
@@ -528,8 +529,9 @@ def get_license_candidate_string(candidate_array, license_info):
     for license_line in candidate_array:
         stripped_line = license_line.strip()
         if not in_license:
-            if stripped_comment_start:
-                if stripped_line.startswith(stripped_comment_start):
+            if stripped_comment_start:  # Fuzzy match start line
+                start_ratio = fuzz.ratio(stripped_comment_start, stripped_line)
+                if start_ratio > fuzzy_ratio_cut_off:
                     in_license = True
                     found_license_offset = current_offset + 1  # License starts in the next line
                     continue
@@ -542,8 +544,10 @@ def get_license_candidate_string(candidate_array, license_info):
                     in_license = True
                     found_license_offset = current_offset  # We have no data :(. We start license immediately
         else:
-            if stripped_comment_end and stripped_line.startswith(stripped_comment_end):
-                break
+            if stripped_comment_end:  # Fuzzy match end line
+                end_ratio = fuzz.ratio(stripped_comment_end, stripped_line)
+                if end_ratio > fuzzy_ratio_cut_off:
+                    break
         if in_license and (not stripped_comment_prefix or
                            stripped_line.startswith(stripped_comment_prefix)):
             license_string_candidate += stripped_line[len(stripped_comment_prefix):] + " "

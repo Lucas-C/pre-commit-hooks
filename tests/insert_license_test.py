@@ -170,6 +170,7 @@ def test_insert_license_current_year_already_there(license_file_path,
                 ('module_without_license.css', '/*| *| */', 'module_with_license.css', True),
                 ('module_with_license.css', '/*| *| */', None, False),
                 ('module_with_fuzzy_matched_license.css', '/*| *| */', 'module_with_license_todo.css', True),
+                ('module_with_fuzzy_matched_license_2_asterisks.css', '/*| *| */', 'module_with_license_todo_2_asterisks.css', True),
                 ('module_with_license_todo.css', '/*| *| */', None, True),
         ),
     )),
@@ -186,6 +187,7 @@ def test_fuzzy_match_license(license_file_path,
         args = ['--license-filepath', license_file_path,
                 '--comment-style', comment_style,
                 '--fuzzy-match-generates-todo',
+                '--fuzzy-ratio-cut-off=75',
                 path.strpath]
         assert insert_license(args) == (1 if fail_check else 0)
         if new_src_file_expected:
