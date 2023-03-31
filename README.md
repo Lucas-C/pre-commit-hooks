@@ -44,6 +44,9 @@ into separate repos:
     - id: forbid-tabs
     - id: remove-tabs
       args: [--whitespaces-count, '2']  # defaults to: 4
+    - id: chmod
+      args: ['644']
+      files: \.md$
     - id: insert-license
       files: \.groovy$
       args:
