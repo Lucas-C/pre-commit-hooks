@@ -15,7 +15,7 @@ repos:
         additional_dependencies:
           - mdformat-toc
   - repo: https://github.com/Lucas-C/pre-commit-hooks
-    rev: v1.4.2
+    rev: v1.5.0
     hooks:
       - id: forbid-crlf
       - id: remove-crlf
@@ -23,9 +23,9 @@ repos:
         exclude: tests/resources/main.*_with_license.cpp
       - id: remove-tabs
         exclude: tests/resources/main.*_with_license.cpp
-      #- id: chmod
-      #  args: ['644']
-      #  exclude: (\.md$|^tests/resources/.*shebang)
+      - id: chmod
+        args: ['644']
+        exclude: (\.md$|^tests/resources/.*shebang)
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.4.0
     hooks:
