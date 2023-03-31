@@ -37,7 +37,7 @@ into separate repos:
 
 ```yaml
 - repo: https://github.com/Lucas-C/pre-commit-hooks
-  rev: v1.5.0
+  rev: v1.5.1
   hooks:
     - id: forbid-crlf
     - id: remove-crlf
@@ -337,6 +337,6 @@ form the historical ChangeLog.
 
 ### Releasing a new version
 
-1. Edit version in `setup.py`, `README.md` & `.pre-commit-config.yaml`;
-2. `git commit -nam "New release $version" && git tag $version && git push && git push --tags`;
+1. Bump version in `setup.py` & `README.md`
+2. `git commit -nam "New release $version" && git tag $version && git push && git push --tags`
 3. Publish a GitHub release.
