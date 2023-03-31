@@ -5,7 +5,7 @@ setup(
     name="pre-commit-hooks",
     description="Some out-of-the-box hooks for pre-commit",
     url="https://github.com/Lucas-C/pre-commit-hooks",
-    version="1.4.2",
+    version="1.5.0",
     author="Lucas Cimon",
     author_email="lucas.cimon@gmail.com",
     platforms="linux",
@@ -21,7 +21,7 @@ setup(
     ],
     packages=find_packages("."),
     install_requires=[
-        'rapidfuzz',
+        "rapidfuzz",
     ],
     entry_points={
         "console_scripts": [
