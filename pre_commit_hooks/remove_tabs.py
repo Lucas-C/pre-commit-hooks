@@ -1,5 +1,4 @@
 import argparse, sys
-from .utils import is_textfile
 
 
 def contains_tabs(filename):
@@ -26,8 +25,7 @@ def main(argv=None):
     )
     parser.add_argument("filenames", nargs="*", help="filenames to check")
     args = parser.parse_args(argv)
-    text_files = [f for f in args.filenames if is_textfile(f)]
-    files_with_tabs = [f for f in text_files if contains_tabs(f)]
+    files_with_tabs = [f for f in args.filenames if contains_tabs(f)]
     for file_with_tabs in files_with_tabs:
         print(
             f"Substituting tabs in: {file_with_tabs} by {args.whitespaces_count} whitespaces"

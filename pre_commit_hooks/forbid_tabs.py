@@ -1,5 +1,4 @@
 import argparse, sys
-from .utils import is_textfile
 
 
 def contains_tabs(filename):
@@ -11,8 +10,7 @@ def main(argv=None):
     parser = argparse.ArgumentParser()
     parser.add_argument("filenames", nargs="*", help="filenames to check")
     args = parser.parse_args(argv)
-    text_files = [f for f in args.filenames if is_textfile(f)]
-    files_with_tabs = [f for f in text_files if contains_tabs(f)]
+    files_with_tabs = [f for f in args.filenames if contains_tabs(f)]
     return_code = 0
     for file_with_tabs in files_with_tabs:
         print(f"Tabs detected in file: {file_with_tabs}")

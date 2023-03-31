@@ -3,19 +3,19 @@
     description: "Forbid files containing CRLF end-lines to be committed"
     entry: forbid_crlf
     language: python
-    files: ''
+    types: [text]
 -   id: remove-crlf
     name: CRLF end-lines remover
     description: "Replace CRLF end-lines by LF ones before committing"
     entry: remove_crlf
     language: python
-    files: ''
+    types: [text]
 -   id: forbid-tabs
     name: No-tabs checker
     description: "Forbid files containing tabs to be committed"
     entry: forbid_tabs
     language: python
-    files: ''
+    types: [text]
     exclude: (Makefile|debian/rules|.gitmodules)(\.in)?$
 -   id: remove-tabs
     name: Tabs remover
@@ -23,7 +23,7 @@
     entry: remove_tabs
     language: python
     args: [ --whitespaces-count, '4' ]
-    files: ''
+    types: [text]
     exclude: (Makefile|debian/rules|.gitmodules)(\.in)?$
 -   id: chmod
     name: Set file permissions
@@ -34,4 +34,4 @@
     description: "Insert a short license disclaimer as a header comment in source files"
     entry: insert_license
     language: python
-    files: '.*/.*'
+    types: [text]
