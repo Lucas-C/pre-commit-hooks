@@ -1,5 +1,4 @@
 import argparse, sys
-from .utils import is_textfile
 
 
 def contains_crlf(filename):
@@ -23,8 +22,7 @@ def main(argv=None):
     parser = argparse.ArgumentParser()
     parser.add_argument("filenames", nargs="*", help="filenames to check")
     args = parser.parse_args(argv)
-    text_files = [f for f in args.filenames if is_textfile(f)]
-    files_with_crlf = [f for f in text_files if contains_crlf(f)]
+    files_with_crlf = [f for f in args.filenames if contains_crlf(f)]
     for file_with_crlf in files_with_crlf:
         print(f"Removing CRLF end-lines in: {file_with_crlf}")
         removes_crlf_in_file(file_with_crlf)

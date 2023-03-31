@@ -43,21 +43,10 @@ repos:
         args:
           - --py37-plus
         exclude: ^tests/resources/.*
-  - repo: https://github.com/pre-commit/mirrors-pylint
-    rev: v3.0.0a5
-    hooks:
-      - id: pylint
-        args:
-          - --rcfile=.pylintrc
-          - --reports=no
-          - --py-version=3.7
-        additional_dependencies: [pytest, rapidfuzz]
-        exclude: ^tests/resources/.*(init_with_license\.py|todo).*$
   - repo: https://github.com/psf/black
     rev: 23.3.0
     hooks:
       - id: black
-        args: [--quiet]
         exclude: ^tests/resources/
   - repo: https://github.com/Lucas-C/pre-commit-hooks-bandit
     rev: v1.0.6
@@ -77,8 +66,16 @@ repos:
           - --show-error-context
   - repo: local
     hooks:
-      - id: py.test
-        name: py.test
+      - id: pylint
+        name: pylint
+        # 3x faster than the official pylint hook, and has no issue with imports
+        # (tested with: time pre-commit run pylint --all-files)
+        language: system
+        entry: pylint
+        files: \.py$
+        exclude: ^tests/resources/.*(init_with_license|todo)
+      - id: pytest
+        name: pytest
         language: python
         additional_dependencies: [pytest, pytest-cov, coverage, rapidfuzz]
         entry: pytest -sv
