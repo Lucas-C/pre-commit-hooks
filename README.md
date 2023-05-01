@@ -55,6 +55,7 @@ into separate repos:
         - --comment-style
         - //                            # defaults to:  #
         - --use-current-year
+        - --no-extra-eol                # see below
 ```
 
 ### insert-license
@@ -101,6 +102,12 @@ headers:
 - When removing headers, the licenses will be removed regardless of the
   years they contain -- as if they used the year currently present in the
   license file.
+
+#### No extra EOL
+
+The `--no-extra-eol` argument prevents the insertion of an additional
+End-of-Line (EOL) character at the end of the license header; see
+[issue #70](https://github.com/Lucas-C/pre-commit-hooks/issues/70).
 
 #### Fuzzy license matching
 
