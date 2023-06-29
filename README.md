@@ -66,7 +66,7 @@ The following styles can be used for example:
 
 - For Java / Javascript / CSS/ C / C++ (multi-line comments) set
   `/*| *| */` ;
-- For Java / Javascript / CSS/ C / C++ (single line comments) set `//` ;
+- For Java / Javascript / C / C++ (single line comments) set `//` ;
 - For HTML files: `<!--|  ~|  -->` ;
 - For Python: `#` ;
 - For Jinja templates: `'{#||#}'` .
