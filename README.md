@@ -5,10 +5,16 @@ A few useful git hooks to integrate with
 
 **The last version of this hook to support Python 2.7 & 3.6 is v1.1.15**
 
-<!-- mdformat-toc start --slug=github --no-anchors --maxlevel=3 --minlevel=1 -->
+<!-- mdformat-toc start --slug=github --no-anchors --maxlevel=4 --minlevel=1 -->
 
 - [Usage](#usage)
   - [insert-license](#insert-license)
+    - [Comment styles](#comment-styles)
+    - [How to specify in how many lines to search for the license header in each file](#how-to-specify-in-how-many-lines-to-search-for-the-license-header-in-each-file)
+    - [Removing old license and replacing it with a new one](#removing-old-license-and-replacing-it-with-a-new-one)
+    - [Handling years flexibly](#handling-years-flexibly)
+    - [No extra EOL](#no-extra-eol)
+    - [Fuzzy license matching](#fuzzy-license-matching)
 - [Handy shell functions](#handy-shell-functions)
 - [Useful local hooks](#useful-local-hooks)
   - [Forbid / remove some unicode characters](#forbid--remove-some-unicode-characters)
@@ -84,10 +90,10 @@ In case you want to remove the comment headers introduced by
 
 1. Temporarily add the `--remove-header` arg in your
    `.pre-commit-config.yaml` ;
-2. Run the hook on all your files:
+1. Run the hook on all your files:
    `pre-commit run insert-license --all-files` ;
-3. Remove the `--remove-header` arg and update your `LICENSE.txt` ;
-4. Re-run the hook on all your files.
+1. Remove the `--remove-header` arg and update your `LICENSE.txt` ;
+1. Re-run the hook on all your files.
 
 #### Handling years flexibly
 
@@ -345,5 +351,5 @@ form the historical ChangeLog.
 ### Releasing a new version
 
 1. Bump version in `setup.py` & `README.md`
-2. `git commit -nam "New release $version" && git tag $version && git push && git push --tags`
-3. Publish a GitHub release.
+1. `git commit -nam "New release $version" && git tag $version && git push && git push --tags`
+1. Publish a GitHub release.
