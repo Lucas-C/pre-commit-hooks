@@ -15,7 +15,7 @@ repos:
         additional_dependencies:
           - mdformat-toc
   - repo: https://github.com/Lucas-C/pre-commit-hooks
-    rev: v1.5.0
+    rev: v1.5.1
     hooks:
       - id: forbid-crlf
       - id: remove-crlf
@@ -37,14 +37,14 @@ repos:
       - id: check-executables-have-shebangs
       - id: check-shebang-scripts-are-executable
   - repo: https://github.com/asottile/pyupgrade
-    rev: v3.3.1
+    rev: v3.10.1
     hooks:
       - id: pyupgrade
         args:
           - --py37-plus
         exclude: ^tests/resources/.*
   - repo: https://github.com/psf/black
-    rev: 23.3.0
+    rev: 23.7.0
     hooks:
       - id: black
         exclude: ^tests/resources/
@@ -54,7 +54,7 @@ repos:
       - id: python-bandit-vulnerability-check
         args: [--skip, 'B101', --recursive, .]
   - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v1.1.1
+    rev: v1.4.1
     hooks:
       - id: mypy
         args:

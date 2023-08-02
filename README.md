@@ -90,10 +90,10 @@ In case you want to remove the comment headers introduced by
 
 1. Temporarily add the `--remove-header` arg in your
    `.pre-commit-config.yaml` ;
-1. Run the hook on all your files:
+2. Run the hook on all your files:
    `pre-commit run insert-license --all-files` ;
-1. Remove the `--remove-header` arg and update your `LICENSE.txt` ;
-1. Re-run the hook on all your files.
+3. Remove the `--remove-header` arg and update your `LICENSE.txt` ;
+4. Re-run the hook on all your files.
 
 #### Handling years flexibly
 
@@ -351,5 +351,5 @@ form the historical ChangeLog.
 ### Releasing a new version
 
 1. Bump version in `setup.py` & `README.md`
-1. `git commit -nam "New release $version" && git tag $version && git push && git push --tags`
-1. Publish a GitHub release.
+2. `git commit -nam "New release $version" && git tag $version && git push && git push --tags`
+3. Publish a GitHub release.

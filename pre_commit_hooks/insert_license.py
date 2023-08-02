@@ -104,7 +104,9 @@ def main(argv=None):
         if changed_files:
             print(f"Some sources were modified by the hook {changed_files}")
         if todo_files:
-            print(f"Some sources {todo_files} contain TODO about inconsistent licenses")
+            print(
+                f"Some sources contain TODO about inconsistent licenses: {todo_files}"
+            )
         print("Now aborting the commit.")
         print(
             'You should check the changes made. Then simply "git add --update ." and re-commit'
