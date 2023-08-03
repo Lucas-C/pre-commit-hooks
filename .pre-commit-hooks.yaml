@@ -35,7 +35,7 @@
     minimum_pre_commit_version: "3.2.0"
 -   id: chmod
     name: Set file permissions
-    entry: chmod
+    entry: pre_commit_chmod
     language: python
 -   id: insert-license
     name: Insert license in comments

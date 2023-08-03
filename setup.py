@@ -5,7 +5,7 @@ setup(
     name="pre-commit-hooks",
     description="Some out-of-the-box hooks for pre-commit",
     url="https://github.com/Lucas-C/pre-commit-hooks",
-    version="1.5.1",
+    version="1.5.2",
     author="Lucas Cimon",
     author_email="lucas.cimon@gmail.com",
     platforms="linux",
@@ -25,7 +25,7 @@ setup(
     ],
     entry_points={
         "console_scripts": [
-            "chmod = pre_commit_hooks.chmod:main",
+            "pre_commit_chmod = pre_commit_hooks.chmod:main",
             "forbid_crlf = pre_commit_hooks.forbid_crlf:main",
             "forbid_tabs = pre_commit_hooks.forbid_tabs:main",
             "insert_license = pre_commit_hooks.insert_license:main",
