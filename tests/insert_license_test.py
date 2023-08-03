@@ -199,7 +199,7 @@ from .utils import chdir_to_test_resources, capture_stdout
                         "module_with_stale_year_range_in_license.py",
                         "",
                         False,
-                        ["--keep-original-year"],
+                        ["--allow-past-years"],
                     ),
                     (
                         "module_with_badly_formatted_stale_year_range_in_license.py",
