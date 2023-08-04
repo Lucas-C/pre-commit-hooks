@@ -5,7 +5,7 @@ setup(
     name="pre-commit-hooks",
     description="Some out-of-the-box hooks for pre-commit",
     url="https://github.com/Lucas-C/pre-commit-hooks",
-    version="1.5.2",
+    version="1.5.3",
     author="Lucas Cimon",
     author_email="lucas.cimon@gmail.com",
     platforms="linux",
