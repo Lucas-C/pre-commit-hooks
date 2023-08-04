@@ -109,6 +109,10 @@ headers:
   years they contain -- as if they used the year currently present in the
   license file.
 
+You can also use `--allow-past-years` to allow stale years to be unchanged.
+Using both `--allow-past-years` and `--use-current-year` issues a year
+range as described above.
+
 #### No extra EOL
 
 The `--no-extra-eol` argument prevents the insertion of an additional

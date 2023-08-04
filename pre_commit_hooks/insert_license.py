@@ -87,10 +87,19 @@ def main(argv=None):
         "--use-current-year",
         action="store_true",
         help=(
-            "Allow past years and ranges of years in headers. Use the current year in inserted and updated licenses."
+            "Use the current year in inserted and updated licenses, implies --allow-past-years"
+        ),
+    )
+    parser.add_argument(
+        "--allow-past-years",
+        action="store_true",
+        help=(
+            "Allow past years in headers. License comments are not updated if they contain past years."
         ),
     )
     args = parser.parse_args(argv)
+    if args.use_current_year:
+        args.allow_past_years = True
 
     license_info = get_license_info(args)
 
@@ -201,7 +210,7 @@ def process_files(args, changed_files, todo_files, license_info: LicenseInfo):
             src_file_content=src_file_content,
             license_info=license_info,
             top_lines_count=args.detect_license_in_X_top_lines,
-            match_years_strictly=not args.use_current_year,
+            match_years_strictly=not args.allow_past_years,
         )
         fuzzy_match_header_index = None
         if args.fuzzy_match_generates_todo and license_header_index is None:

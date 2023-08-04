@@ -194,6 +194,14 @@ from .utils import chdir_to_test_resources, capture_stdout
                         ["--use-current-year"],
                     ),
                     (
+                        "module_with_stale_year_range_in_license.py",
+                        "#",
+                        "module_with_stale_year_range_in_license.py",
+                        "",
+                        False,
+                        ["--allow-past-years"],
+                    ),
+                    (
                         "module_with_badly_formatted_stale_year_range_in_license.py",
                         "#",
                         "module_with_badly_formatted_stale_year_range_in_license.py",
