@@ -143,7 +143,7 @@ def get_license_info(args) -> LicenseInfo:
     )
     if "|" in comment_prefix:
         comment_start, comment_prefix, comment_end = comment_prefix.split("|")
-    with open(args.license_filepath, encoding="utf8") as license_file:
+    with open(args.license_filepath, encoding="utf8", newline="") as license_file:
         plain_license = license_file.readlines()
 
     if args.use_current_year:
@@ -268,7 +268,7 @@ def _read_file_content(src_filepath):
         "ISO-8859-1",
     ):  # we could use the chardet library to support more encodings
         try:
-            with open(src_filepath, encoding=encoding) as src_file:
+            with open(src_filepath, encoding=encoding, newline="") as src_file:
                 return src_file.readlines(), encoding
         except UnicodeDecodeError as error:
             last_error = error
@@ -324,7 +324,7 @@ def license_not_found(  # pylint: disable=too-many-arguments
             + [license_info.eol]
             + src_file_content[index:]
         )
-        with open(src_filepath, "w", encoding=encoding) as src_file:
+        with open(src_filepath, "w", encoding=encoding, newline="") as src_file:
             src_file.write("".join(src_file_content))
         return True
     return False
@@ -458,7 +458,7 @@ def license_found(
         )
 
     if updated:
-        with open(src_filepath, "w", encoding=encoding) as src_file:
+        with open(src_filepath, "w", encoding=encoding, newline="") as src_file:
             src_file.write("".join(src_file_content))
 
     return updated
@@ -494,7 +494,7 @@ def fuzzy_license_found(
         ]
         + src_file_content[fuzzy_match_header_index:]
     )
-    with open(src_filepath, "w", encoding=encoding) as src_file:
+    with open(src_filepath, "w", encoding=encoding, newline="") as src_file:
         src_file.write("".join(src_file_content))
     return True
 
@@ -661,7 +661,8 @@ def get_license_candidate_string(candidate_array, license_info):
                         )
                 else:
                     in_license = True
-                    found_license_offset = current_offset  # We have no data :(. We start license immediately
+                    # We have no data :(. We start license immediately
+                    found_license_offset = current_offset
         else:
             if stripped_comment_end and stripped_line.startswith(stripped_comment_end):
                 break

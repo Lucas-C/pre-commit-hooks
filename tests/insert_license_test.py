@@ -8,12 +8,40 @@ from pre_commit_hooks.insert_license import find_license_header_index
 
 from .utils import chdir_to_test_resources, capture_stdout
 
+
 # pylint: disable=too-many-arguments
+
+
+def _convert_line_ending(file_path, new_line_endings):
+    for encoding in (
+        "utf8",
+        "ISO-8859-1",
+    ):  # we could use the chardet library to support more encodings
+        last_error = None
+        try:
+            with open(file_path, encoding=encoding, newline="") as f_in:
+                content = f_in.read()
+
+            with open(
+                file_path, "w", encoding=encoding, newline=new_line_endings
+            ) as f_out:
+                f_out.write(content)
+
+            return
+        except UnicodeDecodeError as error:
+            last_error = error
+    print(
+        f"Error while processing: {file_path} - file encoding is probably not supported"
+    )
+    if last_error is not None:  # Avoid mypy message
+        raise last_error
+    raise RuntimeError("Unexpected branch taken (_convert_line_ending)")
 
 
 @pytest.mark.parametrize(
     (
         "license_file_path",
+        "line_ending",
         "src_file_path",
         "comment_prefix",
         "new_src_file_expected",
@@ -22,13 +50,14 @@ from .utils import chdir_to_test_resources, capture_stdout
         "extra_args",
     ),
     map(
-        lambda a: a[:1] + a[1],
+        lambda a: a[:2] + a[2],
         chain(
             product(  # combine license files with other args
                 (
                     "LICENSE_with_trailing_newline.txt",
                     "LICENSE_without_trailing_newline.txt",
                 ),
+                ("\n", "\r\n"),
                 (
                     (
                         "module_without_license.py",
@@ -209,10 +238,182 @@ from .utils import chdir_to_test_resources, capture_stdout
                         True,
                         ["--use-current-year"],
                     ),
+                    (
+                        "module_without_license.py",
+                        "#",
+                        "module_with_license.py",
+                        "",
+                        True,
+                        None,
+                    ),
+                    ("module_without_license_skip.py", "#", None, "", False, None),
+                    ("module_with_license.py", "#", None, "", False, None),
+                    ("module_with_license_todo.py", "#", None, "", True, None),
+                    (
+                        "module_without_license.jinja",
+                        "{#||#}",
+                        "module_with_license.jinja",
+                        "",
+                        True,
+                        None,
+                    ),
+                    (
+                        "module_without_license_skip.jinja",
+                        "{#||#}",
+                        None,
+                        "",
+                        False,
+                        None,
+                    ),
+                    ("module_with_license.jinja", "{#||#}", None, "", False, None),
+                    ("module_with_license_todo.jinja", "{#||#}", None, "", True, None),
+                    (
+                        "module_without_license_and_shebang.py",
+                        "#",
+                        "module_with_license_and_shebang.py",
+                        "",
+                        True,
+                        None,
+                    ),
+                    (
+                        "module_without_license_and_shebang_skip.py",
+                        "#",
+                        None,
+                        "",
+                        False,
+                        None,
+                    ),
+                    ("module_with_license_and_shebang.py", "#", None, "", False, None),
+                    (
+                        "module_with_license_and_shebang_todo.py",
+                        "#",
+                        None,
+                        "",
+                        True,
+                        None,
+                    ),
+                    (
+                        "module_without_license.groovy",
+                        "//",
+                        "module_with_license.groovy",
+                        "",
+                        True,
+                        None,
+                    ),
+                    ("module_without_license_skip.groovy", "//", None, "", False, None),
+                    ("module_with_license.groovy", "//", None, "", False, None),
+                    ("module_with_license_todo.groovy", "//", None, "", True, None),
+                    (
+                        "module_without_license.css",
+                        "/*| *| */",
+                        "module_with_license.css",
+                        "",
+                        True,
+                        None,
+                    ),
+                    (
+                        "module_without_license_and_few_words.css",
+                        "/*| *| */",
+                        "module_with_license_and_few_words.css",
+                        "",
+                        True,
+                        None,
+                    ),  # Test fuzzy match does not match greedily
+                    (
+                        "module_without_license_skip.css",
+                        "/*| *| */",
+                        None,
+                        "",
+                        False,
+                        None,
+                    ),
+                    ("module_with_license.css", "/*| *| */", None, "", False, None),
+                    ("module_with_license_todo.css", "/*| *| */", None, "", True, None),
+                    (
+                        "main_without_license.cpp",
+                        "/*|\t| */",
+                        "main_with_license.cpp",
+                        "",
+                        True,
+                        None,
+                    ),
+                    (
+                        "main_iso8859_without_license.cpp",
+                        "/*|\t| */",
+                        "main_iso8859_with_license.cpp",
+                        "",
+                        True,
+                        None,
+                    ),
+                    (
+                        "module_without_license.txt",
+                        "",
+                        "module_with_license_noprefix.txt",
+                        "",
+                        True,
+                        None,
+                    ),
+                    (
+                        "module_without_license.py",
+                        "#",
+                        "module_with_license_nospace.py",
+                        "",
+                        True,
+                        ["--no-space-in-comment-prefix"],
+                    ),
+                    (
+                        "module_without_license.php",
+                        "/*| *| */",
+                        "module_with_license.php",
+                        "",
+                        True,
+                        ["--insert-license-after-regex", "^<\\?php$"],
+                    ),
+                    (
+                        "module_without_license.py",
+                        "#",
+                        "module_with_license_noeol.py",
+                        "",
+                        True,
+                        ["--no-extra-eol"],
+                    ),
+                    (
+                        "module_without_license.groovy",
+                        "//",
+                        "module_with_license.groovy",
+                        "",
+                        True,
+                        ["--use-current-year"],
+                    ),
+                    (
+                        "module_with_stale_year_in_license.py",
+                        "#",
+                        "module_with_year_range_in_license.py",
+                        "",
+                        True,
+                        ["--use-current-year"],
+                    ),
+                    (
+                        "module_with_stale_year_range_in_license.py",
+                        "#",
+                        "module_with_year_range_in_license.py",
+                        "",
+                        True,
+                        ["--use-current-year"],
+                    ),
+                    (
+                        "module_with_badly_formatted_stale_year_range_in_license.py",
+                        "#",
+                        "module_with_badly_formatted_stale_year_range_in_license.py",
+                        "module_with_badly_formatted_stale_year_range_in_license.py",
+                        True,
+                        ["--use-current-year"],
+                    ),
                 ),
             ),
             product(
                 ("LICENSE_with_year_range_and_trailing_newline.txt",),
+                ("\n", "\r\n"),
                 (
                     (
                         "module_without_license.groovy",
@@ -229,6 +430,7 @@ from .utils import chdir_to_test_resources, capture_stdout
 )
 def test_insert_license(
     license_file_path,
+    line_ending,
     src_file_path,
     comment_prefix,
     new_src_file_expected,
@@ -241,6 +443,7 @@ def test_insert_license(
     with chdir_to_test_resources():
         path = tmpdir.join(src_file_path)
         shutil.copy(src_file_path, path.strpath)
+        _convert_line_ending(path.strpath, line_ending)
         args = [
             "--license-filepath",
             license_file_path,
@@ -257,7 +460,7 @@ def test_insert_license(
 
         if new_src_file_expected:
             with open(
-                new_src_file_expected, encoding=encoding
+                new_src_file_expected, encoding=encoding, newline=line_ending
             ) as expected_content_file:
                 expected_content = expected_content_file.read()
                 if "--use-current-year" in args:
@@ -315,18 +518,20 @@ def test_insert_license_current_year_already_there(
 @pytest.mark.parametrize(
     (
         "license_file_path",
+        "line_ending",
         "src_file_path",
         "comment_style",
         "new_src_file_expected",
         "fail_check",
     ),
     map(
-        lambda a: a[:1] + a[1],
+        lambda a: a[:2] + a[2],
         product(  # combine license files with other args
             (
                 "LICENSE_with_trailing_newline.txt",
                 "LICENSE_without_trailing_newline.txt",
             ),
+            ("\n", "\r\n"),
             (
                 (
                     "module_without_license.jinja",
@@ -393,6 +598,7 @@ def test_insert_license_current_year_already_there(
 )
 def test_fuzzy_match_license(
     license_file_path,
+    line_ending,
     src_file_path,
     comment_style,
     new_src_file_expected,
@@ -402,6 +608,7 @@ def test_fuzzy_match_license(
     with chdir_to_test_resources():
         path = tmpdir.join("src_file_path")
         shutil.copy(src_file_path, path.strpath)
+        _convert_line_ending(path.strpath, line_ending)
         args = [
             "--license-filepath",
             license_file_path,
@@ -470,6 +677,7 @@ def test_is_license_present(src_file_content, expected_index, match_years_strict
 @pytest.mark.parametrize(
     (
         "license_file_path",
+        "line_ending",
         "src_file_path",
         "comment_style",
         "fuzzy_match",
@@ -478,12 +686,13 @@ def test_is_license_present(src_file_content, expected_index, match_years_strict
         "use_current_year",
     ),
     map(
-        lambda a: a[:1] + a[1],
+        lambda a: a[:2] + a[2],
         product(  # combine license files with other args
             (
                 "LICENSE_with_trailing_newline.txt",
                 "LICENSE_without_trailing_newline.txt",
             ),
+            ("\n", "\r\n"),
             (
                 (
                     "module_with_license.css",
@@ -625,6 +834,7 @@ def test_is_license_present(src_file_content, expected_index, match_years_strict
 )
 def test_remove_license(
     license_file_path,
+    line_ending,
     src_file_path,
     comment_style,
     fuzzy_match,
@@ -636,6 +846,7 @@ def test_remove_license(
     with chdir_to_test_resources():
         path = tmpdir.join("src_file_path")
         shutil.copy(src_file_path, path.strpath)
+        _convert_line_ending(path.strpath, line_ending)
         argv = [
             "--license-filepath",
             license_file_path,
