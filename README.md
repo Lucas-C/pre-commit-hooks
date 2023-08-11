@@ -4,7 +4,8 @@ A few useful git hooks to integrate with
 [pre-commit](http://pre-commit.com).
 
 ⚠️ ⚠️ **This hook, since v1.5.2, requires `pre-commit` 3.2.0 or superior.**
-If you get an error like `Expected one of ... but got: 'pre-commit'`, check this issue: [#83](https://github.com/Lucas-C/pre-commit-hooks/issues/83)
+If you get an error like `Expected one of ... but got: 'pre-commit'`, check
+this issue: [#83](https://github.com/Lucas-C/pre-commit-hooks/issues/83)
 
 ⚠️ **The last version of this hook to support Python 2.7 & 3.6 is v1.1.15**
 
