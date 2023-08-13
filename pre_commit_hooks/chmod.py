@@ -39,17 +39,20 @@ def main(argv=None):
         print(f"Incorrect octal permissions provided in configuration: {error}")
         return 2
     result = 0
-    for filename in args.filenames:
-        current_mode = os.stat(filename).st_mode
-        # We ignore S_IFREG and other similar unsupported bits:
-        current_mode &= SUPPORTED_BITS
-        if current_mode != new_mode:
-            print(
-                f"Fixing file permissions on {filename}:"
-                f" 0o{current_mode:o} -> 0o{new_mode:o}"
-            )
-            os.chmod(filename, new_mode)
-            result = 1
+    if sys.platform == "win32":
+        print("This hook does nothing when executed on Windows")
+    else:
+        for filename in args.filenames:
+            current_mode = os.stat(filename).st_mode
+            # We ignore S_IFREG and other similar unsupported bits:
+            current_mode &= SUPPORTED_BITS
+            if current_mode != new_mode:
+                print(
+                    f"Fixing file permissions on {filename}:"
+                    f" 0o{current_mode:o} -> 0o{new_mode:o}"
+                )
+                os.chmod(filename, new_mode)
+                result = 1
     return result
 
 

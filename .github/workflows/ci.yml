@@ -12,13 +12,13 @@ on:  # cf. https://github.community/t/how-to-trigger-an-action-on-push-or-pull-r
 jobs:
   check:
     name: Run check
-    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       max-parallel: 5
       matrix:
         python-version: [3.8, 3.9, '3.10', '3.11']
-
+        platform: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.platform }}
     steps:
       - name: Checkout code 🛎️
         uses: actions/checkout@v3
