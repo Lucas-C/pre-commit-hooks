@@ -3,6 +3,7 @@ import argparse
 import collections
 import re
 import sys
+import subprocess
 from datetime import datetime
 from typing import Any, Sequence
 
@@ -97,7 +98,21 @@ def main(argv=None):
             "Allow past years in headers. License comments are not updated if they contain past years."
         ),
     )
+    parser.add_argument(
+        "--dynamic-years",
+        action="store_true",
+        help=(
+            "Determine years that appear in license automatically."
+            "If no start date is present in file,"
+            "use the date when the file was first introduced."
+            "Use current year automatically as end date, implies --use-current-years."
+        ),
+    )
+
     args = parser.parse_args(argv)
+    if args.dynamic_years:
+        args.use_current_year = True
+
     if args.use_current_year:
         args.allow_past_years = True
 
@@ -189,9 +204,32 @@ def process_files(args, changed_files, todo_files, license_info: LicenseInfo):
     :param license_info: license info named tuple
     :return: True if some files were changed, t.o.d.o is detected or an error occurred while updating the year
     """
+    plain_license_info = license_info
+
     license_update_failed = False
     after_regex = args.insert_license_after_regex
     for src_filepath in args.filenames:
+        license_info = plain_license_info
+
+        if args.dynamic_years:
+            year_start = _get_git_file_creation_date(src_filepath).year
+            prefixed_license = [
+                line.format(
+                    year_start=year_start
+                )  # this assumes '{year_start}' appears in your license
+                for line in license_info.prefixed_license
+            ]
+
+            license_info = LicenseInfo(
+                prefixed_license,
+                license_info.plain_license,
+                license_info.eol,
+                license_info.comment_start,
+                license_info.comment_prefix,
+                license_info.comment_end,
+                license_info.num_extra_lines,
+            )
+
         src_file_content, encoding = _read_file_content(src_filepath)
         if skip_license_insert_found(
             src_file_content=src_file_content,
@@ -318,6 +356,7 @@ def license_not_found(  # pylint: disable=too-many-arguments
                 index += 1
             else:
                 break
+
         src_file_content = (
             src_file_content[:index]
             + license_info.prefixed_license
@@ -396,6 +435,7 @@ def try_update_year_range(
     :return: source file contents and a flag indicating update
     """
     current_year = datetime.now().year
+
     for i in range(license_header_index, license_header_index + license_length):
         updated = try_update_year(
             src_file_content[i], src_filepath, current_year, introduce_range=True
@@ -675,6 +715,33 @@ def get_license_candidate_string(candidate_array, license_info):
             )
         current_offset += 1
     return license_string_candidate.strip(), found_license_offset
+
+
+def _get_git_file_creation_date(filepath):
+    """Uses special git log formatting to extract the years from the commits.
+    Take the year of the first commit. If the file has not been tracked with Git,
+    return the current year.
+
+    :param filepath: path to file
+    :type filepath: str
+    :return: year of creation
+    :rtype: int
+    """
+    command = f'git log --follow --format="%aI" -- {filepath}'
+    result = subprocess.run(
+        command, shell=True, text=True, capture_output=True, check=True
+    )
+
+    # The result.stdout will contain all the commit dates, one per line.
+    # The last line will be the date of the first commit.
+    dates = result.stdout.strip().split("\n")
+    first_commit_date = dates[-1]
+
+    if first_commit_date == "":  # file has not been tracked with Git
+        return datetime.now()
+
+    first_commit_date = datetime.fromisoformat(first_commit_date.replace("Z", "+00:00"))
+    return first_commit_date
 
 
 if __name__ == "__main__":

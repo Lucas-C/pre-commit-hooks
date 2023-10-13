@@ -1,0 +1,2 @@
+Copyright (C) {year_start}-2020, PearCorp, Inc.
+SPDX-License-Identifier: LicenseRef-PearCorp

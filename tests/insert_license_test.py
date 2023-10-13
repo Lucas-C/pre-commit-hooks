@@ -2,8 +2,13 @@ from datetime import datetime
 from itertools import chain, product
 import shutil
 import pytest
-
-from pre_commit_hooks.insert_license import main as insert_license, LicenseInfo
+from unittest.mock import patch
+import subprocess
+from pre_commit_hooks.insert_license import (
+    main as insert_license,
+    _get_git_file_creation_date,
+    LicenseInfo,
+)
 from pre_commit_hooks.insert_license import find_license_header_index
 
 from .utils import chdir_to_test_resources, capture_stdout
@@ -672,6 +677,93 @@ def test_is_license_present(src_file_content, expected_index, match_years_strict
     assert expected_index == find_license_header_index(
         src_file_content, license_info, 5, match_years_strictly=match_years_strictly
     )
+
+
+@patch.object(subprocess, "run")
+def test_get_git_file_creation_date(mock_run):
+    # Set up the mock object
+    mock_result = subprocess.CompletedProcess(
+        args="",
+        returncode=0,
+        stdout="2022-01-01T00:00:00Z\n2021-01-01T00:00:00Z",
+        stderr="",
+    )
+    mock_run.return_value = mock_result
+
+    # Call the function and check the result
+    date = _get_git_file_creation_date("some/file/path")
+    assert date.year == 2021
+
+
+def mock_get_git_file_creation_date(filepath):
+    # Replace this with whatever behavior you want for the mock function
+    return datetime(2018, 1, 1)
+
+
+@pytest.mark.parametrize(
+    ("license_file_path", "src_file_path", "expected_start_year", "expect_change"),
+    (
+        # Start year is determined dynamically
+        ("DY_LICENSE.txt", "DY_module_wo_license.py", "2018", 1),
+        # End year is adjusted to current_year
+        ("DY_LICENSE.txt", "DY_module_outdated_license.py", "2018", 1),
+        # Older start year is left unchanged
+        ("DY_LICENSE.txt", "DY_module_old_license.py", "2000", 1),
+        # Newer start year is left unchanged (as start year is not touched if already existing)
+        ("DY_LICENSE.txt", "DY_module_unchanged_license.py", "2022", 0),
+    ),
+)
+def test_dynamic_years(
+    license_file_path, src_file_path, expected_start_year, expect_change, tmpdir
+):
+    # Specify the paths to your license and source files
+    with chdir_to_test_resources():
+        current_year = datetime.now().year
+
+        expected = (
+            f"# Copyright (C) {expected_start_year}-{current_year}, PearCorp, Inc.\n"
+            "# SPDX-License-Identifier: LicenseRef-PearCorp\n\n"
+            "import sys\n"
+        )
+
+        # Create a temporary directory for the test
+        temp_src_file_path = tmpdir.join("Q_module_wo_license.py")
+
+        # Copy the source file to the temporary directory
+        shutil.copy(src_file_path, temp_src_file_path.strpath)
+
+        # Specify the comment style for the license header
+        comment_style = "#"
+
+        # Build the argument list for the insert_license function
+        argv = [
+            "--license-filepath",
+            license_file_path,
+            "--comment-style",
+            comment_style,
+            temp_src_file_path.strpath,
+            "--dynamic-years",
+        ]
+
+        import sys
+
+        with patch.object(
+            sys.modules[
+                "pre_commit_hooks.insert_license"
+            ],  # Replace this with the actual module containing _get_git_file_creation_date
+            "_get_git_file_creation_date",
+            new=mock_get_git_file_creation_date,
+        ):
+            # Call the insert_license function
+            assert insert_license(argv) == expect_change
+
+            # Check the contents of the updated file
+            with open(temp_src_file_path, encoding="utf-8") as updated_file:
+                updated_content = updated_file.read()
+
+            # Check that the updated file content matches the expected content
+
+            assert updated_content == expected
 
 
 @pytest.mark.parametrize(
