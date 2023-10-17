@@ -17,6 +17,7 @@ this issue: [#83](https://github.com/Lucas-C/pre-commit-hooks/issues/83)
     - [How to specify in how many lines to search for the license header in each file](#how-to-specify-in-how-many-lines-to-search-for-the-license-header-in-each-file)
     - [Removing old license and replacing it with a new one](#removing-old-license-and-replacing-it-with-a-new-one)
     - [Handling years flexibly](#handling-years-flexibly)
+    - [Dynamic start year](#dynamic-start-year)
     - [No extra EOL](#no-extra-eol)
     - [Fuzzy license matching](#fuzzy-license-matching)
 - [Handy shell functions](#handy-shell-functions)
@@ -116,6 +117,16 @@ headers:
 You can also use `--allow-past-years` to allow stale years to be unchanged.
 Using both `--allow-past-years` and `--use-current-year` issues a year
 range as described above.
+
+#### Dynamic start year
+
+You can add `--dynamic-years` to determine the start year automatically if none
+is present already. The start year depends on when the file was initially
+tracked by Git. As end year, the current year is taken. If a file is not yet tracked
+by Git, the current year is used.
+
+`--dynamic-years` implies `--use-current-year` which in turn
+implies `--allow-past-years`.
 
 #### No extra EOL
 
