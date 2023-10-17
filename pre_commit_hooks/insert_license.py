@@ -213,10 +213,14 @@ def process_files(args, changed_files, todo_files, license_info: LicenseInfo):
 
         if args.dynamic_years:
             year_start = _get_git_file_creation_date(src_filepath).year
+            year_end = (
+                datetime.now().year
+            )  # args.dynamic_years implies args.use_current_year
             prefixed_license = [
                 line.format(
-                    year_start=year_start
-                )  # this assumes '{year_start}' appears in your license
+                    year_start=year_start,
+                    year_end=year_end,
+                )  # this assumes '{year_start}' and '{year_end}' appear in your license
                 for line in license_info.prefixed_license
             ]
 

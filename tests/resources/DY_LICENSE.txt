@@ -1,2 +1,2 @@
-Copyright (C) {year_start}-2020, PearCorp, Inc.
+Copyright (C) {year_start}-{year_end}, PearCorp, Inc.
 SPDX-License-Identifier: LicenseRef-PearCorp
