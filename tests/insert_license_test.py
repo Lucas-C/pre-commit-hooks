@@ -723,8 +723,8 @@ def test_dynamic_years(
             license_file_path,
             "--comment-style",
             comment_style,
-            temp_src_file_path.strpath,
             "--dynamic-years",
+            temp_src_file_path.strpath,
         ]
 
         monkeypatch.setattr(
@@ -733,6 +733,35 @@ def test_dynamic_years(
         )
 
         assert insert_license(argv) == expect_change
+
+        with open(temp_src_file_path, encoding="utf-8") as updated_file:
+            updated_content = updated_file.read()
+
+        assert updated_content == expected_content
+
+
+def test_hardcoded_default_license(
+    tmpdir,
+):
+    with chdir_to_test_resources():
+        # This test is coupled to the hardcoded default license ("LICENSE")
+        # contained in the same directory of insert_license.py
+        # If the default license is changed, this test needs to be adjusted
+        expected_content = (
+            "# Copyright (c) QuantCo {year_start}-{year_end}\n"
+            "# SPDX-License-Identifier: LicenseRef-QuantCo\n"
+            "\n"
+            "import sys\n"
+        )
+
+        temp_src_file_path = tmpdir.join("module_wo_license.py")
+        shutil.copy("DY_module_wo_license.py", temp_src_file_path.strpath)
+
+        argv = [
+            temp_src_file_path.strpath,
+        ]
+
+        assert insert_license(argv) == 1  # License was inserted
 
         with open(temp_src_file_path, encoding="utf-8") as updated_file:
             updated_content = updated_file.read()

@@ -4,6 +4,7 @@ import collections
 import re
 import sys
 import subprocess
+import os
 from datetime import datetime
 from typing import Any, Sequence
 
@@ -45,7 +46,7 @@ class LicenseUpdateError(Exception):
 def main(argv=None):
     parser = argparse.ArgumentParser()
     parser.add_argument("filenames", nargs="*", help="filenames to check")
-    parser.add_argument("--license-filepath", default="LICENSE.txt")
+    parser.add_argument("--license-filepath", default=None)
     parser.add_argument(
         "--comment-style",
         default="#",
@@ -158,6 +159,11 @@ def get_license_info(args) -> LicenseInfo:
     )
     if "|" in comment_prefix:
         comment_start, comment_prefix, comment_end = comment_prefix.split("|")
+
+    if args.license_filepath is None:
+        current_directory = os.path.dirname(os.path.abspath(__file__))
+        args.license_filepath = os.path.join(current_directory, "LICENSE")
+
     with open(args.license_filepath, encoding="utf8", newline="") as license_file:
         plain_license = license_file.readlines()
 
