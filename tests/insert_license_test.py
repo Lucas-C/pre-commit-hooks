@@ -744,7 +744,7 @@ def test_hardcoded_default_license(
     tmpdir,
 ):
     with chdir_to_test_resources():
-        # This test is coupled to the hardcoded default license ("LICENSE")
+        # This test is coupled to the hardcoded default license ("default_license.py")
         # contained in the same directory of insert_license.py
         # If the default license is changed, this test needs to be adjusted
         expected_content = (

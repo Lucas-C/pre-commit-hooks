@@ -4,9 +4,9 @@ import collections
 import re
 import sys
 import subprocess
-import os
 from datetime import datetime
 from typing import Any, Sequence
+from pre_commit_hooks.default_license import DEFAULT_LICENSE
 
 from rapidfuzz import fuzz
 
@@ -161,11 +161,10 @@ def get_license_info(args) -> LicenseInfo:
         comment_start, comment_prefix, comment_end = comment_prefix.split("|")
 
     if args.license_filepath is None:
-        current_directory = os.path.dirname(os.path.abspath(__file__))
-        args.license_filepath = os.path.join(current_directory, "LICENSE")
-
-    with open(args.license_filepath, encoding="utf8", newline="") as license_file:
-        plain_license = license_file.readlines()
+        plain_license = DEFAULT_LICENSE
+    else:
+        with open(args.license_filepath, encoding="utf8", newline="") as license_file:
+            plain_license = license_file.readlines()
 
     if args.use_current_year:
         plain_license = _replace_year_in_license_with_current(
