@@ -46,26 +46,26 @@ into separate repos:
 ## Usage
 
 ```yaml
-- repo: https://github.com/Lucas-C/pre-commit-hooks
-  rev: v1.5.4
-  hooks:
-    - id: forbid-crlf
-    - id: remove-crlf
-    - id: forbid-tabs
-    - id: remove-tabs
-      args: [--whitespaces-count, '2']  # defaults to: 4
-    - id: chmod
-      args: ['644']
-      files: \.md$
-    - id: insert-license
-      files: \.groovy$
-      args:
-        - --license-filepath
-        - src/license_header.txt        # defaults to: LICENSE.txt
-        - --comment-style
-        - //                            # defaults to:  #
-        - --use-current-year
-        - --no-extra-eol                # see below
+  - repo: https://github.com/Lucas-C/pre-commit-hooks
+    rev: v1.5.4
+    hooks:
+      - id: forbid-crlf
+      - id: remove-crlf
+      - id: forbid-tabs
+      - id: remove-tabs
+        args: [--whitespaces-count, '2'] # defaults to: 4
+      - id: chmod
+        args: ['644']
+        files: \.md$
+      - id: insert-license
+        files: \.groovy$
+        args:
+          - --license-filepath
+          - src/license_header.txt      # defaults to: LICENSE.txt
+          - --comment-style
+          - //                          # defaults to:  #
+          - --use-current-year
+          - --no-extra-eol              # see below
 ```
 
 ### insert-license
@@ -202,54 +202,54 @@ pre_commit_db_rm_repo () {  # Requires sqlite3
 ### Forbid / remove some unicode characters
 
 ```yaml
-- repo: local
-  hooks:
-    - id: forbid-unicode-non-breaking-spaces
-      name: Detect unicode non-breaking space character U+00A0 aka M-BM-
-      language: system
-      entry: perl -ne 'print if $m = /\xc2\xa0/; $t ||= $m; END{{exit $t}}'
-      files: ''
-    - id: remove-unicode-non-breaking-spaces
-      name: Remove unicode non-breaking space character U+00A0 aka M-BM-
-      language: system
-      entry: perl -pi* -e 's/\xc2\xa0/ /g && ($t = 1) && print STDERR $_; END{{exit
-        $t}}'
-      files: ''
-    - id: forbid-en-dashes
-      name: Detect the EXTREMELY confusing unicode character U+2013
-      language: system
-      entry: perl -ne 'print if $m = /\xe2\x80\x93/; $t ||= $m; END{{exit $t}}'
-      files: ''
-    - id: remove-en-dashes
-      name: Remove the EXTREMELY confusing unicode character U+2013
-      language: system
-      entry: perl -pi* -e 's/\xe2\x80\x93/-/g && ($t = 1) && print STDERR $_; END{{exit
-        $t}}'
-      files: ''
+  - repo: local
+    hooks:
+      - id: forbid-unicode-non-breaking-spaces
+        name: Detect unicode non-breaking space character U+00A0 aka M-BM-
+        language: system
+        entry: perl -ne 'print if $m = /\xc2\xa0/; $t ||= $m; END{{exit $t}}'
+        files: ''
+      - id: remove-unicode-non-breaking-spaces
+        name: Remove unicode non-breaking space character U+00A0 aka M-BM-
+        language: system
+        entry: perl -pi* -e 's/\xc2\xa0/ /g && ($t = 1) && print STDERR $_; END{{exit
+          $t}}'
+        files: ''
+      - id: forbid-en-dashes
+        name: Detect the EXTREMELY confusing unicode character U+2013
+        language: system
+        entry: perl -ne 'print if $m = /\xe2\x80\x93/; $t ||= $m; END{{exit $t}}'
+        files: ''
+      - id: remove-en-dashes
+        name: Remove the EXTREMELY confusing unicode character U+2013
+        language: system
+        entry: perl -pi* -e 's/\xe2\x80\x93/-/g && ($t = 1) && print STDERR $_; END{{exit
+          $t}}'
+        files: ''
 ```
 
 ### Bash syntax validation
 
 ```yaml
-- repo: local
-  hooks:
-  - id: check-bash-syntax
-    name: Check Shell scripts syntax correctness
-    language: system
-    entry: bash -n
-    files: \.sh$
+  - repo: local
+    hooks:
+      - id: check-bash-syntax
+        name: Check Shell scripts syntax correctness
+        language: system
+        entry: bash -n
+        files: \.sh$
 ```
 
 ### For Groovy-like Jenkins pipelines
 
 ```yaml
-- repo: local
-  hooks:
-  - id: forbid-abstract-classes-and-traits
-    name: Ensure neither abstract classes nor traits are used
-    language: pygrep
-    entry: "^(abstract|trait) "
-    files: ^src/.*\.groovy$
+  - repo: local
+    hooks:
+      - id: forbid-abstract-classes-and-traits
+        name: Ensure neither abstract classes nor traits are used
+        language: pygrep
+        entry: '^(abstract|trait) '
+        files: ^src/.*\.groovy$
 ```
 
 **Rationale:** `abstract` classes & `traits` do not work in Jenkins
@@ -257,28 +257,28 @@ pipelines : cf. https://issues.jenkins-ci.org/browse/JENKINS-39329 &
 https://issues.jenkins-ci.org/browse/JENKINS-46145 .
 
 ```yaml
-- repo: local
-  hooks:
-  - id: force-JsonSlurperClassic
-    name: Ensure JsonSlurperClassic is used instead of non-serializable JsonSlurper
-    language: pygrep
-    entry: JsonSlurper[^C]
-    files: \.groovy$
+  - repo: local
+    hooks:
+      - id: force-JsonSlurperClassic
+        name: Ensure JsonSlurperClassic is used instead of non-serializable JsonSlurper
+        language: pygrep
+        entry: JsonSlurper[^C]
+        files: \.groovy$
 ```
 
 **Rationale:** cf. http://stackoverflow.com/a/38439681/636849
 
 ```yaml
-- repo: local
-  hooks:
-    - id: Jenkinsfile-linter
-      name: Check Jenkinsfile following the scripted-pipeline syntax using Jenkins
-        API
-      files: Jenkinsfile
-      language: system
-      entry: sh -c '! curl --silent $JENKINS_URL/job/MyPipelineName/job/master/1/replay/checkScriptCompile
-        --user $JENKINS_USER:$JENKINS_TOKEN --data-urlencode value@Jenkinsfile |
-        grep -F "\"status\":\"fail\""'
+  - repo: local
+    hooks:
+      - id: Jenkinsfile-linter
+        name: Check Jenkinsfile following the scripted-pipeline syntax using Jenkins
+          API
+        files: Jenkinsfile
+        language: system
+        entry: sh -c '! curl --silent $JENKINS_URL/job/MyPipelineName/job/master/1/replay/checkScriptCompile
+          --user $JENKINS_USER:$JENKINS_TOKEN --data-urlencode value@Jenkinsfile |
+          grep -F "\"status\":\"fail\""'
 ```
 
 Note: the `$JENKINS_TOKEN` can be retrieved from
@@ -293,62 +293,60 @@ https://jenkins.io/doc/book/pipeline/development/#linter .
 ### Forbid some Javascript keywords for browser retrocompatibility issues
 
 ```yaml
-- repo: local
-  hooks:
-    - id: js-forbid-const
-      name: The const keyword is not supported by IE10
-      language: pygrep
-      entry: 'const '
-      files: \.js$
-    - id: js-forbid-let
-      name: The let keyword is not supported by IE10
-      language: pygrep
-      entry: 'let '
-      files: \.js$
+  - repo: local
+    hooks:
+      - id: js-forbid-const
+        name: The const keyword is not supported by IE10
+        language: pygrep
+        entry: 'const '
+        files: \.js$
+      - id: js-forbid-let
+        name: The let keyword is not supported by IE10
+        language: pygrep
+        entry: 'let '
+        files: \.js$
 ```
 
 ### CSS
 
 ```yaml
-- repo: local
-  hooks:
-    - id: css-forbid-px
-      name: In CSS files, use rem or % over px
-      language: pygrep
-      entry: px
-      files: \.css$
-    - id: ot-sanitize-fonts
-      name: Calling ot-sanitise on otf/ttf/woff/woff2 font files
-      language: system
-      entry: sh -c 'type ot-sanitise >/dev/null
-        && for font in "$@";
-        do echo "$font";
-        ot-sanitise "$font"; done
-        || echo "WARNING Command ot-sanitise not found - skipping check"'
-      files: \.(otf|ttf|woff|woff2)$
+  - repo: local
+    hooks:
+      - id: css-forbid-px
+        name: In CSS files, use rem or % over px
+        language: pygrep
+        entry: px
+        files: \.css$
+      - id: ot-sanitize-fonts
+        name: Calling ot-sanitise on otf/ttf/woff/woff2 font files
+        language: system
+        entry: sh -c 'type ot-sanitise >/dev/null && for font in "$@"; do echo "$font";
+          ot-sanitise "$font"; done || echo "WARNING Command ot-sanitise not found
+          - skipping check"'
+        files: \.(otf|ttf|woff|woff2)$
 ```
 
 ### Some Angular 1.5 checks
 
 ```yaml
-- repo: local
-  hooks:
-    - id: angular-forbid-apply
-      name: In AngularJS, use $digest over $apply
-      language: pygrep
-      entry: \$apply
-      files: \.js$
-    - id: angular-forbid-ngrepeat-without-trackby
-      name: In AngularJS, ALWAYS use 'track by' with ng-repeat
-      language: pygrep
-      entry: ng-repeat(?!.*track by)
-      files: \.html$
-    - id: angular-forbid-ngmodel-with-no-dot
-      name: In AngularJS, whenever you have ng-model there's gotta be a dot in
-        there somewhere
-      language: pygrep
-      entry: ng-model="?[^.]+[" ]
-      files: \.html$
+  - repo: local
+    hooks:
+      - id: angular-forbid-apply
+        name: In AngularJS, use $digest over $apply
+        language: pygrep
+        entry: \$apply
+        files: \.js$
+      - id: angular-forbid-ngrepeat-without-trackby
+        name: In AngularJS, ALWAYS use 'track by' with ng-repeat
+        language: pygrep
+        entry: ng-repeat(?!.*track by)
+        files: \.html$
+      - id: angular-forbid-ngmodel-with-no-dot
+        name: In AngularJS, whenever you have ng-model there must be a dot in there
+          somewhere
+        language: pygrep
+        entry: ng-model="?[^.]+[" ]
+        files: \.html$
 ```
 
 ## Development
