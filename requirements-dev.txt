@@ -6,3 +6,5 @@ pylint
 pytest
 pytest-cov
 coverage
+# for logToCs.py
+regex>=2023.3.23
