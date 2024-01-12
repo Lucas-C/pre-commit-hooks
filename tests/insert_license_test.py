@@ -409,6 +409,14 @@ def _convert_line_ending(file_path, new_line_endings):
                         True,
                         ["--use-current-year"],
                     ),
+                    (
+                        "module_with_multiple_stale_years_in_license.py",
+                        "#",
+                        "module_with_multiple_years_in_license.py",
+                        "",
+                        True,
+                        ["--use-current-year"],
+                    ),
                 ),
             ),
             product(
