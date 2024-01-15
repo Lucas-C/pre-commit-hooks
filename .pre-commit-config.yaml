@@ -14,6 +14,9 @@ repos:
         args: [--wrap, '75', --number]
         additional_dependencies:
           - mdformat-toc
+          - mdformat-config
+          - mdformat-beautysh
+          - setuptools  # for beautysh
   - repo: https://github.com/Lucas-C/pre-commit-hooks
     rev: v1.5.4
     hooks:
@@ -25,7 +28,7 @@ repos:
         exclude: tests/resources/main.*_with_license.cpp
       - id: chmod
         args: ['644']
-        exclude: (\.md$|^tests/resources/.*shebang)
+        exclude: (\.md$|^tests/resources/.*shebang|^.github/.*)
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.5.0
     hooks:
@@ -57,13 +60,33 @@ repos:
     rev: v1.8.0
     hooks:
       - id: mypy
+        exclude: ^(.github/logToCs.py)$
         args:
-          - --ignore-missing-imports
+          # - --ignore-missing-imports
           - --install-types
           - --non-interactive
           - --check-untyped-defs
           - --show-error-codes
           - --show-error-context
+        additional_dependencies:
+          - types-setuptools
+          - pytest
+          - rapidfuzz
+          - types-openpyxl
+          - pandas-stubs
+          - types-Pygments
+          - types-colorama
+          - types-pytz
+          - types-docutils
+  - repo: https://github.com/codespell-project/codespell
+    rev: v2.2.6
+    hooks:
+      - id: codespell
+        exclude: (?x)^(tests/resources/.*)$
+        args:
+          - --builtin=clear,rare,informal,usage,code,names,en-GB_to_en-US
+          - --ignore-words-list=master
+          - --quiet-level=2
   - repo: local
     hooks:
       - id: pylint
@@ -73,7 +96,7 @@ repos:
         language: system
         entry: pylint
         files: \.py$
-        exclude: ^tests/resources/.*(init_with_license|todo)
+        exclude: ^(tests/resources/.*(init_with_license|todo)|.github/logToCs.py)
       - id: pytest
         name: pytest
         language: python

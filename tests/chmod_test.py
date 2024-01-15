@@ -12,7 +12,11 @@ def test_chmod_ok():
             assert (
                 "This hook does nothing when executed on Windows" in stdout.getvalue()
             )
+        elif sys.platform == "cygwin":
+            # No checks implemented on cygwin
+            pass
         else:
+            assert sys.platform
             assert chmod(["755", "module_with_license.py"]) == 1
             assert chmod(["644", "module_with_license.py"]) == 1
             assert chmod(["644", "module_with_license.py"]) == 0
