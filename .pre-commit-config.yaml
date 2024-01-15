@@ -4,7 +4,7 @@ repos:
   # Perform Markdown formatting before other hooks "fixing" line endings:
   # PROBLEM: it alters the .md file permissions from 644 to 600 :(
   - repo: https://github.com/executablebooks/mdformat
-    rev: 0.7.16
+    rev: 0.7.17
     hooks:
       - id: mdformat
         name: Format Markdown
@@ -27,7 +27,7 @@ repos:
         args: ['644']
         exclude: (\.md$|^tests/resources/.*shebang)
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.4.0
+    rev: v4.5.0
     hooks:
       - id: trailing-whitespace
         files: ''
@@ -37,14 +37,14 @@ repos:
       - id: check-executables-have-shebangs
       - id: check-shebang-scripts-are-executable
   - repo: https://github.com/asottile/pyupgrade
-    rev: v3.10.1
+    rev: v3.15.0
     hooks:
       - id: pyupgrade
         args:
           - --py37-plus
         exclude: ^tests/resources/.*
   - repo: https://github.com/psf/black
-    rev: 23.7.0
+    rev: 23.12.1
     hooks:
       - id: black
         exclude: ^tests/resources/
@@ -54,7 +54,7 @@ repos:
       - id: python-bandit-vulnerability-check
         args: [--skip, 'B101', --recursive, .]
   - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v1.4.1
+    rev: v1.8.0
     hooks:
       - id: mypy
         args:
@@ -78,7 +78,7 @@ repos:
         name: pytest
         language: python
         additional_dependencies: [pytest, pytest-cov, coverage, rapidfuzz]
-        entry: pytest -sv
+        entry: pytest -vv
         require_serial: true
         pass_filenames: false
         files: \.py$
