@@ -1,0 +1,5 @@
+Copyright (C) 2016-2017 Teela O'Malley
+
+Licensed under the Apache License, Version 2.0 (the "License");
+
+@copyright 2012-2015 Teela O'Malley
