@@ -425,6 +425,20 @@ def _convert_line_ending(file_path, new_line_endings):
                     ),
                 ),
             ),
+            product(
+                ("LICENSE_with_multiple_year_ranges.txt",),
+                ("\n",),
+                (
+                    (
+                        "module_with_multiple_stale_years_in_license.py",
+                        "#",
+                        "module_with_multiple_years_in_license.py",
+                        "",
+                        True,
+                        ["--use-current-year"],
+                    ),
+                ),
+            ),
         ),
     ),
 )

@@ -396,14 +396,15 @@ def try_update_year_range(
     :return: source file contents and a flag indicating update
     """
     current_year = datetime.now().year
+    changed = False
     for i in range(license_header_index, license_header_index + license_length):
         updated = try_update_year(
             src_file_content[i], src_filepath, current_year, introduce_range=True
         )
         if updated:
             src_file_content[i] = updated
-            return src_file_content, True
-    return src_file_content, False
+            changed = True
+    return src_file_content, changed
 
 
 def license_found(
