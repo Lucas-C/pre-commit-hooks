@@ -194,7 +194,7 @@ def get_license_info_list(args) -> list[LicenseInfo]:
     return license_info_list
 
 
-def process_files(
+def process_files(  # pylint: disable=too-many-branches
     args,
     changed_files: list[str],
     todo_files: list[str],

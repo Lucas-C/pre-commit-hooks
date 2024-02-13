@@ -19,6 +19,7 @@ this issue: [#83](https://github.com/Lucas-C/pre-commit-hooks/issues/83)
     - [Handling years flexibly](#handling-years-flexibly)
     - [No extra EOL](#no-extra-eol)
     - [Fuzzy license matching](#fuzzy-license-matching)
+    - [Multiple license files](#multiple-license-files)
 - [Handy shell functions](#handy-shell-functions)
 - [Useful local hooks](#useful-local-hooks)
   - [Forbid / remove some unicode characters](#forbid--remove-some-unicode-characters)
@@ -167,6 +168,23 @@ of the error.
 License insertion can be skipped altogether if the file contains the
 `SKIP LICENSE INSERTION` in the first X top lines. This can also be
 overridden by `--skip-license-insertion-comment=<COMMENT>` flag.
+
+#### Multiple license files
+
+If more than one `--license-filepath` argument is specified, the checks are
+performed as follows:
+
+1. First, an exact match is pursued, checking the 1st license file, then
+   the 2nd, and so on. If a match is found, the normal behavior is
+   followed, as if the matched license file was the only license file
+   specified.
+
+2. If no exact match is found, then the software resorts to fuzzy matching.
+   Again, as soon as a match is found, the normal behavior is followed, as
+   if the fuzzy-matched license file was the only license file specified.
+
+3. Finally, if neither exact nor fuzzy matches are found, the content of
+   the first license file is inserted.
 
 ## Handy shell functions
 
