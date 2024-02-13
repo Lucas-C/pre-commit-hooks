@@ -409,6 +409,50 @@ def _convert_line_ending(file_path, new_line_endings):
                         True,
                         ["--use-current-year"],
                     ),
+                    (
+                        "module_without_license.py",
+                        "#",
+                        "module_with_license.py",
+                        "",
+                        True,
+                        [
+                            "--license-filepath",
+                            "LICENSE_2_without_trailing_newline.txt",
+                        ],
+                    ),
+                    (
+                        "module_with_license_2.py",
+                        "#",
+                        None,
+                        "",
+                        False,
+                        [
+                            "--license-filepath",
+                            "LICENSE_2_without_trailing_newline.txt",
+                        ],
+                    ),
+                    (
+                        "module_with_license.py",
+                        "#",
+                        None,
+                        "",
+                        False,
+                        [
+                            "--license-filepath",
+                            "LICENSE_2_without_trailing_newline.txt",
+                        ],
+                    ),
+                    (
+                        "module_with_license_todo.py",
+                        "#",
+                        None,
+                        "",
+                        True,
+                        [
+                            "--license-filepath",
+                            "LICENSE_2_without_trailing_newline.txt",
+                        ],
+                    ),
                 ),
             ),
             product(
@@ -537,75 +581,117 @@ def test_insert_license_current_year_already_there(
         "comment_style",
         "new_src_file_expected",
         "fail_check",
+        "extra_args",
     ),
     map(
-        lambda a: a[:2] + a[2],
-        product(  # combine license files with other args
-            (
-                "LICENSE_with_trailing_newline.txt",
-                "LICENSE_without_trailing_newline.txt",
+        lambda a: a[:2] + a[2] + a[3],
+        chain(
+            product(  # combine license files with other args
+                (
+                    "LICENSE_with_trailing_newline.txt",
+                    "LICENSE_without_trailing_newline.txt",
+                ),
+                ("\n", "\r\n"),
+                (
+                    (
+                        "module_without_license.jinja",
+                        "{#||#}",
+                        "module_with_license.jinja",
+                        True,
+                    ),
+                    ("module_with_license.jinja", "{#||#}", None, False),
+                    (
+                        "module_with_fuzzy_matched_license.jinja",
+                        "{#||#}",
+                        "module_with_license_todo.jinja",
+                        True,
+                    ),
+                    ("module_with_license_todo.jinja", "{#||#}", None, True),
+                    ("module_without_license.py", "#", "module_with_license.py", True),
+                    ("module_with_license.py", "#", None, False),
+                    (
+                        "module_with_fuzzy_matched_license.py",
+                        "#",
+                        "module_with_license_todo.py",
+                        True,
+                    ),
+                    ("module_with_license_todo.py", "#", None, True),
+                    ("module_with_license_and_shebang.py", "#", None, False),
+                    (
+                        "module_with_fuzzy_matched_license_and_shebang.py",
+                        "#",
+                        "module_with_license_and_shebang_todo.py",
+                        True,
+                    ),
+                    ("module_with_license_and_shebang_todo.py", "#", None, True),
+                    (
+                        "module_without_license.groovy",
+                        "//",
+                        "module_with_license.groovy",
+                        True,
+                    ),
+                    ("module_with_license.groovy", "//", None, False),
+                    (
+                        "module_with_fuzzy_matched_license.groovy",
+                        "//",
+                        "module_with_license_todo.groovy",
+                        True,
+                    ),
+                    ("module_with_license_todo.groovy", "//", None, True),
+                    (
+                        "module_without_license.css",
+                        "/*| *| */",
+                        "module_with_license.css",
+                        True,
+                    ),
+                    ("module_with_license.css", "/*| *| */", None, False),
+                    (
+                        "module_with_fuzzy_matched_license.css",
+                        "/*| *| */",
+                        "module_with_license_todo.css",
+                        True,
+                    ),
+                    ("module_with_license_todo.css", "/*| *| */", None, True),
+                ),
+                (
+                    (tuple(),),
+                    (
+                        (
+                            "--license-filepath",
+                            "LICENSE_2_without_trailing_newline.txt",
+                        ),
+                    ),
+                ),
             ),
-            ("\n", "\r\n"),
-            (
+            product(
+                ("LICENSE_2_without_trailing_newline.txt",),
+                ("\n", "\r\n"),
                 (
-                    "module_without_license.jinja",
-                    "{#||#}",
-                    "module_with_license.jinja",
-                    True,
+                    (
+                        "module_without_license.py",
+                        "#",
+                        "module_with_license_2.py",
+                        True,
+                    ),
+                    ("module_with_license.py", "#", None, False),
+                    ("module_with_license_todo.py", "#", None, True),
+                    ("module_with_license_and_shebang.py", "#", None, False),
+                    ("module_with_license_and_shebang_todo.py", "#", None, True),
                 ),
-                ("module_with_license.jinja", "{#||#}", None, False),
                 (
-                    "module_with_fuzzy_matched_license.jinja",
-                    "{#||#}",
-                    "module_with_license_todo.jinja",
-                    True,
+                    (
+                        (
+                            "--license-filepath",
+                            "LICENSE_with_trailing_newline.txt",
+                        ),
+                    ),
+                    (
+                        (
+                            "--license-filepath",
+                            "LICENSE_without_trailing_newline.txt",
+                        ),
+                    ),
                 ),
-                ("module_with_license_todo.jinja", "{#||#}", None, True),
-                ("module_without_license.py", "#", "module_with_license.py", True),
-                ("module_with_license.py", "#", None, False),
-                (
-                    "module_with_fuzzy_matched_license.py",
-                    "#",
-                    "module_with_license_todo.py",
-                    True,
-                ),
-                ("module_with_license_todo.py", "#", None, True),
-                ("module_with_license_and_shebang.py", "#", None, False),
-                (
-                    "module_with_fuzzy_matched_license_and_shebang.py",
-                    "#",
-                    "module_with_license_and_shebang_todo.py",
-                    True,
-                ),
-                ("module_with_license_and_shebang_todo.py", "#", None, True),
-                (
-                    "module_without_license.groovy",
-                    "//",
-                    "module_with_license.groovy",
-                    True,
-                ),
-                ("module_with_license.groovy", "//", None, False),
-                (
-                    "module_with_fuzzy_matched_license.groovy",
-                    "//",
-                    "module_with_license_todo.groovy",
-                    True,
-                ),
-                ("module_with_license_todo.groovy", "//", None, True),
-                (
-                    "module_without_license.css",
-                    "/*| *| */",
-                    "module_with_license.css",
-                    True,
-                ),
-                ("module_with_license.css", "/*| *| */", None, False),
-                (
-                    "module_with_fuzzy_matched_license.css",
-                    "/*| *| */",
-                    "module_with_license_todo.css",
-                    True,
-                ),
-                ("module_with_license_todo.css", "/*| *| */", None, True),
             ),
         ),
     ),
@@ -617,6 +703,7 @@ def test_fuzzy_match_license(
     comment_style,
     new_src_file_expected,
     fail_check,
+    extra_args,
     tmpdir,
 ):
     with chdir_to_test_resources():
@@ -631,6 +718,8 @@ def test_fuzzy_match_license(
             "--fuzzy-match-generates-todo",
             path.strpath,
         ]
+        if extra_args is not None:
+            args.extend(extra_args)
         assert insert_license(args) == (1 if fail_check else 0)
         if new_src_file_expected:
             with open(new_src_file_expected, encoding="utf-8") as expected_content_file:

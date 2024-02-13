@@ -4,9 +4,11 @@ import collections
 import re
 import sys
 from datetime import datetime
-from typing import Any, Sequence
+from typing import Any, Sequence, Final
 
 from rapidfuzz import fuzz
+
+DEFAULT_LICENSE_FILEPATH: Final[str] = "LICENSE.txt"
 
 FUZZY_MATCH_TODO_COMMENT = (
     " TODO: This license is not consistent with the license used in the project."
@@ -41,10 +43,15 @@ class LicenseUpdateError(Exception):
         self.message = message
 
 
-def main(argv=None):
+def main(argv=None) -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("filenames", nargs="*", help="filenames to check")
-    parser.add_argument("--license-filepath", default="LICENSE.txt")
+    parser.add_argument(
+        "--license-filepath",
+        action="extend",
+        nargs=1,
+        help=f"list of file names to consider. When omitted, it defaults to '{DEFAULT_LICENSE_FILEPATH}'",
+    )
     parser.add_argument(
         "--comment-style",
         default="#",
@@ -100,13 +107,15 @@ def main(argv=None):
     args = parser.parse_args(argv)
     if args.use_current_year:
         args.allow_past_years = True
+    if not args.license_filepath:
+        args.license_filepath = [DEFAULT_LICENSE_FILEPATH]
 
-    license_info = get_license_info(args)
+    license_info_list = get_license_info_list(args)
 
     changed_files: list[str] = []
     todo_files: list[str] = []
 
-    check_failed = process_files(args, changed_files, todo_files, license_info)
+    check_failed = process_files(args, changed_files, todo_files, license_info_list)
 
     if check_failed:
         print("")
@@ -135,7 +144,7 @@ def _replace_year_in_license_with_current(plain_license: list[str], filepath: st
     return plain_license
 
 
-def get_license_info(args) -> LicenseInfo:
+def get_license_info_list(args) -> list[LicenseInfo]:
     comment_start, comment_end = None, None
     comment_prefix = args.comment_style.replace("\\t", "\t")
     extra_space = (
@@ -143,50 +152,60 @@ def get_license_info(args) -> LicenseInfo:
     )
     if "|" in comment_prefix:
         comment_start, comment_prefix, comment_end = comment_prefix.split("|")
-    with open(args.license_filepath, encoding="utf8", newline="") as license_file:
-        plain_license = license_file.readlines()
 
-    if args.use_current_year:
-        plain_license = _replace_year_in_license_with_current(
-            plain_license, args.license_filepath
+    license_info_list = []
+    for filepath in args.license_filepath:
+        with open(filepath, encoding="utf8", newline="") as license_file:
+            plain_license = license_file.readlines()
+
+        if args.use_current_year:
+            plain_license = _replace_year_in_license_with_current(
+                plain_license, args.license_filepath
+            )
+
+        prefixed_license = [
+            f'{comment_prefix}{extra_space if line.strip() else ""}{line}'
+            for line in plain_license
+        ]
+        eol = "\r\n" if prefixed_license[0][-2:] == "\r\n" else "\n"
+        num_extra_lines = 0
+
+        if not prefixed_license[-1].endswith(eol):
+            prefixed_license[-1] += eol
+            num_extra_lines += 1
+        if comment_start:
+            prefixed_license = [comment_start + eol] + prefixed_license
+            num_extra_lines += 1
+        if comment_end:
+            prefixed_license = prefixed_license + [comment_end + eol]
+            num_extra_lines += 1
+
+        license_info = LicenseInfo(
+            prefixed_license=prefixed_license,
+            plain_license=plain_license,
+            eol="" if args.no_extra_eol else eol,
+            comment_start=comment_start,
+            comment_prefix=comment_prefix,
+            comment_end=comment_end,
+            num_extra_lines=num_extra_lines,
         )
 
-    prefixed_license = [
-        f'{comment_prefix}{extra_space if line.strip() else ""}{line}'
-        for line in plain_license
-    ]
-    eol = "\r\n" if prefixed_license[0][-2:] == "\r\n" else "\n"
-    num_extra_lines = 0
-
-    if not prefixed_license[-1].endswith(eol):
-        prefixed_license[-1] += eol
-        num_extra_lines += 1
-    if comment_start:
-        prefixed_license = [comment_start + eol] + prefixed_license
-        num_extra_lines += 1
-    if comment_end:
-        prefixed_license = prefixed_license + [comment_end + eol]
-        num_extra_lines += 1
-
-    license_info = LicenseInfo(
-        prefixed_license=prefixed_license,
-        plain_license=plain_license,
-        eol="" if args.no_extra_eol else eol,
-        comment_start=comment_start,
-        comment_prefix=comment_prefix,
-        comment_end=comment_end,
-        num_extra_lines=num_extra_lines,
-    )
-    return license_info
+        license_info_list.append(license_info)
+    return license_info_list
 
 
-def process_files(args, changed_files, todo_files, license_info: LicenseInfo):
+def process_files(
+    args,
+    changed_files: list[str],
+    todo_files: list[str],
+    license_info_list: list[LicenseInfo],
+) -> list[str] | bool:
     """
     Processes all license files
     :param args: arguments of the hook
     :param changed_files: list of changed files
     :param todo_files: list of files where t.o.d.o. is detected
-    :param license_info: license info named tuple
+    :param license_info_list: list of license info named tuples
     :return: True if some files were changed, t.o.d.o is detected or an error occurred while updating the year
     """
     license_update_failed = False
@@ -206,21 +225,30 @@ def process_files(args, changed_files, todo_files, license_info: LicenseInfo):
         ):
             todo_files.append(src_filepath)
             continue
-        license_header_index = find_license_header_index(
-            src_file_content=src_file_content,
-            license_info=license_info,
-            top_lines_count=args.detect_license_in_X_top_lines,
-            match_years_strictly=not args.allow_past_years,
-        )
-        fuzzy_match_header_index = None
-        if args.fuzzy_match_generates_todo and license_header_index is None:
-            fuzzy_match_header_index = fuzzy_find_license_header_index(
+
+        license_header_index = None
+        license_info = None
+        for license_info in license_info_list:
+            license_header_index = find_license_header_index(
                 src_file_content=src_file_content,
                 license_info=license_info,
                 top_lines_count=args.detect_license_in_X_top_lines,
-                fuzzy_match_extra_lines_to_check=args.fuzzy_match_extra_lines_to_check,
-                fuzzy_ratio_cut_off=args.fuzzy_ratio_cut_off,
+                match_years_strictly=not args.allow_past_years,
             )
+            if license_header_index is not None:
+                break
+        fuzzy_match_header_index = None
+        if args.fuzzy_match_generates_todo and license_header_index is None:
+            for license_info in license_info_list:
+                fuzzy_match_header_index = fuzzy_find_license_header_index(
+                    src_file_content=src_file_content,
+                    license_info=license_info,
+                    top_lines_count=args.detect_license_in_X_top_lines,
+                    fuzzy_match_extra_lines_to_check=args.fuzzy_match_extra_lines_to_check,
+                    fuzzy_ratio_cut_off=args.fuzzy_ratio_cut_off,
+                )
+                if fuzzy_match_header_index is not None:
+                    break
         if license_header_index is not None:
             try:
                 if license_found(
@@ -251,7 +279,7 @@ def process_files(args, changed_files, todo_files, license_info: LicenseInfo):
             else:
                 if license_not_found(
                     remove_header=args.remove_header,
-                    license_info=license_info,
+                    license_info=license_info_list[0],
                     src_file_content=src_file_content,
                     src_filepath=src_filepath,
                     encoding=encoding,
@@ -520,7 +548,7 @@ def _license_line_matches(license_line, src_file_line, match_years_strictly):
 
 def find_license_header_index(
     src_file_content, license_info: LicenseInfo, top_lines_count, match_years_strictly
-):
+) -> int | None:
     """
     Returns the line number, starting from 0 and lower than `top_lines_count`,
     where the license header comment starts in this file, or else None.
@@ -574,7 +602,7 @@ def fuzzy_find_license_header_index(
     top_lines_count,
     fuzzy_match_extra_lines_to_check,
     fuzzy_ratio_cut_off,
-):
+) -> int | None:
     """
     Returns the line number, starting from 0 and lower than `top_lines_count`,
     where the fuzzy matching found best match with ratio higher than the cutoff ratio.
