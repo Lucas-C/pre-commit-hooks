@@ -1,3 +1,5 @@
+<!-- Hi -->
+<html>
 <?php
 /*
  * Copyright (C) 2017 Teela O'Malley
