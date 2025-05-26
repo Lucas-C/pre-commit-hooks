@@ -1,5 +1,5 @@
 [MESSAGES CONTROL]
-disable = duplicate-code, fixme, missing-docstring, multiple-imports, too-many-arguments, too-many-locals
+disable = duplicate-code, fixme, missing-docstring, multiple-imports, too-many-arguments, too-many-locals, too-many-positional-arguments
 
 [FORMAT]
 max-line-length = 150
