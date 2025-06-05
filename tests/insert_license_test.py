@@ -193,6 +193,15 @@ def _convert_line_ending(file_path, new_line_endings):
                     (
                         "module_without_license.py",
                         "#",
+                        "module_with_license.py",
+                        "",
+                        True,
+                        # Test that when the regex is not found, the license is put at the first line
+                        ["--insert-license-after-regex", "^<\\?php$"],
+                    ),
+                    (
+                        "module_without_license.py",
+                        "#",
                         "module_with_license_noeol.py",
                         "",
                         True,

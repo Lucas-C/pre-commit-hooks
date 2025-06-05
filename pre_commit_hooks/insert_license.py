@@ -328,7 +328,7 @@ def license_not_found(  # pylint: disable=too-many-arguments
     """
     if not remove_header:
         index = 0
-        for line in src_file_content:
+        for index, line in enumerate(src_file_content):
             stripped_line = line.strip()
             # Special treatment for user provided regex,
             # or shebang, file encoding directive,
@@ -339,13 +339,14 @@ def license_not_found(  # pylint: disable=too-many-arguments
                     index += 1  # Skip matched line
                     break  # And insert after that line.
             elif (
-                stripped_line.startswith("#!")
-                or stripped_line.startswith("# -*- coding")
-                or stripped_line == ""
+                not stripped_line.startswith("#!")
+                and not stripped_line.startswith("# -*- coding")
+                and not stripped_line == ""
             ):
-                index += 1
-            else:
                 break
+        else:
+            # We got all the way to the end without hitting `break`, reset it to line 0
+            index = 0
         src_file_content = (
             src_file_content[:index]
             + license_info.prefixed_license
