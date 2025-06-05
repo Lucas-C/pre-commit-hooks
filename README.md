@@ -50,15 +50,15 @@ into separate repos:
 - repo: https://github.com/Lucas-C/pre-commit-hooks
   rev: v1.5.5
   hooks:
-    - id: forbid-crlf
-    - id: remove-crlf
-    - id: forbid-tabs
-    - id: remove-tabs
+    - id: forbid-crlf  # Fail if any files contain CRLF
+    - id: remove-crlf  # Convert CRLF to LF
+    - id: forbid-tabs  # Fail if a file contain '\t' anywhere
+    - id: remove-tabs  # Convert all tabs to spaces
       args: [--whitespaces-count, '2']  # defaults to: 4
-    - id: chmod
+    - id: chmod  # Ensure all files have the right permissions
       args: ['644']
       files: \.md$
-    - id: insert-license
+    - id: insert-license  # Insert a license header in source files
       files: \.groovy$
       args:
         - --license-filepath
