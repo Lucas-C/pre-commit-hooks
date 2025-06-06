@@ -46,19 +46,25 @@ into separate repos:
 
 ## Usage
 
+See [hook definitions](./.pre-commit-hooks.yaml) for additional hook
+documentation.
+
+All hooks work on text files, except for the `chmod` hook that applies to
+all files.
+
 ```yaml
 - repo: https://github.com/Lucas-C/pre-commit-hooks
   rev: v1.5.5
   hooks:
-    - id: forbid-crlf
-    - id: remove-crlf
-    - id: forbid-tabs
-    - id: remove-tabs
+    - id: forbid-crlf  # Forbid files containing CRLF end-lines to be committed
+    - id: remove-crlf  # Replace CRLF end-lines by LF ones before committing
+    - id: forbid-tabs  # Forbid files containing tabs to be committed
+    - id: remove-tabs  # Replace tabs by whitespaces before committing
       args: [--whitespaces-count, '2']  # defaults to: 4
-    - id: chmod
+    - id: chmod  # Set file permissions
       args: ['644']
       files: \.md$
-    - id: insert-license
+    - id: insert-license  # Insert a short license disclaimer as a header comment in source files
       files: \.groovy$
       args:
         - --license-filepath
