@@ -46,7 +46,11 @@ into separate repos:
 
 ## Usage
 
-See [hook definitions](./.pre-commit-hooks.yaml) for additional hook documentation.
+See [hook definitions](./.pre-commit-hooks.yaml) for additional hook
+documentation.
+
+All hooks work on text files, except for the `chmod` hook that applies to
+all files.
 
 ```yaml
 - repo: https://github.com/Lucas-C/pre-commit-hooks
