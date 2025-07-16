@@ -4,7 +4,7 @@
     entry: forbid_crlf
     language: python
     types: [text]
-    stages: [pre-commit, pre-push, pre-merge-commit]
+    stages: [manual, pre-commit, pre-push, pre-merge-commit]
     minimum_pre_commit_version: "3.2.0"
 -   id: remove-crlf
     name: CRLF end-lines remover
@@ -12,7 +12,7 @@
     entry: remove_crlf
     language: python
     types: [text]
-    stages: [pre-commit, pre-push, pre-merge-commit]
+    stages: [manual, pre-commit, pre-push, pre-merge-commit]
     minimum_pre_commit_version: "3.2.0"
 -   id: forbid-tabs
     name: No-tabs checker
@@ -21,7 +21,7 @@
     language: python
     types: [text]
     exclude: (Makefile|debian/rules|.gitmodules)(\.in)?$
-    stages: [pre-commit, pre-push, pre-merge-commit]
+    stages: [manual, pre-commit, pre-push, pre-merge-commit]
     minimum_pre_commit_version: "3.2.0"
 -   id: remove-tabs
     name: Tabs remover
@@ -31,7 +31,7 @@
     args: [ --whitespaces-count, '4' ]
     types: [text]
     exclude: (Makefile|debian/rules|.gitmodules)(\.in)?$
-    stages: [pre-commit, pre-push, pre-merge-commit]
+    stages: [manual, pre-commit, pre-push, pre-merge-commit]
     minimum_pre_commit_version: "3.2.0"
 -   id: chmod
     name: Set file permissions
