@@ -327,31 +327,37 @@ def license_not_found(  # pylint: disable=too-many-arguments
     :return: True if change was made, False otherwise
     """
     if not remove_header:
-        index = 0
+        insert_at = 0
+        content_starts_at = 0
         for index, line in enumerate(src_file_content):
             stripped_line = line.strip()
-            # Special treatment for user provided regex,
-            # or shebang, file encoding directive,
-            # and empty lines when at the beginning of the file.
-            # (adds license only after those)
+            # Special treatment for user provided regex, shebang, or encoding.
+            # Leading blank lines are stripped; blanks after shebang/encoding
+            # are preserved.
             if after_regex is not None and after_regex != "":
                 if re.match(after_regex, stripped_line):
-                    index += 1  # Skip matched line
-                    break  # And insert after that line.
-            elif (
-                not stripped_line.startswith("#!")
-                and not stripped_line.startswith("# -*- coding")
-                and not stripped_line == ""
+                    insert_at = index + 1
+                    content_starts_at = index + 1
+                    break
+            elif stripped_line.startswith("#!") or stripped_line.startswith(
+                "# -*- coding"
             ):
+                insert_at = index + 1
+                content_starts_at = index + 1
+            elif stripped_line == "":
+                if insert_at > 0:
+                    # Blank after shebang/encoding - preserve it
+                    insert_at = index + 1
+                    content_starts_at = index + 1
+                # else: Leading blank - skip it
+            else:
+                content_starts_at = index
                 break
-        else:
-            # We got all the way to the end without hitting `break`, reset it to line 0
-            index = 0
         src_file_content = (
-            src_file_content[:index]
+            src_file_content[:insert_at]
             + license_info.prefixed_license
             + [license_info.eol]
-            + src_file_content[index:]
+            + src_file_content[content_starts_at:]
         )
         with open(src_filepath, "w", encoding=encoding, newline="") as src_file:
             src_file.write("".join(src_file_content))

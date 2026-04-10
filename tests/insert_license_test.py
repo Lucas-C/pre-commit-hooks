@@ -977,3 +977,47 @@ def test_remove_license(
                 expected_content = expected_content_file.read()
             new_file_content = path.open(encoding="utf-8").read()
             assert new_file_content == expected_content
+
+
+# Issue #107: leading blank lines should not affect license insertion position
+@pytest.mark.parametrize(
+    ("src_file_path", "expected_file_path"),
+    [
+        (
+            "module_with_leading_blank_without_license.py",
+            "module_with_leading_blank_with_license.py",
+        ),
+        (
+            "module_with_multiple_leading_blanks_without_license.py",
+            "module_with_multiple_leading_blanks_with_license.py",
+        ),
+        (
+            "module_with_shebang_and_blank_without_license.py",
+            "module_with_shebang_and_blank_with_license.py",
+        ),
+    ],
+)
+def test_leading_blank_lines_issue_107(src_file_path, expected_file_path, tmpdir):
+    """Test that leading blank lines don't cause license to be inserted after them.
+
+    See: https://github.com/Lucas-C/pre-commit-hooks/issues/107
+    """
+    with chdir_to_test_resources():
+        path = tmpdir.join("test_file.py")
+        shutil.copy(src_file_path, path.strpath)
+        argv = [
+            "--license-filepath",
+            "LICENSE_with_trailing_newline.txt",
+            "--comment-style",
+            "#",
+            path.strpath,
+        ]
+        assert insert_license(argv) == 1  # File was modified
+        with open(expected_file_path, encoding="utf-8") as expected_file:
+            expected_content = expected_file.read()
+        actual_content = path.open(encoding="utf-8").read()
+        assert actual_content == expected_content, (
+            f"License not inserted at correct position.\n"
+            f"Expected:\n{expected_content}\n"
+            f"Actual:\n{actual_content}"
+        )
