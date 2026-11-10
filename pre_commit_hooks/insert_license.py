@@ -110,7 +110,11 @@ def main(argv=None) -> int:
     if not args.license_filepath:
         args.license_filepath = [DEFAULT_LICENSE_FILEPATH]
 
-    license_info_list = get_license_info_list(args)
+    try:
+        license_info_list = get_license_info_list(args)
+    except LicenseUpdateError as error:
+        print(error)
+        return 1
 
     changed_files: list[str] = []
     todo_files: list[str] = []
@@ -157,6 +161,8 @@ def get_license_info_list(args) -> list[LicenseInfo]:
     for filepath in args.license_filepath:
         with open(filepath, encoding="utf8", newline="") as license_file:
             plain_license = license_file.readlines()
+        if not plain_license:
+            raise LicenseUpdateError(f"License file is empty: {filepath}")
 
         if args.use_current_year:
             plain_license = _replace_year_in_license_with_current(

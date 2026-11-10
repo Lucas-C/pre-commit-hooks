@@ -977,3 +977,19 @@ def test_remove_license(
                 expected_content = expected_content_file.read()
             new_file_content = path.open(encoding="utf-8").read()
             assert new_file_content == expected_content
+
+
+def test_insert_license_empty_license_file(tmpdir):
+    license_file = tmpdir.join("EMPTY_LICENSE.txt")
+    license_file.write("")
+    src_file = tmpdir.join("module.py")
+    src_file.write("x = 1\n")
+    with capture_stdout() as stdout:
+        assert (
+            insert_license(
+                ["--license-filepath", license_file.strpath, src_file.strpath]
+            )
+            == 1
+        )
+        assert "empty" in stdout.getvalue().lower()
+    assert src_file.read() == "x = 1\n"
