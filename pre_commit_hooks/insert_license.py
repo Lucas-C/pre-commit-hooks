@@ -1,6 +1,7 @@
 from __future__ import annotations
 import argparse
 import collections
+import os
 import re
 import sys
 from datetime import datetime
@@ -211,6 +212,11 @@ def process_files(  # pylint: disable=too-many-branches
     license_update_failed = False
     after_regex = args.insert_license_after_regex
     for src_filepath in args.filenames:
+        if any(
+            os.path.samefile(src_filepath, filepath)
+            for filepath in args.license_filepath
+        ):
+            continue
         src_file_content, encoding = _read_file_content(src_filepath)
         if skip_license_insert_found(
             src_file_content=src_file_content,
