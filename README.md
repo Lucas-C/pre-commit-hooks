@@ -175,6 +175,11 @@ License insertion can be skipped altogether if the file contains the
 `SKIP LICENSE INSERTION` in the first X top lines. This can also be
 overridden by `--skip-license-insertion-comment=<COMMENT>` flag.
 
+The license template files are always skipped, even if they are included
+in the files passed to the hook. This applies to the default `LICENSE.txt`
+and all files specified with `--license-filepath`, including paths that
+refer to the same file through a symbolic link or hard link.
+
 #### Multiple license files
 
 If more than one `--license-filepath` argument is specified, the checks are
